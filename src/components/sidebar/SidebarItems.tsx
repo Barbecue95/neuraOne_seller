@@ -16,7 +16,7 @@ export function SidebarItems({ item, pathname }) {
       <Link
         href={path}
         onClick={toggleSubMenu}
-        className={`inline-block w-full p-2 cursor-pointer rounded-md hover:bg-blue-500 hover:text-white duration-150 ${
+        className={`inline-block w-full p-3 cursor-pointer rounded-md hover:bg-blue-500 hover:text-white duration-150 ${
           path === pathname && "text-white bg-blue-500"
         }`}
       >
