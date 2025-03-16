@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import QueryProvider from "./query-provider";
 import { Sidebar } from "@/components/sidebar/Sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,12 +17,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased">
+      <body className="antialiased font-PublicSans">
         <QueryProvider>
-          <main className="h-screen grid grid-cols-12">
-            <Sidebar />
-            <section className="col-span-10">{children}</section>
-          </main>
+          <SidebarProvider>
+            <main className="h-screen grid grid-cols-12">
+              <div className="col-span-3">
+                <AppSidebar />
+              </div>
+              <section className="col-span-9">{children}</section>
+            </main>
+          </SidebarProvider>
         </QueryProvider>
       </body>
     </html>

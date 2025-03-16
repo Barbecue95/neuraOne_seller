@@ -1,20 +1,36 @@
 import clsx from "clsx";
 import React from "react";
 
-const IconProduct = ({ className }: { className: string }) => {
+const IconProduct = ({ className }: { className?: string }) => {
   return (
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      width={24}
+      height={24}
       viewBox="0 0 24 24"
-      strokeWidth={1.5}
-      stroke="currentColor"
-      className={clsx(className)}
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
     >
       <path
+        d="M8.40002 6.5H15.6C19 6.5 19.34 8.09 19.57 10.03L20.47 17.53C20.76 19.99 20 22 16.5 22H7.51003C4.00003 22 3.24002 19.99 3.54002 17.53L4.44003 10.03C4.66003 8.09 5.00002 6.5 8.40002 6.5Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M2.25 7.125C2.25 6.504 2.754 6 3.375 6h6c.621 0 1.125.504 1.125 1.125v3.75c0 .621-.504 1.125-1.125 1.125h-6a1.125 1.125 0 0 1-1.125-1.125v-3.75ZM14.25 8.625c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v8.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-8.25ZM3.75 16.125c0-.621.504-1.125 1.125-1.125h5.25c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125h-5.25a1.125 1.125 0 0 1-1.125-1.125v-2.25Z"
+      />
+      <path
+        d="M8 8V4.5C8 3 9 2 10.5 2H13.5C15 2 16 3 16 4.5V8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20.41 17.03H8"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
