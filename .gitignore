@@ -10,6 +10,10 @@
 !.yarn/releases
 !.yarn/versions
 
+# build output
+*.zip
+*.rar
+
 # testing
 /coverage
 
