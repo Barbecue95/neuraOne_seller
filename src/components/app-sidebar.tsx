@@ -33,7 +33,7 @@ const navMain = [
     items: [
       {
         title: "Product List",
-        url: "#",
+        url: "/products",
       },
       {
         title: "Inventory",
