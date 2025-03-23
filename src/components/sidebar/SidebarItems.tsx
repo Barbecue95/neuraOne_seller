@@ -40,11 +40,6 @@ export function SidebarItems({
     <li className="">
       <Link
         href={path}
-<<<<<<< HEAD
-        onClick={toggleSubMenu}
-        className={`inline-block w-full p-3 cursor-pointer rounded-md hover:bg-blue-500 hover:text-white duration-150 ${
-          path === pathname && "text-white bg-blue-500"
-=======
         onClick={(e) => {
           toggleSubMenu(e);
         }}
@@ -52,7 +47,6 @@ export function SidebarItems({
           isActive
             ? "text-white bg-zinc-600"
             : "hover:bg-zinc-600 hover:text-white duration-150"
->>>>>>> 7993a86051a650c356d230e293c06c55b50fc387
         }`}
       >
         <span className="flex gap-2 items-center">
