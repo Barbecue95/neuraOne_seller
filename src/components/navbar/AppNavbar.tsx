@@ -27,7 +27,7 @@ const AppNavbar = () => {
         <Bell className="h-5 w-5 text-gray-500" />
 
         <Avatar className="h-9 w-9 border border-gray-200">
-          <AvatarFallback className="bg-gray-100 text-gray-500">U</AvatarFallback>
+          <AvatarFallback className="bg-gray-100 text-gray-500">JU</AvatarFallback>
         </Avatar>
       </div>
     </div>

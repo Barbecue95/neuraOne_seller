@@ -1,16 +1,24 @@
-import AddNewProduct from "@/components/products/addProduct/AddNewProduct";
+"use client";
+
 import React from "react";
+import DescriptionPage from "@/components/products/addProduct/DescriptionPage";
+import StatusBar from "@/components/products/addProduct/StatusBar";
+import PricingPage from "@/components/products/addProduct/PricingPage";
+import { useSearchParams } from "next/navigation";
+import NextButton from "@/components/products/addProduct/NextButton";
+import VariantsPage from "@/components/products/addProduct/VariantPage";
 
 type Props = {};
 
 const Page = (props: Props) => {
+  const searchParams = useSearchParams();
+  const step = searchParams.get("step") || "description";
   return (
-    <div className="w-full">
-      <AddNewProduct />
-      <div className="sticky bottom-0 left-0 bg-white shadow-xl w-full h-auto py-3 flex justify-end p-4 gap-3">
-        <button className="border border-blue-600 w-24 h-9 text-blue-600">Cancel</button>
-        <button className="bg-blue-600 w-24 h-9 text-white">Next</button>
-      </div>
+    <div className="w-full gap-3 p-4 flex flex-col">
+      <StatusBar />
+      {step === "description" && <DescriptionPage />}
+      {step === "pricing" && <PricingPage />}
+      {step === "variants" && <VariantsPage />}
     </div>
   );
 };
