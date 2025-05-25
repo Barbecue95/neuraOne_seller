@@ -102,7 +102,6 @@ const sidebarItemsGroup = [
         name: "Payment & Transaction",
         path: "/payments",
         icon: <Package />,
-        subPath: [],
       },
 
       {
@@ -110,7 +109,6 @@ const sidebarItemsGroup = [
         name: "Shipping & Delivery",
         path: "/delivery",
         icon: <Package />,
-        subPath: [],
       },
     ],
   },
@@ -140,10 +138,9 @@ export function AppSidebar() {
   const pathname = usePathname();
   const user = useAppSelector((state) => state.user);
   const { state } = useSidebar();
-  console.log("Sidebar state:", state);
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="bg-foreground">
       <SidebarHeader className="flex flex-row items-center justify-between">
         <div
           className={cn("flex flex-row items-center gap-2", {
@@ -162,13 +159,13 @@ export function AppSidebar() {
         {sidebarItemsGroup.map((group) => (
           <SidebarGroup key={group.id}>
             <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
-
             <SidebarGroupContent>
               {group.items.map((item) => (
                 <SidebarItemRender
                   item={item}
                   key={item.id}
                   pathname={pathname}
+                  state={state}
                 />
               ))}
             </SidebarGroupContent>
@@ -183,6 +180,7 @@ export function AppSidebar() {
 function SidebarItemRender({
   item,
   pathname,
+  state,
 }: {
   item: {
     id: number;
@@ -197,52 +195,60 @@ function SidebarItemRender({
     }[];
   };
   pathname: string;
+  state: "collapsed" | "expanded";
 }) {
   const withSubItem = (
-    <SidebarMenuItem key={item.id}>
-      <Collapsible className="group/collapsible">
-        <SidebarGroup className="p-0 text-lg">
-          <SidebarGroupLabel asChild>
-            <CollapsibleTrigger className="peer/menu-button ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground active:bg-sidebar-accent active:text-sidebar-accent-foreground data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground flex h-8 w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm !font-medium outline-hidden transition-[width,height,padding] group-has-data-[sidebar=menu-action]/menu-item:pr-8 group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2! focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:font-medium [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0">
+    <Collapsible className="group/collapsible" key={item.id}>
+      <SidebarMenuItem className="list-none">
+        <CollapsibleTrigger asChild>
+          {state === "collapsed" ? (
+            <SidebarMenuButton asChild isActive={pathname === item.path}>
+              <a href={item.path}>
+                {item.icon}
+                <span>{item.name}</span>
+                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+              </a>
+            </SidebarMenuButton>
+          ) : (
+            <SidebarMenuButton>
               {item.icon}
               <span>{item.name}</span>
               <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-            </CollapsibleTrigger>
-          </SidebarGroupLabel>
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              {item.subPath?.map((subItem) => (
-                <SidebarMenuSubItem key={subItem.id}>
-                  <SidebarMenuSubButton
-                    asChild
-                    isActive={pathname === subItem.path}
-                  >
-                    <a href={subItem.path}>
-                      {subItem.icon}
-                      <span>{subItem.name}</span>
-                    </a>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
-              ))}
-            </SidebarMenuSub>
-            <SidebarGroupContent />
-          </CollapsibleContent>
-        </SidebarGroup>
-      </Collapsible>
-    </SidebarMenuItem>
+            </SidebarMenuButton>
+          )}
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {item.subPath?.map((subItem) => (
+              <SidebarMenuSubItem key={subItem.id}>
+                <SidebarMenuSubButton
+                  asChild
+                  isActive={pathname === subItem.path}
+                >
+                  <a href={subItem.path}>
+                    {subItem.icon}
+                    <span>{subItem.name}</span>
+                  </a>
+                </SidebarMenuSubButton>
+              </SidebarMenuSubItem>
+            ))}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
   );
 
   const withoutSubItem = (
-    <SidebarMenuItem key={item.id}>
-      <SidebarMenuButton asChild isActive={pathname === item.path}>
-        <a href={item.path}>
-          {item.icon}
-          <span>{item.name}</span>
-        </a>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
+    <SidebarMenu>
+      <SidebarMenuItem key={item.id}>
+        <SidebarMenuButton asChild isActive={pathname === item.path}>
+          <a href={item.path}>
+            {item.icon}
+            <span>{item.name}</span>
+          </a>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    </SidebarMenu>
   );
-  return (
-    <SidebarMenu>{item.subPath ? withSubItem : withoutSubItem}</SidebarMenu>
-  );
+  return item.subPath ? withSubItem : withoutSubItem;
 }
