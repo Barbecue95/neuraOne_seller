@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +23,9 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
 import {
   BadgePercent,
   ChartNoAxesColumn,
@@ -29,13 +33,18 @@ import {
   ReceiptText,
   Store,
   UsersRound,
+  Package,
+  LayoutDashboard,
 } from "lucide-react";
+
 import { usePathname } from "next/navigation";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { useAppSelector } from "@/store/hooks";
-import { Package, LayoutDashboard } from "lucide-react";
 import { cn } from "@/lib/utils";
-const sidebarItemsGroup = [
+
+//types
+import { SiteMapGroup, SiteMapItem } from "@/types/sidebar.types";
+
+// exported for Navbar component
+export const siteMap: SiteMapGroup[] = [
   {
     id: 1,
     name: "overview",
@@ -136,11 +145,10 @@ const sidebarItemsGroup = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const user = useAppSelector((state) => state.user);
   const { state } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" className="bg-foreground">
+    <Sidebar collapsible="icon">
       <SidebarHeader className="flex flex-row items-center justify-between">
         <div
           className={cn("flex flex-row items-center gap-2", {
@@ -148,15 +156,15 @@ export function AppSidebar() {
           })}
         >
           <Avatar className="size-14">
-            <AvatarImage src={user.avatar} alt={user.name} />
-            <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+            <AvatarImage src="https://github.com/shadcn.png" alt="neuraOne" />
+            <AvatarFallback>NO</AvatarFallback>
           </Avatar>
-          <h1 className="cursor-default text-2xl font-semibold">{user.name}</h1>
+          <h1 className="cursor-default text-2xl font-semibold">NeuraOne</h1>
         </div>
         <SidebarTrigger />
       </SidebarHeader>
       <SidebarContent>
-        {sidebarItemsGroup.map((group) => (
+        {siteMap.map((group) => (
           <SidebarGroup key={group.id}>
             <SidebarGroupLabel>{group.name}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -182,18 +190,7 @@ function SidebarItemRender({
   pathname,
   state,
 }: {
-  item: {
-    id: number;
-    name: string;
-    path: string;
-    icon: React.ReactNode;
-    subPath?: {
-      id: number;
-      name: string;
-      path: string;
-      icon: React.ReactNode;
-    }[];
-  };
+  item: SiteMapItem;
   pathname: string;
   state: "collapsed" | "expanded";
 }) {
@@ -239,7 +236,7 @@ function SidebarItemRender({
   );
 
   const withoutSubItem = (
-    <SidebarMenu>
+    <SidebarMenu className="mb-0.5">
       <SidebarMenuItem key={item.id}>
         <SidebarMenuButton asChild isActive={pathname === item.path}>
           <a href={item.path}>
