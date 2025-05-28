@@ -31,13 +31,15 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} grid h-screen w-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers defaultOpen={defaultOpen}>
           <AppSidebar />
-          <main className="h-full w-full overflow-x-hidden">
+          <main className="h-full w-full">
             <Navbar />
-            <section className="h-full">{children}</section>
+            <section className="h-full w-full overflow-x-hidden">
+              {children}
+            </section>
           </main>
         </Providers>
       </body>

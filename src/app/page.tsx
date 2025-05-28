@@ -1,6 +1,6 @@
 export default function Home() {
   return (
-    <div className="h-full w-full space-y-8 p-8">
+    <div className="h-fit w-full space-y-8 p-8">
       <div className="flex flex-row gap-5">
         <div className="flex flex-col gap-5">
           <div className="flex flex-row space-x-8">

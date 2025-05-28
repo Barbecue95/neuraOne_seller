@@ -21,14 +21,7 @@ const Index = () => {
           (item.subPath && item.subPath.some((sub) => sub.path === pathname)),
       );
 
-      if (itemWithTitle) {
-        const subItemMatch = itemWithTitle.subPath?.find(
-          (sub) => sub.path === pathname,
-        );
-        return subItemMatch ? subItemMatch.name : itemWithTitle.name;
-      }
-
-      return undefined;
+      return itemWithTitle?.name;
     },
     undefined,
   );

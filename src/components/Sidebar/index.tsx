@@ -148,7 +148,7 @@ export function AppSidebar() {
   const { state } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" side="left" variant="sidebar">
       <SidebarHeader className="flex flex-row items-center justify-between">
         <div
           className={cn("flex flex-row items-center gap-2", {
