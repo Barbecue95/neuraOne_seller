@@ -8,7 +8,7 @@ interface SubNavbarProps {
 
 const SubNavbar = ({ title, buttons }: SubNavbarProps) => {
   return (
-    <div className="text-primary flex w-full flex-row items-center justify-between p-4">
+    <div className="text-primary flex w-full flex-row items-center justify-between px-8 py-4">
       <h2 className="text-lg font-semibold capitalize">{title}</h2>
       <div className="flex flex-row items-center gap-2">
         {buttons.map((button, index) => (

@@ -26,7 +26,7 @@ export const orderColumns = [
     },
     cell: ({ row }) => {
       return (
-        <Input className="size-6" type="checkbox" name={row.id} id={row.id} />
+        <Input className="size-5" type="checkbox" name={row.id} id={row.id} />
       );
     },
   }),

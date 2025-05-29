@@ -12,7 +12,7 @@ export default function Home() {
           { title: "Add Product", action: () => {} },
         ]}
       />
-      <div className="flex w-full flex-row flex-wrap gap-4 px-8 py-4">
+      <div className="flex w-full flex-row flex-wrap gap-4 px-8 pb-4">
         <div className="bg-accent flex min-w-44 flex-1/6 flex-col p-4">
           <span className="text-2xl font-semibold">25</span>
           <span>Pending Orders</span>
