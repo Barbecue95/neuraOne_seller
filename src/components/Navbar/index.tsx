@@ -1,13 +1,12 @@
 "use client";
-import React from "react";
 
+import { SiteMapGroup } from "@/types/sidebar.types";
+import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { siteMap } from "../Sidebar";
-import { SiteMapGroup } from "@/types/sidebar.types";
-import Search from "./Search";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { Bell } from "lucide-react";
 import { Button } from "../ui/button";
+import Search from "./Search";
 
 const Index = () => {
   const pathname = usePathname();
@@ -35,7 +34,7 @@ const Index = () => {
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-primary-foreground"
+          className="hover:bg-primary-foreground cursor-pointer"
         >
           <Bell />
         </Button>
