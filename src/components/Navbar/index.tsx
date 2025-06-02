@@ -29,13 +29,15 @@ const Index = () => {
 
   return (
     <nav className="bg-accent text-primary sticky top-0 z-50 flex h-16 w-full items-center justify-between px-10">
-      <span className="text-lg font-semibold capitalize">{displayTitle}</span>
+      <span className="text-lg font-semibold text-neutral-950 capitalize">
+        {displayTitle}
+      </span>
       <div className="flex items-center gap-2">
         <Search />
         <Button
           variant="ghost"
           size="icon"
-          className="hover:bg-primary-foreground"
+          className="hover:bg-primary-foreground text-neutral-950"
         >
           <Bell />
         </Button>
@@ -46,8 +48,8 @@ const Index = () => {
             <AvatarFallback>NO</AvatarFallback>
           </Avatar>
           <div className="flex flex-col">
-            <h1 className="text-lg font-semibold">NeuraOne</h1>
-            <h3 className="text-primimary-foreground text-xs">Admin</h3>
+            <h1 className="text-lg font-semibold text-neutral-950">NeuraOne</h1>
+            <h3 className="text-xs text-neutral-950">Admin</h3>
           </div>
         </div>
       </div>

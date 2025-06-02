@@ -28,7 +28,7 @@ const index = ({
       </Button>
       <input
         type="text"
-        className="w-full bg-transparent text-sm outline-none"
+        className="w-full bg-transparent text-sm text-neutral-950 outline-none"
         placeholder={placeholder}
       />
     </div>

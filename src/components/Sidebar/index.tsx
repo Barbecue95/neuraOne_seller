@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils";
 
 //types
 import { SiteMapGroup, SiteMapItem } from "@/types/sidebar.types";
+import IconNetwork from "@/utils/icons/IconNetwork";
 
 // exported for Navbar component
 export const siteMap: SiteMapGroup[] = [
@@ -145,23 +146,38 @@ export const siteMap: SiteMapGroup[] = [
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { state } = useSidebar();
+  const { state, setOpen } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" side="left" variant="sidebar">
+    <Sidebar
+      collapsible="icon"
+      side="left"
+      variant="sidebar"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <SidebarHeader className="flex flex-row items-center justify-between">
-        <div
-          className={cn("flex flex-row items-center gap-2", {
-            hidden: state === "collapsed",
-          })}
-        >
-          <Avatar className="size-14">
+        <div className="flex flex-row items-center gap-2">
+          <Avatar className="size-12">
             <AvatarImage src="https://github.com/shadcn.png" alt="neuraOne" />
             <AvatarFallback>NO</AvatarFallback>
           </Avatar>
-          <h1 className="cursor-default text-2xl font-semibold">NeuraOne</h1>
+          <h1
+            className={cn([
+              "font-brand flex cursor-default flex-nowrap items-center text-2xl font-extralight",
+              {
+                hidden: state === "collapsed",
+              },
+            ])}
+          >
+            <span className="text-primary">Neura</span>
+            <span className="text-accent-foreground flex flex-nowrap items-center">
+              <IconNetwork className="size-7" />
+              ne
+            </span>
+          </h1>
         </div>
-        <SidebarTrigger />
+        {/* <SidebarTrigger /> */}
       </SidebarHeader>
       <SidebarContent>
         {siteMap.map((group) => (
@@ -198,21 +214,11 @@ function SidebarItemRender({
     <Collapsible className="group/collapsible" key={item.id}>
       <SidebarMenuItem className="list-none">
         <CollapsibleTrigger asChild>
-          {state === "collapsed" ? (
-            <SidebarMenuButton asChild isActive={pathname === item.path}>
-              <a href={item.path}>
-                {item.icon}
-                <span>{item.name}</span>
-                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-              </a>
-            </SidebarMenuButton>
-          ) : (
-            <SidebarMenuButton>
-              {item.icon}
-              <span>{item.name}</span>
-              <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-            </SidebarMenuButton>
-          )}
+          <SidebarMenuButton className="">
+            {item.icon}
+            <span className="text-nowrap">{item.name}</span>
+            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+          </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
@@ -241,7 +247,7 @@ function SidebarItemRender({
         <SidebarMenuButton asChild isActive={pathname === item.path}>
           <a href={item.path}>
             {item.icon}
-            <span>{item.name}</span>
+            <span className="text-nowrap">{item.name}</span>
           </a>
         </SidebarMenuButton>
       </SidebarMenuItem>
