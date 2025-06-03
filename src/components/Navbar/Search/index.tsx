@@ -15,7 +15,7 @@ const index = ({
   return (
     <div
       className={cn(
-        "bg-primary-foreground flex w-64 items-center gap-2 rounded-md px-1 py-0.5",
+        "border-primary flex w-64 items-center gap-2 rounded-md border px-1 py-0.5",
         className,
       )}
     >
@@ -28,7 +28,7 @@ const index = ({
       </Button>
       <input
         type="text"
-        className="w-full bg-transparent text-sm outline-none"
+        className="dark:text-accent-foreground text-accent w-full bg-transparent text-sm outline-none"
         placeholder={placeholder}
       />
     </div>
