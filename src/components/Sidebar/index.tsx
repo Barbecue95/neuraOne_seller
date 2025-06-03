@@ -14,7 +14,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -189,7 +188,6 @@ export function AppSidebar() {
                   item={item}
                   key={item.id}
                   pathname={pathname}
-                  state={state}
                 />
               ))}
             </SidebarGroupContent>
@@ -204,11 +202,9 @@ export function AppSidebar() {
 function SidebarItemRender({
   item,
   pathname,
-  state,
 }: {
   item: SiteMapItem;
   pathname: string;
-  state: "collapsed" | "expanded";
 }) {
   const withSubItem = (
     <Collapsible className="group/collapsible" key={item.id}>

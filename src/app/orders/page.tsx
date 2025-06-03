@@ -1,5 +1,5 @@
 "use client";
-import OrderTable from "@/components/OrderTable";
+import Table from "@/components/Table";
 import SubNavbar from "@/components/SubNavbar";
 
 export default function Home() {
@@ -34,7 +34,7 @@ export default function Home() {
           <span>Fullfilled Orders</span>
         </div>
       </div>
-      <OrderTable />
+      <Table />
     </div>
   );
 }

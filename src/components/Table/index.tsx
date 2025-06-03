@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-table";
 
 import {
-  Table,
+  Table as TableComponent,
   TableBody,
   TableCell,
   TableHead,
@@ -19,7 +19,6 @@ import React from "react";
 import { Orderdata } from "./dummy-data";
 import { orderColumns } from "./columns";
 import Search from "@/components/Navbar/Search";
-import { Button } from "../ui/button";
 import {
   Select,
   SelectContent,
@@ -37,8 +36,10 @@ import {
   PaginationPrevious,
 } from "../ui/pagination";
 import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
-const OrderTable = () => {
+const Table = () => {
+  const router = useRouter();
   const table = useReactTable({
     data: Orderdata,
     columns: orderColumns as ColumnDef<(typeof Orderdata)[number]>[],
@@ -64,11 +65,11 @@ const OrderTable = () => {
             placeholder="Search Order"
           />
         </div>
-        <Table>
+        <TableComponent>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup, index) => (
               <TableRow key={headerGroup.id + index}>
-                {headerGroup.headers.map((header, i) => {
+                {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
                       {header.isPlaceholder
@@ -85,10 +86,20 @@ const OrderTable = () => {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, index) => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  onClick={(e) => {
+                    if (
+                      (e.target as HTMLElement).closest(
+                        'input[type="checkbox"]',
+                      )
+                    ) {
+                      return;
+                    }
+                    router.push(`/orders/${row.original.id}`);
+                  }}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -111,7 +122,7 @@ const OrderTable = () => {
               </TableRow>
             )}
           </TableBody>
-        </Table>
+        </TableComponent>
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">
@@ -221,4 +232,4 @@ const OrderTable = () => {
   );
 };
 
-export default OrderTable;
+export default Table;

@@ -56,8 +56,9 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
+  const theme = cookieStore.get("theme")?.value === "true";
   return (
-    <html lang="en">
+    <html lang="en" className={theme ? "light" : "dark"}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${debata.variable} antialiased`}
       >
