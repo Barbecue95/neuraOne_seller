@@ -8,20 +8,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useRouter } from "next/navigation";
 
 interface ProductListHeaderProps {
   onImport?: () => void;
   onExport?: () => void;
-  onAddProduct?: () => void;
   onSortChange?: (value: string) => void;
 }
 
 const ProductListHeader = ({
   onImport,
   onExport,
-  onAddProduct,
   onSortChange,
 }: ProductListHeaderProps) => {
+  const router = useRouter();
+  const onAddProduct = () => {
+    router.push("/products/create");
+  };
   return (
     <div className="flex items-center justify-between">
       <h1 className="text-xl font-semibold">Product List</h1>

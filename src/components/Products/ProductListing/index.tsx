@@ -12,7 +12,6 @@ export interface ProductListProps {
   products?: Product[]
   onImport?: () => void
   onExport?: () => void
-  onAddProduct?: () => void
   onEditProduct?: (id: string) => void
   onDeleteProduct?: (id: string) => void
 }
@@ -20,7 +19,6 @@ export interface ProductListProps {
 export default function ProductList({
   onImport,
   onExport,
-  onAddProduct,
   onEditProduct,
   onDeleteProduct,
 }: ProductListProps) {
@@ -95,7 +93,6 @@ export default function ProductList({
       <ProductListHeader
         onImport={onImport}
         onExport={onExport}
-        onAddProduct={onAddProduct}
         onSortChange={handleSortChange}
       />
 

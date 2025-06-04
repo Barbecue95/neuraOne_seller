@@ -1,6 +1,7 @@
 "use client";
 
 import ProductList from "@/components/Products/ProductListing";
+import { useRouter } from "next/navigation";
 
 const ProductPage = () => {
   const handleImport = () => {
@@ -9,10 +10,6 @@ const ProductPage = () => {
 
   const handleExport = () => {
     console.log("Export clicked");
-  };
-
-  const handleAddProduct = () => {
-    console.log("Add product clicked");
   };
 
   const handleEditProduct = (id: string) => {
@@ -28,7 +25,6 @@ const ProductPage = () => {
       <ProductList
         onImport={handleImport}
         onExport={handleExport}
-        onAddProduct={handleAddProduct}
         onEditProduct={handleEditProduct}
         onDeleteProduct={handleDeleteProduct}
       />
