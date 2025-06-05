@@ -17,6 +17,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Upload, X, FileText } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useQueryParams } from "@/hooks/use-query-params";
 
 interface ProductFormData {
   productName: string;
@@ -31,6 +32,7 @@ interface ProductFormData {
 
 const AddProductForm = () => {
   const router = useRouter();
+  const { setParam } = useQueryParams();
   const [formData, setFormData] = useState<ProductFormData>({
     productName: "",
     description: "",
@@ -128,6 +130,7 @@ const AddProductForm = () => {
   const handleNext = (data: ProductFormData) => {
     // TODO: API Logic
     console.log("Next step:", data);
+    setParam("step", "2")
   };
 
   const handleCancel = () => {
@@ -362,7 +365,7 @@ const AddProductForm = () => {
           {/* Image Upload */}
           <div className="col-span-2 space-y-4">
             {/* Upload Button */}
-            <div className="space-y-2 mb-2 flex gap-2">
+            <div className="mb-2 flex gap-2 space-y-2">
               <div className="flex flex-col items-center justify-center">
                 {imagePreviews.length >= 0 &&
                   imagePreviews.length < maxImages && (

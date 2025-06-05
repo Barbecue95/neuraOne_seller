@@ -8,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useQueryParams } from "@/hooks/use-query-params";
 import { useRouter } from "next/navigation";
 
 interface ProductListHeaderProps {
@@ -22,8 +23,9 @@ const ProductListHeader = ({
   onSortChange,
 }: ProductListHeaderProps) => {
   const router = useRouter();
+  const { setParam } = useQueryParams();
   const onAddProduct = () => {
-    router.push("/products/create");
+    setParam("step", "1", "/products/create");
   };
   return (
     <div className="flex items-center justify-between">
