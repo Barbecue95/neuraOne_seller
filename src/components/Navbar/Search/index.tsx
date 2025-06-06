@@ -28,7 +28,7 @@ const index = ({
       </Button>
       <input
         type="text"
-        className="dark:text-accent-foreground text-accent w-full bg-transparent text-sm outline-none"
+        className="text-accent-foreground w-full bg-transparent text-sm outline-none"
         placeholder={placeholder}
       />
     </div>

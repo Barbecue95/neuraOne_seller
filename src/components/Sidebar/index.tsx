@@ -41,7 +41,6 @@ import { cn } from "@/lib/utils";
 
 //types
 import { SiteMapGroup, SiteMapItem } from "@/types/sidebar.types";
-import IconNetwork from "@/utils/icons/IconNetwork";
 
 // exported for Navbar component
 export const siteMap: SiteMapGroup[] = [
@@ -111,6 +110,20 @@ export const siteMap: SiteMapGroup[] = [
         name: "Payment & Transaction",
         path: "/payments",
         icon: <Package />,
+        subPath: [
+          {
+            id: 1,
+            name: "All Transaction",
+            icon: <Package />,
+            path: "/payments",
+          },
+          {
+            id: 2,
+            name: "Wallet",
+            icon: <Package />,
+            path: "/payments/wallet",
+          },
+        ],
       },
 
       {
@@ -169,10 +182,8 @@ export function AppSidebar() {
               },
             ])}
           >
-            <span className="text-primary">Neura</span>
-            <span className="text-accent-foreground flex flex-nowrap items-center">
-              <IconNetwork className="size-7" />
-              ne
+            <span className="text-primary dark:text-primary-foreground">
+              neuraone
             </span>
           </h1>
         </div>
@@ -210,7 +221,7 @@ function SidebarItemRender({
     <Collapsible className="group/collapsible" key={item.id}>
       <SidebarMenuItem className="list-none">
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton className="">
+          <SidebarMenuButton>
             {item.icon}
             <span className="text-nowrap">{item.name}</span>
             <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -225,7 +236,7 @@ function SidebarItemRender({
                   isActive={pathname === subItem.path}
                 >
                   <a href={subItem.path}>
-                    {subItem.icon}
+                    <span className="text-primary">{subItem.icon}</span>
                     <span>{subItem.name}</span>
                   </a>
                 </SidebarMenuSubButton>

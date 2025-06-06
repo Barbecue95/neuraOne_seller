@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 
 interface SubNavbarProps {
   title: string;
-  buttons: { title: string; action: () => void }[];
+  buttons?: { title: string; action: () => void }[];
 }
 
 const SubNavbar = ({ title, buttons }: SubNavbarProps) => {
@@ -14,7 +14,7 @@ const SubNavbar = ({ title, buttons }: SubNavbarProps) => {
         {title}
       </h2>
       <div className="flex flex-row items-center gap-2">
-        {buttons.map((button, index) => (
+        {buttons?.map((button, index) => (
           <Button variant="default" key={index} onClick={button.action}>
             {button.title}
           </Button>
