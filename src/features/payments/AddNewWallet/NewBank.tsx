@@ -8,6 +8,7 @@ import { Form } from "@/components/ui/form";
 import { bankWalletSchema } from "../paymentSchema";
 import { Button } from "@/components/ui/button";
 import BankDetail from "../Bank/BankDetail";
+import { DialogTrigger } from "@/components/ui/dialog";
 
 const NewBank = () => {
   // 1. Define your form.
@@ -28,9 +29,17 @@ const NewBank = () => {
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <BankDetail form={form} />
         <div className="flex w-full flex-row gap-2">
-          <Button variant="outline" className="w-1/2">
-            Cancel
-          </Button>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              onClick={() => {
+                form.reset();
+              }}
+              className="w-1/2"
+            >
+              Cancel
+            </Button>
+          </DialogTrigger>
           <Button type="submit" className="w-1/2">
             Save
           </Button>

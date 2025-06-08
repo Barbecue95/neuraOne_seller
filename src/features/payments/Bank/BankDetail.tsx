@@ -18,7 +18,7 @@ export default function BankDetail({
   form: UseFormReturn<z.infer<typeof bankWalletSchema>>;
 }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-2">
       <FormField
         control={form.control}
         name="id"

@@ -8,6 +8,7 @@ import { Form } from "@/components/ui/form";
 import DigitalDetail from "../Digital/DigitalDetail";
 import { digitalWalletSchema } from "../paymentSchema";
 import { Button } from "@/components/ui/button";
+import { DialogTrigger } from "@/components/ui/dialog";
 
 const NewDigital = () => {
   // 1. Define your form.
@@ -28,8 +29,21 @@ const NewDigital = () => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <DigitalDetail form={form} />
-        <div>
-          <Button type="submit">Submit</Button>
+        <div className="flex w-full flex-row gap-2">
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              onClick={() => {
+                form.reset();
+              }}
+              className="w-1/2"
+            >
+              Cancel
+            </Button>
+          </DialogTrigger>
+          <Button type="submit" className="w-1/2">
+            Save
+          </Button>
         </div>
       </form>
     </Form>
