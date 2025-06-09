@@ -8,7 +8,6 @@ import {
 import React from "react";
 import { Customerdata } from "./dummy-data";
 import { customerColumns } from "./columns";
-import Search from "@/components/Navbar/Search";
 import {
   Select,
   SelectContent,
@@ -28,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import AppTable from "@/components/AppTable";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 const Table = () => {
   const table = useReactTable<(typeof Customerdata)[number]>({
@@ -52,11 +52,7 @@ const Table = () => {
             <h3 className="font-semibold">All Customers</h3>
             <Button variant="default">Sort By</Button>
           </div>
-          <Search
-            className="bg-accent"
-            btnClass="hover:bg-primary-foreground"
-            placeholder="Search Customer"
-          />
+          <Input placeholder="Search Customer..." className="w-64" />
         </div>
         {/* @ts-expect-error  table type cannot be inferred for all of table */}
         <AppTable table={table} columns={customerColumns} />

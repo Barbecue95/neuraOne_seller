@@ -8,7 +8,6 @@ import {
 import React from "react";
 import { Orderdata } from "./dummy-data";
 import { orderColumns } from "./columns";
-import Search from "@/components/Navbar/Search";
 import {
   Select,
   SelectContent,
@@ -27,6 +26,7 @@ import {
 } from "../../../components/ui/pagination";
 import { cn } from "@/lib/utils";
 import AppTable from "@/components/AppTable";
+import { Input } from "@/components/ui/input";
 
 const Table = () => {
   const table = useReactTable({
@@ -48,11 +48,7 @@ const Table = () => {
       <div className="mx-8 my-4 rounded-md border">
         <div className="flex flex-row items-center justify-between p-4">
           <h3>All Orders</h3>
-          <Search
-            className="bg-accent"
-            btnClass="hover:bg-primary-foreground"
-            placeholder="Search Order"
-          />
+          <Input placeholder="Search Order..." className="w-64" />
         </div>
         {/* @ts-expect-error  table type cannot be inferred for all of table */}
         <AppTable table={table} columns={orderColumns} />

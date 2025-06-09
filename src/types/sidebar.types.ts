@@ -11,7 +11,7 @@ export interface SiteMapItem {
   id: number;
   name: string;
   icon: ReactNode;
-  path?: string;
+  path: string;
   subPath?: SiteMapSubItem[];
 }
 export interface SiteMapGroup {
