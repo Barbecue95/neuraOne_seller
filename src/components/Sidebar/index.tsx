@@ -25,123 +25,12 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-import {
-  BadgePercent,
-  ChartNoAxesColumn,
-  ChevronDown,
-  ReceiptText,
-  Store,
-  UsersRound,
-  Package,
-  LayoutDashboard,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { SiteMapItem } from "@/types/sidebar.types";
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-//types
-import { SiteMapGroup, SiteMapItem } from "@/types/sidebar.types";
-import IconNetwork from "@/utils/icons/IconNetwork";
-
-// exported for Navbar component
-export const siteMap: SiteMapGroup[] = [
-  {
-    id: 1,
-    name: "overview",
-    items: [
-      { id: 1, name: "Dashboard", icon: <LayoutDashboard />, path: "/" },
-      {
-        id: 2,
-        name: "Product Management",
-        path: "/products",
-        icon: <Package />,
-        subPath: [
-          {
-            id: 1,
-            name: "Products List",
-            icon: <Package />,
-            path: "/products",
-          },
-          {
-            id: 2,
-            name: "Product Category List",
-            icon: <Package />,
-            path: "/products/category",
-          },
-          {
-            id: 3,
-            name: "brand List",
-            icon: <Package />,
-            path: "/products/brand",
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: "Order Management",
-        icon: <ReceiptText />,
-        path: "/orders",
-      },
-      {
-        id: 4,
-        name: "Customer Management",
-        icon: <UsersRound />,
-        path: "/customers",
-      },
-      {
-        id: 5,
-        name: "Analytics & Reports",
-        icon: <ChartNoAxesColumn />,
-        path: "/reports",
-      },
-      {
-        id: 6,
-        name: "Campaign & Flash Sales",
-        icon: <BadgePercent />,
-        path: "/campaign",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Finance",
-    items: [
-      {
-        id: 1,
-        name: "Payment & Transaction",
-        path: "/payments",
-        icon: <Package />,
-      },
-
-      {
-        id: 2,
-        name: "Shipping & Delivery",
-        path: "/delivery",
-        icon: <Package />,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "System",
-    items: [
-      {
-        id: 1,
-        name: "User role & Authentication",
-        icon: <Store />,
-        path: "/roles",
-      },
-
-      {
-        id: 2,
-        name: "Notification",
-        icon: <ReceiptText />,
-        path: "/notification",
-      },
-      { id: 3, name: "settings", icon: <UsersRound />, path: "/settings" },
-    ],
-  },
-];
+import { siteMap } from "@/utils/siteMap";
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -169,10 +58,8 @@ export function AppSidebar() {
               },
             ])}
           >
-            <span className="text-primary">Neura</span>
-            <span className="text-accent-foreground flex flex-nowrap items-center">
-              <IconNetwork className="size-7" />
-              ne
+            <span className="text-primary dark:text-primary-foreground">
+              neuraone
             </span>
           </h1>
         </div>
@@ -210,7 +97,7 @@ function SidebarItemRender({
     <Collapsible className="group/collapsible" key={item.id}>
       <SidebarMenuItem className="list-none">
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton className="">
+          <SidebarMenuButton>
             {item.icon}
             <span className="text-nowrap">{item.name}</span>
             <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
@@ -225,7 +112,7 @@ function SidebarItemRender({
                   isActive={pathname === subItem.path}
                 >
                   <a href={subItem.path}>
-                    {subItem.icon}
+                    <span className="text-primary">{subItem.icon}</span>
                     <span>{subItem.name}</span>
                   </a>
                 </SidebarMenuSubButton>

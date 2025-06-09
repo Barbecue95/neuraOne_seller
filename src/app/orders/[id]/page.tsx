@@ -28,7 +28,7 @@ const OrderDetails = () => {
     <div className="bg-background flex min-h-screen flex-col p-0">
       <SubNavbar title="Order Details" buttons={navbarButtons} />
       <div className="flex flex-col">
-        <div className="flex-1 overflow-auto p-4">
+        <div className="flex-1 overflow-auto px-4">
           <div className="grid h-full grid-cols-1 gap-4 md:grid-cols-3">
             {/* Left 2/3 */}
             <div className="col-span-2 flex flex-col gap-4">

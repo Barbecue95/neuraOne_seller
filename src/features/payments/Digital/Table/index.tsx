@@ -1,31 +1,20 @@
 import {
   ColumnDef,
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
 } from "@tanstack/react-table";
 
-import {
-  Table as TableComponent,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
 import React from "react";
-import { Orderdata } from "./dummy-data";
-import { orderColumns } from "./columns";
-import Search from "@/components/Navbar/Search";
+import { digitalData } from "./dummy-data";
+import { digitalColumns } from "./columns";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -34,15 +23,14 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination";
+} from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import AppTable from "@/components/AppTable";
 
 const Table = () => {
-  const router = useRouter();
   const table = useReactTable({
-    data: Orderdata,
-    columns: orderColumns as ColumnDef<(typeof Orderdata)[number]>[],
+    data: digitalData,
+    columns: digitalColumns as ColumnDef<(typeof digitalData)[number]>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -57,72 +45,16 @@ const Table = () => {
   return (
     <div>
       <div className="mx-8 my-4 rounded-md border">
-        <div className="flex flex-row items-center justify-between p-4">
+        {/* <div className="flex flex-row items-center justify-between p-4">
           <h3>All Orders</h3>
           <Search
             className="bg-accent"
             btnClass="hover:bg-primary-foreground"
             placeholder="Search Order"
           />
-        </div>
-        <TableComponent>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <TableRow key={headerGroup.id + index}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                  onClick={(e) => {
-                    if (
-                      (e.target as HTMLElement).closest(
-                        'input[type="checkbox"]',
-                      )
-                    ) {
-                      return;
-                    }
-                    router.push(`/orders/${row.original.id}`);
-                  }}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={orderColumns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </TableComponent>
+        </div> */}
+        {/* @ts-expect-error  table type cannot be inferred for all of table */}
+        <AppTable table={table} columns={digitalColumns} />
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">

@@ -2,13 +2,13 @@
 import React from "react";
 
 import { usePathname } from "next/navigation";
-import { siteMap } from "../Sidebar";
 import { SiteMapItem } from "@/types/sidebar.types";
 import Search from "./Search";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { Bell } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { siteMap } from "@/utils/siteMap";
 
 const Index = () => {
   const pathname = usePathname();

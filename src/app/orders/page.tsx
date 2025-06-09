@@ -1,5 +1,5 @@
 "use client";
-import Table from "@/components/Table";
+import Table from "@/features/orders/Table";
 import SubNavbar from "@/components/SubNavbar";
 
 export default function Home() {
