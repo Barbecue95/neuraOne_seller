@@ -2,13 +2,12 @@
 import { z } from "zod/v4";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { DeleteIcon, EditIcon, EyeIcon } from "lucide-react";
+import { CircleMinusIcon, DeleteIcon, EditIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { couponCodeColumnsSchema } from "../../campaignSchemas";
+import { buyXGetYFreeSchema } from "../../campaignSchemas";
 
-const columnHelper =
-  createColumnHelper<z.infer<typeof couponCodeColumnsSchema>[number]>();
-export const couponCodeColumns = [
+const columnHelper = createColumnHelper<z.infer<typeof buyXGetYFreeSchema>>();
+export const columns = [
   columnHelper.display({
     id: "id_select",
     header: () => {
@@ -18,40 +17,30 @@ export const couponCodeColumns = [
       return <Checkbox name={row.id} id={row.id} />;
     },
   }),
-  columnHelper.accessor("couponCode", {
-    header: "Code",
+  columnHelper.accessor("name", {
+    header: "Name",
   }),
-  columnHelper.accessor("expiredDate", {
-    header: "Expired Date",
+  columnHelper.accessor("startDate", {
+    header: "Start Date",
     cell: (info) => {
       const date = info.getValue() as Date;
       return date.toLocaleDateString("en-US", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
       });
     },
   }),
-  columnHelper.accessor("limit", {
-    header: "Limit",
-  }),
-  columnHelper.accessor("discount", {
-    header: "Discount",
+  columnHelper.accessor("endDate", {
+    header: "End Date",
     cell: (info) => {
-      const data = info.row.original;
-      return (
-        <span>
-          {data.discountUnit === "percentage"
-            ? `${data.discount}%`
-            : `${data.discount} Ks`}
-        </span>
-      );
+      const date = info.getValue() as Date;
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
     },
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
   }),
   columnHelper.display({
     id: "actions",
@@ -60,16 +49,6 @@ export const couponCodeColumns = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-row gap-2">
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={() => {
-              window.location.href = `/orders/${row.id}`;
-            }}
-          >
-            <EyeIcon className="h-4 w-4" />
-          </Button>
           <Button
             variant="default"
             className="rounded-full"
@@ -85,6 +64,14 @@ export const couponCodeColumns = [
             onClick={() => {}}
           >
             <DeleteIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="default"
+            className="rounded-full"
+            size="icon"
+            onClick={() => {}}
+          >
+            <CircleMinusIcon className="h-4 w-4" />
           </Button>
         </div>
       );
