@@ -7,15 +7,15 @@ import {
 } from "@tanstack/react-table";
 
 import React from "react";
-import { transactionData } from "./dummy-data";
-import { transactionColumns } from "./columns";
+import { columns } from "./columns";
+// import Search from "@/components/Navbar/Search";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui/select";
+} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -24,17 +24,16 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../../components/ui/pagination";
+} from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 import AppTable from "@/components/AppTable";
-import { Input } from "@/components/ui/input";
+import { z } from "zod/v4";
+import { usersColumnsSchema } from "../../userRolesSchemas";
 
-const Table = () => {
-  const table = useReactTable<(typeof transactionData)[number]>({
-    data: transactionData,
-    columns: transactionColumns as ColumnDef<
-      (typeof transactionData)[number]
-    >[],
+const Table = ({ data }: { data: z.infer<typeof usersColumnsSchema> }) => {
+  const table = useReactTable({
+    data: data,
+    columns: columns as ColumnDef<(typeof data)[number]>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -49,12 +48,16 @@ const Table = () => {
   return (
     <div>
       <div className="mx-8 my-4 rounded-md border">
-        <div className="flex flex-row items-center justify-between p-4">
-          <h3>All Transaction</h3>
-          <Input placeholder="Search Transaction..." className="w-64" />
-        </div>
+        {/* <div className="flex flex-row items-center justify-between p-4">
+          <h3>All Coupons</h3>
+          <Search
+            className="bg-accent"
+            btnClass="hover:bg-primary-foreground"
+            placeholder="Search Order"
+          />
+        </div> */}
         {/* @ts-expect-error  table type cannot be inferred for all of table */}
-        <AppTable table={table} columns={transactionColumns} />
+        <AppTable table={table} columns={columns} />
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">

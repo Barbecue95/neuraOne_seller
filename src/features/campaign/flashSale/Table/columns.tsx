@@ -2,12 +2,11 @@
 import { z } from "zod/v4";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { DeleteIcon, EditIcon, EyeIcon } from "lucide-react";
+import { CircleMinusIcon, DeleteIcon, EditIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { couponCodeColumnsSchema } from "../../campaignSchemas";
+import { flashSaleSchema } from "../../campaignSchemas";
 
-const columnHelper =
-  createColumnHelper<z.infer<typeof couponCodeColumnsSchema>[number]>();
+const columnHelper = createColumnHelper<z.infer<typeof flashSaleSchema>>();
 export const columns = [
   columnHelper.display({
     id: "id_select",
@@ -18,41 +17,36 @@ export const columns = [
       return <Checkbox name={row.id} id={row.id} />;
     },
   }),
-  columnHelper.accessor("couponCode", {
-    header: "Code",
-  }),
-  columnHelper.accessor("expiredDate", {
-    header: "Expired Date",
-    cell: (info) => {
-      const date = info.getValue() as Date;
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    },
-  }),
-  columnHelper.accessor("limit", {
-    header: "Limit",
-  }),
-  columnHelper.accessor("discount", {
-    header: "Discount",
+  columnHelper.accessor("banner", {
+    header: "Name",
     cell: (info) => {
       const data = info.row.original;
       return (
-        <span>
-          {data.discountUnit === "percentage"
-            ? `${data.discount}%`
-            : `${data.discount} Ks`}
-        </span>
+        <div className="flex flex-row items-center gap-2">
+          <img
+            src={data.banner}
+            alt="banner"
+            className="h-24 w-80 object-cover"
+          />
+          <h2>{data.name}</h2>
+        </div>
       );
     },
   }),
-  columnHelper.accessor("status", {
-    header: "Status",
+  columnHelper.accessor("startDate", {
+    header: "Duration Left",
+    cell: (info) => {
+      const data = info.row.original;
+      const diff = data.endDate.getTime() - data.startDate.getTime();
+      const totalMinutes = Math.floor(diff / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+      const reply = `${hours} hours ${minutes} minutes left`;
+      return reply;
+    },
+    // return data.endDate.toTimeString() - data.startDate.toTimeString();
   }),
+
   columnHelper.display({
     id: "actions",
     header: "Actions",
@@ -60,16 +54,6 @@ export const columns = [
     cell: ({ row }) => {
       return (
         <div className="flex flex-row gap-2">
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={() => {
-              window.location.href = `/orders/${row.id}`;
-            }}
-          >
-            <EyeIcon className="h-4 w-4" />
-          </Button>
           <Button
             variant="default"
             className="rounded-full"
@@ -85,6 +69,14 @@ export const columns = [
             onClick={() => {}}
           >
             <DeleteIcon className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="default"
+            className="rounded-full"
+            size="icon"
+            onClick={() => {}}
+          >
+            <CircleMinusIcon className="h-4 w-4" />
           </Button>
         </div>
       );

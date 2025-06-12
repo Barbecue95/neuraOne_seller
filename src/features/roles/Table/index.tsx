@@ -4,18 +4,20 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  flexRender,
 } from "@tanstack/react-table";
 
 import React from "react";
-import { transactionData } from "./dummy-data";
-import { transactionColumns } from "./columns";
+import { data } from "./dummy-data";
+import { columns } from "./columns";
+// import Search from "@/components/Navbar/Search";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../components/ui/select";
+} from "@/components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -24,17 +26,22 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../../../components/ui/pagination";
+} from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import AppTable from "@/components/AppTable";
-import { Input } from "@/components/ui/input";
-
+import {
+  Table as TableComponent,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 const Table = () => {
-  const table = useReactTable<(typeof transactionData)[number]>({
-    data: transactionData,
-    columns: transactionColumns as ColumnDef<
-      (typeof transactionData)[number]
-    >[],
+  const router = useRouter();
+  const table = useReactTable({
+    data: data,
+    columns: columns as ColumnDef<(typeof data)[number]>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -46,15 +53,72 @@ const Table = () => {
   const currentRowCount =
     (table.getState().pagination.pageIndex + 1) *
     table.getState().pagination.pageSize;
+
+  const goTo = (e: any) => {
+    router.push(`/roles/${e.id}`);
+  };
   return (
     <div>
       <div className="mx-8 my-4 rounded-md border">
-        <div className="flex flex-row items-center justify-between p-4">
-          <h3>All Transaction</h3>
-          <Input placeholder="Search Transaction..." className="w-64" />
-        </div>
-        {/* @ts-expect-error  table type cannot be inferred for all of table */}
-        <AppTable table={table} columns={transactionColumns} />
+        {/* <div className="flex flex-row items-center justify-between p-4">
+          <h3>All Coupons</h3>
+          <Search
+            className="bg-accent"
+            btnClass="hover:bg-primary-foreground"
+            placeholder="Search Order"
+          />
+        </div> */}
+        <TableComponent>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup, index) => (
+              <TableRow key={headerGroup.id + index}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    goTo(row.original);
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </TableComponent>
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">

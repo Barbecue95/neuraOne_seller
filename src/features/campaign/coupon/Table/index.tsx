@@ -1,3 +1,4 @@
+"use client";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -6,8 +7,8 @@ import {
 } from "@tanstack/react-table";
 
 import React from "react";
-import { couponCodeData } from "./dummy-data";
-import { couponCodeColumns } from "./columns";
+import { data } from "./dummy-data";
+import { columns } from "./columns";
 // import Search from "@/components/Navbar/Search";
 import {
   Select,
@@ -30,8 +31,8 @@ import AppTable from "@/components/AppTable";
 
 const Table = () => {
   const table = useReactTable({
-    data: couponCodeData,
-    columns: couponCodeColumns as ColumnDef<(typeof couponCodeData)[number]>[],
+    data,
+    columns: columns as ColumnDef<(typeof data)[number]>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -55,7 +56,7 @@ const Table = () => {
           />
         </div> */}
         {/* @ts-expect-error  table type cannot be inferred for all of table */}
-        <AppTable table={table} columns={couponCodeColumns} />
+        <AppTable table={table} columns={columns} />
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">

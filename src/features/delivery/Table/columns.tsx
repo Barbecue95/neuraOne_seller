@@ -4,10 +4,10 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { DeleteIcon, EditIcon, EyeIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { couponCodeColumnsSchema } from "../../campaignSchemas";
+import { deliveryColumnsSchema } from "../deliverySchema";
 
 const columnHelper =
-  createColumnHelper<z.infer<typeof couponCodeColumnsSchema>[number]>();
+  createColumnHelper<z.infer<typeof deliveryColumnsSchema>[number]>();
 export const columns = [
   columnHelper.display({
     id: "id_select",
@@ -18,45 +18,15 @@ export const columns = [
       return <Checkbox name={row.id} id={row.id} />;
     },
   }),
-  columnHelper.accessor("couponCode", {
-    header: "Code",
+  columnHelper.accessor("companyInfo.companyName", {
+    header: "Shipment Name",
   }),
-  columnHelper.accessor("expiredDate", {
-    header: "Expired Date",
-    cell: (info) => {
-      const date = info.getValue() as Date;
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "2-digit",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    },
-  }),
-  columnHelper.accessor("limit", {
-    header: "Limit",
-  }),
-  columnHelper.accessor("discount", {
-    header: "Discount",
-    cell: (info) => {
-      const data = info.row.original;
-      return (
-        <span>
-          {data.discountUnit === "percentage"
-            ? `${data.discount}%`
-            : `${data.discount} Ks`}
-        </span>
-      );
-    },
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
+  columnHelper.accessor("companyInfo.address", {
+    header: "Shipment Address",
   }),
   columnHelper.display({
     id: "actions",
     header: "Actions",
-
     cell: ({ row }) => {
       return (
         <div className="flex flex-row gap-2">
