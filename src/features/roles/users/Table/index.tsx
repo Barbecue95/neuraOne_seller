@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-table";
 
 import React from "react";
-import { data } from "./dummy-data";
 import { columns } from "./columns";
 // import Search from "@/components/Navbar/Search";
 import {
@@ -28,10 +27,12 @@ import {
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
 import AppTable from "@/components/AppTable";
+import { z } from "zod/v4";
+import { usersColumnsSchema } from "../../userRolesSchemas";
 
-const Table = () => {
+const Table = ({ data }: { data: z.infer<typeof usersColumnsSchema> }) => {
   const table = useReactTable({
-    data,
+    data: data,
     columns: columns as ColumnDef<(typeof data)[number]>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

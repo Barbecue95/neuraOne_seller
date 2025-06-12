@@ -4,6 +4,7 @@ import {
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
+  flexRender,
 } from "@tanstack/react-table";
 
 import React from "react";
@@ -27,11 +28,19 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import AppTable from "@/components/AppTable";
-
+import {
+  Table as TableComponent,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 const Table = () => {
+  const router = useRouter();
   const table = useReactTable({
-    data,
+    data: data,
     columns: columns as ColumnDef<(typeof data)[number]>[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -44,6 +53,10 @@ const Table = () => {
   const currentRowCount =
     (table.getState().pagination.pageIndex + 1) *
     table.getState().pagination.pageSize;
+
+  const goTo = (e: any) => {
+    router.push(`/roles/${e.id}`);
+  };
   return (
     <div>
       <div className="mx-8 my-4 rounded-md border">
@@ -55,8 +68,57 @@ const Table = () => {
             placeholder="Search Order"
           />
         </div> */}
-        {/* @ts-expect-error  table type cannot be inferred for all of table */}
-        <AppTable table={table} columns={columns} />
+        <TableComponent>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup, index) => (
+              <TableRow key={headerGroup.id + index}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  onClick={() => {
+                    goTo(row.original);
+                  }}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No results.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </TableComponent>
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">

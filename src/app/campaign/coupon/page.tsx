@@ -13,7 +13,7 @@ const Coupon = () => {
         buttons={[
           {
             title: "Add new coupon",
-            action: () => router.push("/campaign/coupon/new"),
+            action: () => router.push("/campaign/coupon/create"),
           },
         ]}
       />

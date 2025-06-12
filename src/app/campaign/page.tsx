@@ -15,7 +15,7 @@ export default function Home() {
             <TabsTrigger value="3">Buy X get Y free</TabsTrigger>
           </TabsList>
           <Button variant="default" asChild>
-            <Link href="/campaign/new">Add New Campaign</Link>
+            <Link href="/campaign/create">Add New Campaign</Link>
           </Button>
         </div>
         <TabsContent value="1">

@@ -24,7 +24,7 @@ function createRandomOrder() {
   };
 }
 
-export const couponCodeData = couponCodeColumnsSchema.parse(
+export const data = couponCodeColumnsSchema.parse(
   faker.helpers.multiple(createRandomOrder, {
     count: 50,
   }),
