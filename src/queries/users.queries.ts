@@ -1,4 +1,4 @@
-import { getUserById, getUsers, registerUser } from "@/services/users.services";
+import { getDeleteUser, getUserById, getUsers, registerUser } from "@/services/users.services";
 import { User, UserSortOption } from "@/types/users.types";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
@@ -6,7 +6,7 @@ interface UseUsersParams {
   sort?: UserSortOption;
   page?: number;
   limit?: number;
-  search?: string;
+  searchText?: string;
 }
 
 export const useRegisterUser = () => {
@@ -26,5 +26,11 @@ export const useGetUserById = (id: string) => {
   return useQuery({
     queryKey: ["User", id],
     queryFn: () => getUserById(id),
+  });
+};
+
+export const useDeleteUser = () => {
+  return useMutation({
+    mutationFn: (id: string) => getDeleteUser(id),
   });
 };

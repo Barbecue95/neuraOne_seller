@@ -9,6 +9,7 @@ import { useUsers } from "@/queries/users.queries";
 import CustomerListHeader from "./customer-list-header";
 import CustomerListFilters from "./customer-list-filter";
 import CustomerTable from "./customer-list-table";
+import { useRouter } from "next/navigation";
 
 const sortOptions = [
   { label: "Name (A-Z)", value: UserSortOption.NAME_ASC },
@@ -28,16 +29,13 @@ export interface CustomerListProps {
   products?: User[];
   onImport?: () => void;
   onExport?: () => void;
-  onEditProduct?: (id: number) => void;
-  onDeleteProduct?: (id: number) => void;
 }
 
 export default function CustomerList({
   onImport,
   onExport,
-  onEditProduct,
-  onDeleteProduct,
 }: CustomerListProps) {
+  const router = useRouter();
   const [customerLists, setCustomerLists] = useState<User[]>([]);
   const [sorting, setSorting] = useState<UserSortOption>(UserSortOption.NEWEST);
   const [pagination, setPagination] = useState<PaginationInfo>({
@@ -64,7 +62,7 @@ export default function CustomerList({
     sort: sorting,
     page: pagination.page,
     limit: pagination.size,
-    search: debouncedSearchQuery,
+    searchText: debouncedSearchQuery,
   });
 
   useEffect(() => {
@@ -127,8 +125,6 @@ export default function CustomerList({
       <CustomerTable
         data={customerLists || []} // Ensure we always pass an array
         pagination={pagination}
-        onEditProduct={onEditProduct}
-        onDeleteProduct={onDeleteProduct}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         loading={isLoadingCustomer}

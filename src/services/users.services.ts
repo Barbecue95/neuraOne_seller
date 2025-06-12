@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Dummy of a service function
 const userInstance = axios.create({
-  baseURL: "http://localhost:3000/api/users",
+  baseURL: "http://localhost:300/api/users",
   headers: {
     "Content-Type": "application/json",
   },
@@ -15,7 +15,7 @@ interface GetUsersParams {
   sort?: UserSortOption;
   page?: number;
   limit?: number;
-  search?: string;
+  searchText?: string;
 }
 
 export const registerUser = async (payload: Partial<User>) => {
@@ -35,8 +35,8 @@ export const getUsers = async (params?: GetUsersParams) => {
   if (params?.limit) {
     queryParams.append('limit', params.limit.toString());
   }
-  if (params?.search) {
-    queryParams.append('search', params.search);
+  if (params?.searchText) {
+    queryParams.append('searchText', params.searchText);
   }
 
   const query = queryParams.toString();
@@ -48,5 +48,10 @@ export const getUsers = async (params?: GetUsersParams) => {
 
 export const getUserById = async (id: string) => {
   const res = await userInstance.get(`/${id}`);
+  return res.data;
+};
+
+export const getDeleteUser= async (id: string) => {
+  const res = await userInstance.delete(`/${id}`);
   return res.data;
 };

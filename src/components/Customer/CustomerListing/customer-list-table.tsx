@@ -17,8 +17,6 @@ import { User, UserSortOption } from "@/types/users.types";
 interface CustomerTableProps {
   data: User[];
   pagination: PaginationInfo;
-  onEditProduct?: (id: number) => void;
-  onDeleteProduct?: (id: number) => void;
   onPageChange: (page: number) => void;
   onPageSizeChange: (size: number) => void;
   loading?: boolean;
@@ -32,8 +30,6 @@ interface CustomerTableProps {
 const CustomerTable = ({
   data,
   pagination,
-  onEditProduct,
-  onDeleteProduct,
   onPageChange,
   onPageSizeChange,
   loading = false,
@@ -44,8 +40,6 @@ const CustomerTable = ({
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const columns = CustomerTableColumns(
-    onEditProduct,
-    onDeleteProduct,
     handleSortChange,
     sortOptions,
   );
