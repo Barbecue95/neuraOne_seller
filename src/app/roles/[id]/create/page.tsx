@@ -28,7 +28,7 @@ export default function page() {
     defaultValues: {
       name: "",
       email: "",
-      phone: "",
+      phoneNo: "",
       rolesId: Number(params.id),
     },
   });
@@ -79,7 +79,7 @@ export default function page() {
               )}
             />
             <FormField
-              name="phone"
+              name="phoneNo"
               render={({ field }) => (
                 <FormItem className="w-1/2">
                   <FormControl>

@@ -4,10 +4,10 @@ import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { DeleteIcon, EditIcon, EyeIcon } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { usersColumnsSchema } from "../../userRolesSchemas";
+import { deliveryColumnsSchema } from "../deliverySchema";
 
 const columnHelper =
-  createColumnHelper<z.infer<typeof usersColumnsSchema>[number]>();
+  createColumnHelper<z.infer<typeof deliveryColumnsSchema>[number]>();
 export const columns = [
   columnHelper.display({
     id: "id_select",
@@ -18,19 +18,15 @@ export const columns = [
       return <Checkbox name={row.id} id={row.id} />;
     },
   }),
-  columnHelper.accessor("name", {
-    header: "User Name",
+  columnHelper.accessor("companyInfo.companyName", {
+    header: "Shipment Name",
   }),
-  columnHelper.accessor("phoneNo", {
-    header: "Phone",
-  }),
-  columnHelper.accessor("email", {
-    header: "Email",
+  columnHelper.accessor("companyInfo.address", {
+    header: "Shipment Address",
   }),
   columnHelper.display({
     id: "actions",
     header: "Actions",
-
     cell: ({ row }) => {
       return (
         <div className="flex flex-row gap-2">
