@@ -39,7 +39,9 @@ const Index = () => {
           size="icon"
           className="hover:!bg-primary text-secondary-foreground"
         >
-          <Bell />
+          <Link href="/notification">
+            <Bell />
+          </Link>
         </Button>
 
         <div className="flex flex-row items-center gap-2">

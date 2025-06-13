@@ -1,12 +1,12 @@
 import { z } from "zod/v4";
 
 const shippingCompaySchema = z.object({
-  companyName: z.string(),
+  companyName: z.string().min(3, { message: "Company Name is required" }),
   email: z.email({ message: "Email is invalid" }),
-  phoneNo: z.string(),
+  phoneNo: z.string().min(10, { message: "Phone Number is required" }),
   postalCode: z.string().optional(),
-  address: z.string(),
-  city: z.string(),
+  address: z.string().min(3, { message: "Address is required" }),
+  city: z.string().min(3, { message: "City is required" }),
 });
 const WeightFeeSchema = z.object({
   id: z.number(),

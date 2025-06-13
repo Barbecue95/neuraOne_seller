@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { deliverySchema } from "@/features/delivery/deliverySchema";
 import { citiesData } from "@/features/delivery/Table/dummy-data";
+import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -31,6 +32,14 @@ export default function page() {
     defaultValues: {
       isFreeDelivery: true,
       deliveryType: "Flat",
+      companyInfo: {
+        companyName: "",
+        email: "",
+        phoneNo: "",
+        postalCode: "",
+        address: "",
+        city: "",
+      },
     },
   });
   // watch list
@@ -184,7 +193,12 @@ export default function page() {
             <h2 className="scroll-m-20 text-xl font-semibold tracking-tight">
               Delivery Type
             </h2>
-            <div className="flex h-[450px] items-start space-x-4 text-sm">
+            <div
+              className={cn([
+                "flex h-56 items-start space-x-4 text-sm",
+                { "h-[450px]": deliveryType !== "Flat" },
+              ])}
+            >
               <FormField
                 control={form.control}
                 name="deliveryType"
@@ -214,7 +228,7 @@ export default function page() {
                 className="bg-accent-foreground"
                 orientation="vertical"
               />
-              <div className="py-5">
+              <div className="min-w-64 py-5">
                 {deliveryType === "Flat" && (
                   <div className="relative">
                     <Input
