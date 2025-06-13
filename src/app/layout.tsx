@@ -60,7 +60,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className={theme ? "light" : "dark"}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${debata.variable} dark antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${debata.variable} antialiased`}
       >
         <Providers defaultOpen={defaultOpen}>
           <AppSidebar />

@@ -59,12 +59,12 @@ export const siteMap: SiteMapGroup[] = [
         icon: <UsersRound />,
         path: "/customers",
       },
-      {
-        id: 5,
-        name: "Analytics & Reports",
-        icon: <ChartNoAxesColumn />,
-        path: "/reports",
-      },
+      // {
+      //   id: 5,
+      //   name: "Analytics & Reports",
+      //   icon: <ChartNoAxesColumn />,
+      //   path: "/reports",
+      // },
       {
         id: 6,
         name: "Campaign & Flash Sales",
