@@ -32,7 +32,7 @@ const ProductListFilters = ({
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
-        <Select value={statusFilter} onValueChange={onStatusFilterChange}>
+        {/* <Select value={statusFilter} onValueChange={onStatusFilterChange}>
           <SelectTrigger className="w-32">
             <SelectValue />
           </SelectTrigger>
@@ -42,9 +42,9 @@ const ProductListFilters = ({
             <SelectItem value="Draft">Draft</SelectItem>
             <SelectItem value="Archived">Archived</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
 
-        <Select value={categoryFilter} onValueChange={onCategoryFilterChange}>
+        {/* <Select value={categoryFilter} onValueChange={onCategoryFilterChange}>
           <SelectTrigger className="w-40">
             <SelectValue placeholder="All categories" />
           </SelectTrigger>
@@ -56,7 +56,7 @@ const ProductListFilters = ({
               </SelectItem>
             ))}
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
 
       <div className="relative w-64">

@@ -3,7 +3,7 @@ import axios from "axios";
 
 // Dummy of a service function
 const userInstance = axios.create({
-  baseURL: "http://localhost:300/api/users",
+  baseURL: "http://localhost:3000/api/users",
   headers: {
     "Content-Type": "application/json",
   },

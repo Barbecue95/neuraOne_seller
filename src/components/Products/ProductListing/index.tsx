@@ -1,19 +1,25 @@
-"use client"
+"use client";
 
-import { useState, useEffect, useCallback } from "react"
-import { useDebounce } from "@/hooks/use-debounce"
-import ProductListHeader from "./product-list-header"
-import ProductListFilters from "./product-list-filter"
-import ProductTable from "./product-list-table"
-import { PaginationInfo, Product } from "@/types/product.types"
-import { getDummyProducts, getProductCategories } from "./dummy-data"
+import { useState, useEffect, useCallback } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
+import ProductListHeader from "./product-list-header";
+import ProductListFilters from "./product-list-filter";
+import ProductTable from "./product-list-table";
+import {
+  PaginationInfo,
+  Product,
+  ProductSortOption,
+} from "@/types/product.types";
+import { getDummyProducts, getProductCategories } from "./dummy-data";
+import { useGetProductListing } from "@/queries/product.queries";
+import { useQueryParams } from "@/hooks/use-query-params";
 
 export interface ProductListProps {
-  products?: Product[]
-  onImport?: () => void
-  onExport?: () => void
-  onEditProduct?: (id: string) => void
-  onDeleteProduct?: (id: string) => void
+  products?: Product[];
+  onImport?: () => void;
+  onExport?: () => void;
+  onEditProduct?: (id: string) => void;
+  onDeleteProduct?: (id: string) => void;
 }
 
 export default function ProductList({
@@ -22,7 +28,12 @@ export default function ProductList({
   onEditProduct,
   onDeleteProduct,
 }: ProductListProps) {
-  const [products, setProducts] = useState<Product[]>([])
+  const { getParam } = useQueryParams();
+const sortBy = getParam("sortBy") as ProductSortOption ?? ProductSortOption.NEWEST;
+  const [products, setProducts] = useState<Product[]>([]);
+  // const [sorting, setSorting] = useState<ProductSortOption>(
+  //   sortBy as ProductSortOption ?? ProductSortOption.NEWEST,
+  // );
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
     size: 10,
@@ -30,63 +41,68 @@ export default function ProductList({
     totalPages: 0,
     hasNextPage: false,
     hasPrevPage: false,
-  })
-  const [loading, setLoading] = useState(false)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [categoryFilter, setCategoryFilter] = useState("all")
+  });
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const debouncedSearchQuery = useDebounce(searchQuery, 300)
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const categories = getProductCategories()
+  const categories = getProductCategories();
 
-  // TODO: Need to bind with the api
-  const fetchProducts = useCallback(async () => {
-    setLoading(true)
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 200))
+  const {
+    data: rawProductList,
+    isLoading: isLoadingProducts,
+    refetch: refetchProductList,
+  } = useGetProductListing({
+    sort: sortBy,
+    page: pagination.page,
+    limit: pagination.size,
+    searchText: debouncedSearchQuery,
+  });
 
-      const result = getDummyProducts({
-        page: pagination.page,
-        size: pagination.size,
-        searchText: debouncedSearchQuery,
-        statusFilter,
-        categoryFilter,
-      })
-
-      setProducts(result.data)
-      setPagination(result.pagination)
-    } catch (error) {
-      console.error("Error fetching products:", error)
-    } finally {
-      setLoading(false)
-    }
-  }, [pagination.page, pagination.size, debouncedSearchQuery, statusFilter, categoryFilter])
-
-  // TODO: Need to remove or change if api bind
   useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+    if (rawProductList?.data) {
+      setProducts(
+        Array.isArray(rawProductList.data) ? rawProductList.data : [],
+      );
+      setPagination({
+        ...pagination,
+        total: rawProductList?.meta?.total || 0,
+        totalPages: Math.ceil(
+          (rawProductList?.meta?.total || 0) / pagination.size,
+        ),
+      });
+    }
+  }, [rawProductList]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     if (pagination.page !== 1) {
-      setPagination((prev) => ({ ...prev, page: 1 }))
+      setPagination((prev) => ({ ...prev, page: 1 }));
     }
-  }, [debouncedSearchQuery, statusFilter, categoryFilter])
+  }, [debouncedSearchQuery]);
 
   const handlePageChange = (page: number) => {
-    setPagination((prev) => ({ ...prev, page }))
-  }
+    setPagination((prev) => ({ ...prev, page }));
+  };
 
   const handlePageSizeChange = (size: number) => {
-    setPagination((prev) => ({ ...prev, size, page: 1 }))
-  }
+    setPagination((prev) => ({ ...prev, size, page: 1 }));
+  };
 
   const handleSortChange = (value: string) => {
     //TODO: Need to implement sorting logic here if needed
-    console.log("Sort by:", value)
-  }
+    console.log("Sort by:", value);
+  };
+
+  if (isLoadingProducts && !products)
+    return (
+      <div className="py-8 text-center text-gray-500">
+        <p>Product list will be displayed here</p>
+      </div>
+    );
 
   return (
     <div className="w-full space-y-4 bg-white">
@@ -116,5 +132,5 @@ export default function ProductList({
         loading={loading}
       />
     </div>
-  )
+  );
 }
