@@ -32,7 +32,7 @@ interface VariantValue {
   value: string;
 }
 
-interface VariantCombination {
+export interface VariantCombination {
   id: string;
   name: string;
   sku: string;
@@ -125,6 +125,8 @@ export default function VariantSection({
     setVariants(newVariants);
     setSelectedVariants([]); // Clear selection when variants change
   };
+  console.log("Testing 123", variants);
+  
 
   // Generate variants when options change
   useEffect(() => {

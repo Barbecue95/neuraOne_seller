@@ -12,6 +12,7 @@ import PhotoSection from "../ProductForm/photo-section";
 import VisibilityInventorySection from "../ProductForm/visibility-inventory-section";
 import OrganizationTagsSection from "../ProductForm/organization-tags-section";
 import PricingSection from "../ProductForm/pricing-section";
+import VariantSection from "../ProductForm/variant-section";
 
 import {
   ProductStatus,
@@ -35,9 +36,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import EditVariantSection, { VariantCombination } from "./edit-variant-section";
 
-export default function EditProductForm({ id }: { id: number }) {
+export default function EditProductModal({
+  id,
+  isOpen,
+  onOpenChange,
+}: {
+  id: number;
+  isOpen: boolean;
+  onOpenChange: () => void;
+}) {
   const router = useRouter();
   const [isDraftLoading, setIsDraftLoading] = useState(false);
 
@@ -77,6 +85,7 @@ export default function EditProductForm({ id }: { id: number }) {
   const { data: rawProductData } = useGetProductById(id);
   const existingProduct = rawProductData?.data;
   console.log("existing", existingProduct);
+  
 
   useEffect(() => {
     if (existingProduct) {
@@ -84,34 +93,29 @@ export default function EditProductForm({ id }: { id: number }) {
         name: existingProduct.name,
         description: existingProduct.description,
         mainCategoryId: existingProduct.mainCategoryId,
-        subCategoryId: existingProduct.subCategoryId ?? null,
-        subOneCategoryId: existingProduct.subOneCategoryId ?? null,
-        status:
-          (existingProduct.status as ProductStatus) ?? ProductStatus.PUBLISHED,
-        scheduleDate: existingProduct.scheduleDate ?? "",
-        imageUrl: existingProduct.images ?? [],
-        purchasePrice: parseInt(existingProduct.purchasePrice) ?? 0,
-        sellingPrice: parseInt(existingProduct.sellingPrice) ?? 0,
-        sku: existingProduct.sku ?? "",
-        quantity: existingProduct.quantity ?? 0,
-        weightUnit: existingProduct.weightUnit ?? "kg",
-        weightValue: existingProduct.weightValue ?? 0,
-        taxStatus: existingProduct.taxStatus ?? false,
+        subCategoryId: existingProduct.subCategoryId,
+        subOneCategoryId: existingProduct.subOneCategoryId,
+        status: existingProduct.status as ProductStatus,
+        scheduleDate: existingProduct.scheduleDate,
+        imageUrl: existingProduct.images,
+        purchasePrice: existingProduct.purchasePrice,
+        sellingPrice: existingProduct.sellingPrice,
+        sku: existingProduct.sku,
+        quantity: existingProduct.quantity,
+        weightUnit: existingProduct.weightUnit,
+        weightValue: existingProduct.weightValue,
+        taxStatus: existingProduct.taxStatus,
         promoteInfo: {
-          isPromoted:
-            existingProduct.promotePercent || existingProduct.promoteAmount
-              ? true
-              : false,
-          discountType: existingProduct.promoteAmount ? "AMOUNT" : "PERCENTAGE",
-          discountValue: existingProduct.promoteAmount ?? 0,
-          startDate: existingProduct.promoteStartDate ?? "",
-          endDate: existingProduct.promoteEndDate ?? "",
+          isPromoted: false,
+          discountType: existingProduct.promotePercent,
+          discountValue: existingProduct.promoteAmount,
+          startDate: existingProduct.promoteStartDate,
+          endDate: existingProduct.promoteEndDate,
         },
-        variantValues: existingProduct.variantValues ?? [],
-        variants: existingProduct.variants ?? [],
+        variantValues: existingProduct.variantValues,
+        variants: existingProduct.variants,
         productRelationType:
-          (existingProduct.productRelationType as ProductRelationType) ??
-          ProductRelationType.TAG,
+          existingProduct.productRelationType as ProductRelationType,
       });
     }
   }, [existingProduct, reset]);
@@ -134,25 +138,6 @@ export default function EditProductForm({ id }: { id: number }) {
     );
   }, [selectedCategoryId]);
 
-  const [existingVariants, setExistingVariants] = useState<
-    VariantCombination[]
-  >([]);
-
-  useEffect(() => {
-    if (!existingProduct?.variants) return;
-
-    const transformed = existingProduct.variants.map((variant) => ({
-      id: variant?.id?.toString(),
-      name: variant?.name,
-      sku: variant?.sku,
-      purchasePrice: variant?.purchasePrice,
-      sellingPrice: variant?.sellingPrice,
-      quantity: variant?.quantity,
-    }));
-
-    setExistingVariants(transformed);
-  }, [existingProduct]);
-
   console.log(
     "categoryVariantGroups",
     form.getValues("mainCategoryId"),
@@ -160,11 +145,84 @@ export default function EditProductForm({ id }: { id: number }) {
   );
 
   const handleSubmit = async (data: CreateProductPayload) => {
-    updateProduct({ payload: data, id });
+    updateProduct({payload: data, id});
     console.log("update product", data);
     router.push("/products");
   };
-  console.log("existingVariants", existingVariants, existingProduct?.variants);
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Edit className="h-4 w-4" />
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="max-h-[90vh] max-w-7xl overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Update Product</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleSubmit)}>
+            <Tabs defaultValue="info" className="mt-4 space-y-4">
+              <TabsList>
+                <TabsTrigger value="info">Info</TabsTrigger>
+                <TabsTrigger value="photos">Photos</TabsTrigger>
+                <TabsTrigger value="pricing">Pricing</TabsTrigger>
+                <TabsTrigger value="variants">Variants</TabsTrigger>
+                <TabsTrigger value="inventory">Inventory</TabsTrigger>
+                <TabsTrigger value="organization">Tags</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="info">
+                <ProductInfoSection
+                  form={form}
+                  categories={categories}
+                  setSelectedCategoryId={setSelectedCategoryId}
+                />
+              </TabsContent>
+
+              <TabsContent value="photos">
+                <PhotoSection form={form} />
+              </TabsContent>
+
+              <TabsContent value="pricing">
+                <PricingSection form={form} />
+              </TabsContent>
+
+              <TabsContent value="variants">
+                <VariantSection
+                  form={form}
+                  categoryVariantGroups={categoryVariantGroups}
+                />
+              </TabsContent>
+
+              <TabsContent value="inventory">
+                <VisibilityInventorySection form={form} />
+              </TabsContent>
+
+              <TabsContent value="organization">
+                <OrganizationTagsSection form={form} />
+              </TabsContent>
+            </Tabs>
+          </form>
+        </Form>
+        <DialogFooter>
+          <div className="flex justify-end space-x-4 pt-4">
+            <Button type="submit" disabled={isUpdating}>
+              {isUpdating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Updating...
+                </>
+              ) : (
+                "Update Product"
+              )}
+            </Button>
+          </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
@@ -180,7 +238,10 @@ export default function EditProductForm({ id }: { id: number }) {
               />
               <PhotoSection form={form} />
               <PricingSection form={form} />
-              <EditVariantSection existingVariants={existingVariants} />
+              <VariantSection
+                form={form}
+                categoryVariantGroups={categoryVariantGroups}
+              />
             </div>
 
             {/* Right Column */}
@@ -192,14 +253,29 @@ export default function EditProductForm({ id }: { id: number }) {
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4 border-t pt-6">
-            <Button type="submit" disabled={isUpdating}>
-              {isUpdating ? (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleSaveAsDraft}
+              disabled={isDraftLoading}
+            >
+              {isDraftLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  Saving...
                 </>
               ) : (
-                "Update Product"
+                "Save as draft"
+              )}
+            </Button>
+            <Button type="submit" disabled={isCreating}>
+              {isCreating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating...
+                </>
+              ) : (
+                "Create Product"
               )}
             </Button>
           </div>

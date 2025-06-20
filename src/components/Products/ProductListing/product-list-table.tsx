@@ -13,7 +13,7 @@ import ProductPagination from "./product-list-pagination";
 import type { Product, PaginationInfo } from "@/types/product.types";
 import TableWrapper from "./product-table-wrapper";
 import { useDeleteProduct } from "@/queries/product.queries";
-import EditProductModal from "../CreateProduct/EditProductForm";
+import EditProductModal from "../CreateProduct/EditProductModal";
 
 interface ProductTableProps {
   data: Product[];
