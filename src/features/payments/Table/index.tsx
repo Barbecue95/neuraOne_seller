@@ -1,32 +1,21 @@
+"use client";
 import {
   ColumnDef,
-  flexRender,
   getCoreRowModel,
   useReactTable,
   getPaginationRowModel,
 } from "@tanstack/react-table";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
 import React from "react";
-import { Orderdata } from "./dummy-data";
-import { orderColumns } from "./columns";
-import Search from "@/components/Navbar/Search";
-import { Button } from "../ui/button";
+import { transactionData } from "./dummy-data";
+import { transactionColumns } from "./columns";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
+} from "../../../components/ui/select";
 import {
   Pagination,
   PaginationContent,
@@ -35,13 +24,17 @@ import {
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
-} from "../ui/pagination";
+} from "../../../components/ui/pagination";
 import { cn } from "@/lib/utils";
+import AppTable from "@/components/AppTable";
+import { Input } from "@/components/ui/input";
 
-const OrderTable = () => {
-  const table = useReactTable({
-    data: Orderdata,
-    columns: orderColumns as ColumnDef<(typeof Orderdata)[number]>[],
+const Table = () => {
+  const table = useReactTable<(typeof transactionData)[number]>({
+    data: transactionData,
+    columns: transactionColumns as ColumnDef<
+      (typeof transactionData)[number]
+    >[],
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -57,61 +50,11 @@ const OrderTable = () => {
     <div>
       <div className="mx-8 my-4 rounded-md border">
         <div className="flex flex-row items-center justify-between p-4">
-          <h3>All Orders</h3>
-          <Search
-            className="bg-accent"
-            btnClass="hover:bg-primary-foreground"
-            placeholder="Search Order"
-          />
+          <h3>All Transaction</h3>
+          <Input placeholder="Search Transaction..." className="w-64" />
         </div>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup, index) => (
-              <TableRow key={headerGroup.id + index}>
-                {headerGroup.headers.map((header, i) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, index) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={orderColumns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+        {/* @ts-expect-error  table type cannot be inferred for all of table */}
+        <AppTable table={table} columns={transactionColumns} />
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">
@@ -221,4 +164,4 @@ const OrderTable = () => {
   );
 };
 
-export default OrderTable;
+export default Table;

@@ -14,7 +14,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
 
@@ -26,142 +25,45 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-import {
-  BadgePercent,
-  ChartNoAxesColumn,
-  ChevronDown,
-  ReceiptText,
-  Store,
-  UsersRound,
-  Package,
-  LayoutDashboard,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { SiteMapItem } from "@/types/sidebar.types";
 
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-//types
-import { SiteMapGroup, SiteMapItem } from "@/types/sidebar.types";
-
-// exported for Navbar component
-export const siteMap: SiteMapGroup[] = [
-  {
-    id: 1,
-    name: "overview",
-    items: [
-      { id: 1, name: "Dashboard", icon: <LayoutDashboard />, path: "/" },
-      {
-        id: 2,
-        name: "Product Management",
-        path: "/products",
-        icon: <Package />,
-        subPath: [
-          {
-            id: 1,
-            name: "Products List",
-            icon: <Package />,
-            path: "/products",
-          },
-          {
-            id: 2,
-            name: "Product Category List",
-            icon: <Package />,
-            path: "/products/category",
-          },
-          {
-            id: 3,
-            name: "brand List",
-            icon: <Package />,
-            path: "/products/brand",
-          },
-        ],
-      },
-      {
-        id: 3,
-        name: "Order Management",
-        icon: <ReceiptText />,
-        path: "/orders",
-      },
-      {
-        id: 4,
-        name: "Customer Management",
-        icon: <UsersRound />,
-        path: "/customers",
-      },
-      {
-        id: 5,
-        name: "Analytics & Reports",
-        icon: <ChartNoAxesColumn />,
-        path: "/reports",
-      },
-      {
-        id: 6,
-        name: "Campaign & Flash Sales",
-        icon: <BadgePercent />,
-        path: "/campaign",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Finance",
-    items: [
-      {
-        id: 1,
-        name: "Payment & Transaction",
-        path: "/payments",
-        icon: <Package />,
-      },
-
-      {
-        id: 2,
-        name: "Shipping & Delivery",
-        path: "/delivery",
-        icon: <Package />,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "System",
-    items: [
-      {
-        id: 1,
-        name: "User role & Authentication",
-        icon: <Store />,
-        path: "/roles",
-      },
-
-      {
-        id: 2,
-        name: "Notification",
-        icon: <ReceiptText />,
-        path: "/notification",
-      },
-      { id: 3, name: "settings", icon: <UsersRound />, path: "/settings" },
-    ],
-  },
-];
+import { siteMap } from "@/utils/siteMap";
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { state } = useSidebar();
+  const { state, setOpen } = useSidebar();
 
   return (
-    <Sidebar collapsible="icon" side="left" variant="sidebar">
+    <Sidebar
+      collapsible="icon"
+      side="left"
+      variant="sidebar"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <SidebarHeader className="flex flex-row items-center justify-between">
-        <div
-          className={cn("flex flex-row items-center gap-2", {
-            hidden: state === "collapsed",
-          })}
-        >
-          <Avatar className="size-14">
+        <div className="flex flex-row items-center gap-2">
+          <Avatar className="size-12">
             <AvatarImage src="https://github.com/shadcn.png" alt="neuraOne" />
             <AvatarFallback>NO</AvatarFallback>
           </Avatar>
-          <h1 className="cursor-default text-2xl font-semibold">NeuraOne</h1>
+          <h1
+            className={cn([
+              "font-brand flex cursor-default flex-nowrap items-center text-2xl font-extralight",
+              {
+                hidden: state === "collapsed",
+              },
+            ])}
+          >
+            <span className="text-primary dark:text-primary-foreground">
+              neuraone
+            </span>
+          </h1>
         </div>
-        <SidebarTrigger />
+        {/* <SidebarTrigger /> */}
       </SidebarHeader>
       <SidebarContent>
         {siteMap.map((group) => (
@@ -173,7 +75,6 @@ export function AppSidebar() {
                   item={item}
                   key={item.id}
                   pathname={pathname}
-                  state={state}
                 />
               ))}
             </SidebarGroupContent>
@@ -188,31 +89,19 @@ export function AppSidebar() {
 function SidebarItemRender({
   item,
   pathname,
-  state,
 }: {
   item: SiteMapItem;
   pathname: string;
-  state: "collapsed" | "expanded";
 }) {
   const withSubItem = (
     <Collapsible className="group/collapsible" key={item.id}>
       <SidebarMenuItem className="list-none">
         <CollapsibleTrigger asChild>
-          {state === "collapsed" ? (
-            <SidebarMenuButton asChild isActive={pathname === item.path}>
-              <a href={item.path}>
-                {item.icon}
-                <span>{item.name}</span>
-                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-              </a>
-            </SidebarMenuButton>
-          ) : (
-            <SidebarMenuButton>
-              {item.icon}
-              <span>{item.name}</span>
-              <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-            </SidebarMenuButton>
-          )}
+          <SidebarMenuButton>
+            {item.icon}
+            <span className="text-nowrap">{item.name}</span>
+            <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
+          </SidebarMenuButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
@@ -223,7 +112,7 @@ function SidebarItemRender({
                   isActive={pathname === subItem.path}
                 >
                   <a href={subItem.path}>
-                    {subItem.icon}
+                    <span className="text-primary">{subItem.icon}</span>
                     <span>{subItem.name}</span>
                   </a>
                 </SidebarMenuSubButton>
@@ -241,7 +130,7 @@ function SidebarItemRender({
         <SidebarMenuButton asChild isActive={pathname === item.path}>
           <a href={item.path}>
             {item.icon}
-            <span>{item.name}</span>
+            <span className="text-nowrap">{item.name}</span>
           </a>
         </SidebarMenuButton>
       </SidebarMenuItem>

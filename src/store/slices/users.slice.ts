@@ -7,6 +7,9 @@ const initialState: User = {
   name: "JU Admin",
   email: "JU@example.com",
   avatar: "https://github.com/shadcn.png",
+  role: "admin",
+  bio: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  phoneNumber: "123-456-7890",
 };
 const userSlice = createSlice({
   name: "user",
