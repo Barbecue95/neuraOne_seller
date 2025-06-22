@@ -1,8 +1,9 @@
+
 "use client";
 import SubNavbar from "@/components/SubNavbar";
 import Table from "@/features/customers/Table";
 
-export default function Home() {
+export default function CustomerPage() {
   return (
     <div className="h-full">
       <SubNavbar
