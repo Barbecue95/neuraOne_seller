@@ -39,8 +39,8 @@ export enum ProductStatus {
 }
 
 export enum TaxType {
-  PERCENTAGE = "PERCENTAGE",
-  AMOUNT = "AMOUNT",
+  TAX_EXCLUSIVE = "TAX_EXCLUSIVE",
+  TAX_INCLUDED = "TAX_INCLUDED",
 }
 
 export enum ProductRelationType {
@@ -61,9 +61,11 @@ export interface TaxInfo {
 }
 
 export interface PromoteInfo {
-  isPromoted: boolean;
+  promoteStatus: boolean;
   discountType?: "PERCENTAGE" | "AMOUNT";
   discountValue?: number;
+  promotePercent?: number;
+  promoteAmount?: number;
   startDate?: string;
   endDate?: string;
 }
@@ -76,33 +78,7 @@ export interface ProductVariant {
   quantity: number;
   sku: string;
   // barcode?: string | null
-  promoteInfo: PromoteInfo;
-}
-
-export interface CreateProductPayload {
-  name: string;
-  description: string;
-  // brandId: number
-  mainCategoryId: number;
-  subCategoryId?: number | null;
-  subOneCategoryId?: number | null;
-  // tags?: string
-  status: ProductStatus;
-  scheduleDate?: string;
-  imageUrl: ImageUrl[];
-  purchasePrice: number;
-  sellingPrice: number;
-  sku?: string;
-  // barcode?: string
-  quantity: number;
-  weightUnit?: string;
-  weightValue?: number;
-  taxStatus: boolean;
-  // taxInfo?: TaxInfo
-  promoteInfo: PromoteInfo;
-  variantValues: number[];
-  variants: ProductVariant[];
-  productRelationType: ProductRelationType;
+  // promoteInfo: PromoteInfo;
 }
 
 export enum ProductSortOption {

@@ -6,8 +6,8 @@ import {
   GetProductsParams,
   updateProduct,
 } from "@/services/product.services";
-import { CreateProductPayload, ProductSortOption } from "@/types/product.types";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { CreateProductPayload, EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 
 export const useCreateProduct = () => {
   return useMutation({
@@ -21,7 +21,7 @@ export const useUpdateProduct = () => {
       payload,
       id,
     }: {
-      payload: CreateProductPayload;
+      payload: EditProductPayload;
       id: number;
     }) => updateProduct({payload, id}),
   });

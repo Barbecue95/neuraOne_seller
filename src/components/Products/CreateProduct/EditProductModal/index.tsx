@@ -17,9 +17,8 @@ import VariantSection from "../ProductForm/variant-section";
 import {
   ProductStatus,
   ProductRelationType,
-  type CreateProductPayload,
 } from "@/types/product.types";
-import { CreateProductSchema } from "../ProductForm/product-form-schema";
+import { CreateProductPayload, CreateProductSchema } from "../ProductForm/product-form-schema";
 import { useGetCategories } from "@/queries/category.queries";
 import {
   useCreateProduct,
@@ -67,9 +66,8 @@ export default function EditProductModal({
       quantity: 0,
       weightUnit: "kg",
       weightValue: 0,
-      taxStatus: false,
       promoteInfo: {
-        isPromoted: false,
+        promoteStatus: false,
         discountType: "PERCENTAGE",
         discountValue: 0,
         startDate: "",
@@ -84,7 +82,7 @@ export default function EditProductModal({
   const { reset } = form;
   const { data: rawProductData } = useGetProductById(id);
   const existingProduct = rawProductData?.data;
-  console.log("existing", existingProduct);
+  // console.log("existing", existingProduct);
   
 
   useEffect(() => {
@@ -104,9 +102,8 @@ export default function EditProductModal({
         quantity: existingProduct.quantity,
         weightUnit: existingProduct.weightUnit,
         weightValue: existingProduct.weightValue,
-        taxStatus: existingProduct.taxStatus,
         promoteInfo: {
-          isPromoted: false,
+          promoteStatus: false,
           discountType: existingProduct.promotePercent,
           discountValue: existingProduct.promoteAmount,
           startDate: existingProduct.promoteStartDate,
@@ -125,24 +122,18 @@ export default function EditProductModal({
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
   );
-  const categories = rawCategories?.data?.map((category) => {
+  const categories = rawCategories?.data?.map((category: any) => {
     return { value: category.id, label: category.name };
   });
 
-  const [categoryVariantGroups, setCategoryVariantGroups] = useState();
+  const [categoryVariantGroups, setCategoryVariantGroups] = useState([]);
   useEffect(() => {
     setCategoryVariantGroups(
       rawCategories?.data
-        ?.filter((category) => category.id == selectedCategoryId)
-        .map((category) => category?.categoryVariantGroups),
+        ?.filter((category: any) => category.id == selectedCategoryId)
+        .map((category: any) => category?.categoryVariantGroups),
     );
   }, [selectedCategoryId]);
-
-  console.log(
-    "categoryVariantGroups",
-    form.getValues("mainCategoryId"),
-    categoryVariantGroups,
-  );
 
   const handleSubmit = async (data: CreateProductPayload) => {
     updateProduct({payload: data, id});
@@ -177,7 +168,7 @@ export default function EditProductModal({
                 <ProductInfoSection
                   form={form}
                   categories={categories}
-                  setSelectedCategoryId={setSelectedCategoryId}
+                  // setSelectedCategoryId={setSelectedCategoryId}
                 />
               </TabsContent>
 
@@ -222,65 +213,5 @@ export default function EditProductModal({
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  );
-
-  return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-            {/* Left Column */}
-            <div className="space-y-6 lg:col-span-2">
-              <ProductInfoSection
-                form={form}
-                categories={categories}
-                setSelectedCategoryId={setSelectedCategoryId}
-              />
-              <PhotoSection form={form} />
-              <PricingSection form={form} />
-              <VariantSection
-                form={form}
-                categoryVariantGroups={categoryVariantGroups}
-              />
-            </div>
-
-            {/* Right Column */}
-            <div className="space-y-6">
-              <VisibilityInventorySection form={form} />
-              <OrganizationTagsSection form={form} />
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex justify-end space-x-4 border-t pt-6">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleSaveAsDraft}
-              disabled={isDraftLoading}
-            >
-              {isDraftLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                "Save as draft"
-              )}
-            </Button>
-            <Button type="submit" disabled={isCreating}>
-              {isCreating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating...
-                </>
-              ) : (
-                "Create Product"
-              )}
-            </Button>
-          </div>
-        </form>
-      </Form>
-    </div>
-  );
+  )
 }

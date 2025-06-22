@@ -1,14 +1,7 @@
-import { CreateProductPayload, ProductSortOption } from "@/types/product.types";
-import axios from "axios";
-
-const productInstance = axios.create({
-  baseURL: "http://localhost:3000/api/products",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export default productInstance;
+import { ProductSortOption } from "@/types/product.types";
+import { CreateProductPayload, EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
+import axiosClient from "./axiosClient";
+import { productEndpoints } from "./constants/apiEndpoints";
 
 export type GetProductsParams = {
   sort?: ProductSortOption;
@@ -18,7 +11,7 @@ export type GetProductsParams = {
 };
 
 export const createProduct = async (payload: CreateProductPayload) => {
-  const res = await productInstance.post("/", payload);
+  const res = await axiosClient.post(productEndpoints.products, payload);
   return res.data;
 };
 
@@ -26,10 +19,10 @@ export const updateProduct = async ({
   payload,
   id,
 }: {
-  payload: CreateProductPayload;
+  payload: EditProductPayload;
   id: number;
 }) => {
-  const res = await productInstance.put("/", { ...payload, productId: id });
+  const res = await axiosClient.put(productEndpoints.products, { ...payload, productId: id });
   return res.data;
 };
 
@@ -50,18 +43,18 @@ export const getProductListing = async (params?: GetProductsParams) => {
   }
 
   const query = queryParams.toString();
-  const url = query ? `/?${query}` : "/";
+  const url = query ? `${productEndpoints.products}/?${query}` : productEndpoints.products;
 
-  const res = await productInstance.get(url);
+  const res = await axiosClient.get(url);
   return res.data;
 };
 
 export const getProductById = async (id: number) => {
-  const res = await productInstance.get(`/${id}`);
+  const res = await axiosClient.get(`${productEndpoints.products}/${id}`);
   return res.data;
 };
 
 export const deleteProduct = async (id: number) => {
-  const res = await productInstance.delete(`/${id}`);
+  const res = await axiosClient.delete(`${productEndpoints.products}/${id}`);
   return res.data;
 };

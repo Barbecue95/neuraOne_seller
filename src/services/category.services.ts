@@ -1,17 +1,7 @@
-import { User, UserSortOption } from "@/types/users.types";
-import axios from "axios";
-
-// Dummy of a service function
-const categoryInstance = axios.create({
-  baseURL: "http://localhost:3000/api/categories",
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export default categoryInstance;
+import axiosClient from "./axiosClient";
+import { categoryEndpoints } from "./constants/apiEndpoints";
 
 export const getCategories = async () => {
-  const res = await categoryInstance.get("/");
+  const res = await axiosClient.get(categoryEndpoints.categories);
   return res.data;
 };

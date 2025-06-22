@@ -17,11 +17,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useState } from "react";
-import type { CreateProductPayload } from "@/types/product.types";
+import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 
 interface OrganizationTagsSectionProps {
-  form: UseFormReturn<CreateProductPayload>;
+  form: UseFormReturn<EditProductPayload>;
 }
 
 export default function OrganizationTagsSection({
@@ -55,6 +54,7 @@ export default function OrganizationTagsSection({
                       placeholder="Weight"
                       {...field}
                       onChange={(e) => field.onChange(Number(e.target.value))}
+                      value={field.value === 0 ? '' : field.value ?? ''} 
                     />
                   </FormControl>
                   <FormMessage />

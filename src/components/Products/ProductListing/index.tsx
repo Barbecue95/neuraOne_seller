@@ -125,8 +125,8 @@ const sortBy = getParam("sortBy") as ProductSortOption ?? ProductSortOption.NEWE
       <ProductTable
         data={products}
         pagination={pagination}
-        onEditProduct={onEditProduct}
-        onDeleteProduct={onDeleteProduct}
+        // onEditProduct={onEditProduct}
+        // onDeleteProduct={onDeleteProduct}
         onPageChange={handlePageChange}
         onPageSizeChange={handlePageSizeChange}
         loading={loading}

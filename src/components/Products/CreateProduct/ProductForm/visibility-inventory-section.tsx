@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ProductStatus, type CreateProductPayload } from "@/types/product.types"
+import { ProductStatus } from "@/types/product.types"
 import { Calendar28 } from "./date-picker"
+import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 
 interface VisibilityInventorySectionProps {
-  form: UseFormReturn<CreateProductPayload>
+  form: UseFormReturn<EditProductPayload>
 }
 
 export default function VisibilityInventorySection({ form }: VisibilityInventorySectionProps) {
@@ -91,6 +92,7 @@ export default function VisibilityInventorySection({ form }: VisibilityInventory
                     placeholder="Stock"
                     {...field}
                     onChange={(e) => field.onChange(Number(e.target.value))}
+                    value={field.value === 0 ? '' : field.value ?? ''} 
                   />
                 </FormControl>
                 <FormMessage />

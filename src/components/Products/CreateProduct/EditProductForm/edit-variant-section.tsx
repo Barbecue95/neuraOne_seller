@@ -19,9 +19,11 @@ import {
 } from "@/components/ui/table";
 import { Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { EditProductPayload } from "../ProductForm/product-form-schema";
+import { UseFormReturn } from "react-hook-form";
 
 export interface VariantCombination {
-  id?: string; // Changed to string to align with logic
+  id: string; // Changed to string to align with logic
   name: string;
   purchasePrice: number;
   sellingPrice: number;
@@ -30,10 +32,12 @@ export interface VariantCombination {
 }
 
 interface VariantSectionProps {
+  form: UseFormReturn<EditProductPayload>
   existingVariants?: VariantCombination[];
 }
 
 export default function EditVariantSection({
+  form,
   existingVariants = [],
 }: VariantSectionProps) {
   const [variants, setVariants] = useState<VariantCombination[]>(existingVariants);
@@ -82,6 +86,13 @@ export default function EditVariantSection({
     setVariants((prev) => prev.filter((v) => v.id !== variantId));
     setSelectedVariants((prev) => prev.filter((id) => id !== variantId));
   };
+
+  useEffect(() => {
+    const productVariants = variants.map( variant => ({...variant, id: Number(variant.id)}));
+    form.setValue("variants", productVariants);
+  }, [variants])
+
+  // console.log("existing", existingVariants)
 
   return (
     <Card>

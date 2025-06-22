@@ -13,14 +13,14 @@ import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { type CreateProductPayload } from "@/types/product.types";
+import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 
 interface PricingSectionProps {
-  form: UseFormReturn<CreateProductPayload>;
+  form: UseFormReturn<EditProductPayload>;
 }
 
 export default function PricingSection({ form }: PricingSectionProps) {
-  const discountEnabled = form.watch("promoteInfo.isPromoted");
+  const discountEnabled = form.watch("promoteInfo.promoteStatus");
 
   return (
     <Card>
@@ -43,7 +43,11 @@ export default function PricingSection({ form }: PricingSectionProps) {
                     type="number"
                     placeholder="Buying price"
                     {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
+                    onChange={(e) => {
+                      console.log("even", Number(e.target.value))
+                      field.onChange(Number(e.target.value))
+                    }}
+                    value={field.value === 0 ? '' : field.value ?? ''} 
                   />
                 </FormControl>
                 <FormMessage />
@@ -65,6 +69,7 @@ export default function PricingSection({ form }: PricingSectionProps) {
                     placeholder="Selling price"
                     {...field}
                     onChange={(e) => field.onChange(Number(e.target.value))}
+                    value={field.value === 0 ? '' : field.value ?? ''} 
                   />
                 </FormControl>
                 <FormMessage />
@@ -81,7 +86,7 @@ export default function PricingSection({ form }: PricingSectionProps) {
         <div className="space-y-4">
           <FormField
             control={form.control}
-            name="promoteInfo.isPromoted"
+            name="promoteInfo.promoteStatus"
             render={({ field }) => (
               <FormItem className="flex items-center space-x-2">
                 <FormControl>
@@ -142,6 +147,7 @@ export default function PricingSection({ form }: PricingSectionProps) {
                           onChange={(e) =>
                             field.onChange(Number(e.target.value))
                           }
+                          value={field.value === 0 ? '' : field.value ?? ''} 
                         />
                         <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
                           Ks

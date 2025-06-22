@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { Edit, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import ProductInfoSection from "../ProductForm/product-info-section";
@@ -13,40 +13,24 @@ import VisibilityInventorySection from "../ProductForm/visibility-inventory-sect
 import OrganizationTagsSection from "../ProductForm/organization-tags-section";
 import PricingSection from "../ProductForm/pricing-section";
 
+import { ProductStatus, ProductRelationType } from "@/types/product.types";
 import {
-  ProductStatus,
-  ProductRelationType,
-  type CreateProductPayload,
-} from "@/types/product.types";
-import { CreateProductSchema } from "../ProductForm/product-form-schema";
+  CreateProductSchema,
+  EditProductPayload,
+} from "../ProductForm/product-form-schema";
 import { useGetCategories } from "@/queries/category.queries";
-import {
-  useCreateProduct,
-  useGetProductById,
-  useUpdateProduct,
-} from "@/queries/product.queries";
-import { useRouter } from "next/navigation";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useGetProductById, useUpdateProduct } from "@/queries/product.queries";
 import EditVariantSection, { VariantCombination } from "./edit-variant-section";
+import Loading from "@/components/common/Loading";
 
 export default function EditProductForm({ id }: { id: number }) {
-  const router = useRouter();
-  const [isDraftLoading, setIsDraftLoading] = useState(false);
-
   const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
-  const form = useForm<CreateProductPayload>({
+  const form = useForm<EditProductPayload>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
       name: "",
       description: "",
+      brandId: null,
       mainCategoryId: 0,
       subCategoryId: null,
       subOneCategoryId: null,
@@ -59,9 +43,10 @@ export default function EditProductForm({ id }: { id: number }) {
       quantity: 0,
       weightUnit: "kg",
       weightValue: 0,
-      taxStatus: false,
       promoteInfo: {
-        isPromoted: false,
+        promoteStatus: false,
+        promoteAmount: 0,
+        promotePercent: 0,
         discountType: "PERCENTAGE",
         discountValue: 0,
         startDate: "",
@@ -74,15 +59,15 @@ export default function EditProductForm({ id }: { id: number }) {
   });
 
   const { reset } = form;
-  const { data: rawProductData } = useGetProductById(id);
+  const { data: rawProductData, isLoading } = useGetProductById(id);
   const existingProduct = rawProductData?.data;
-  console.log("existing", existingProduct);
 
   useEffect(() => {
     if (existingProduct) {
       reset({
         name: existingProduct.name,
         description: existingProduct.description,
+        brandId: existingProduct?.brandId ?? null,
         mainCategoryId: existingProduct.mainCategoryId,
         subCategoryId: existingProduct.subCategoryId ?? null,
         subOneCategoryId: existingProduct.subOneCategoryId ?? null,
@@ -96,18 +81,16 @@ export default function EditProductForm({ id }: { id: number }) {
         quantity: existingProduct.quantity ?? 0,
         weightUnit: existingProduct.weightUnit ?? "kg",
         weightValue: existingProduct.weightValue ?? 0,
-        taxStatus: existingProduct.taxStatus ?? false,
         promoteInfo: {
-          isPromoted:
-            existingProduct.promotePercent || existingProduct.promoteAmount
-              ? true
-              : false,
+          promoteStatus: existingProduct.promoteStatus,
           discountType: existingProduct.promoteAmount ? "AMOUNT" : "PERCENTAGE",
-          discountValue: existingProduct.promoteAmount ?? 0,
+          discountValue: existingProduct.promoteAmount > 0 ? existingProduct.promoteAmount: existingProduct.promotePercent,
           startDate: existingProduct.promoteStartDate ?? "",
           endDate: existingProduct.promoteEndDate ?? "",
         },
-        variantValues: existingProduct.variantValues ?? [],
+        variantValues: existingProduct.variantValues 
+        ? existingProduct.variantValues.map( (value: any) => value.variantValueId )
+        : [],
         variants: existingProduct.variants ?? [],
         productRelationType:
           (existingProduct.productRelationType as ProductRelationType) ??
@@ -116,12 +99,12 @@ export default function EditProductForm({ id }: { id: number }) {
     }
   }, [existingProduct, reset]);
 
-  const { data: rawCategories } = useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
   );
-  const categories = rawCategories?.data?.map((category) => {
+  const categories = rawCategories?.data?.map((category: any) => {
     return { value: category.id, label: category.name };
   });
 
@@ -129,8 +112,8 @@ export default function EditProductForm({ id }: { id: number }) {
   useEffect(() => {
     setCategoryVariantGroups(
       rawCategories?.data
-        ?.filter((category) => category.id == selectedCategoryId)
-        .map((category) => category?.categoryVariantGroups),
+        ?.filter((category: any) => category.id == selectedCategoryId)
+        .map((category: any) => category?.categoryVariantGroups),
     );
   }, [selectedCategoryId]);
 
@@ -141,7 +124,7 @@ export default function EditProductForm({ id }: { id: number }) {
   useEffect(() => {
     if (!existingProduct?.variants) return;
 
-    const transformed = existingProduct.variants.map((variant) => ({
+    const transformed = existingProduct.variants.map((variant: any) => ({
       id: variant?.id?.toString(),
       name: variant?.name,
       sku: variant?.sku,
@@ -153,18 +136,34 @@ export default function EditProductForm({ id }: { id: number }) {
     setExistingVariants(transformed);
   }, [existingProduct]);
 
-  console.log(
-    "categoryVariantGroups",
-    form.getValues("mainCategoryId"),
-    categoryVariantGroups,
-  );
-
-  const handleSubmit = async (data: CreateProductPayload) => {
-    updateProduct({ payload: data, id });
-    console.log("update product", data);
-    router.push("/products");
+  const handleSubmit = async (data: EditProductPayload) => {
+    const payload = {
+      ...data,
+      promoteInfo: {
+        ...data.promoteInfo,
+        promoteAmount:
+          data.promoteInfo?.discountType === "AMOUNT"
+            ? data.promoteInfo.discountValue
+            : 0,
+        promotePercent:
+          data.promoteInfo?.discountType != "AMOUNT"
+            ? data.promoteInfo.discountValue
+            : 0,
+      },
+    };
+    // console.log("update product", data);
+    console.log("payload", payload);
+    updateProduct({ payload, id });
+    // router.push("/products");
   };
-  console.log("existingVariants", existingVariants, existingProduct?.variants);
+
+  if (isLoading || categoryLoading) {
+    return (
+     <Loading />
+    );
+  }
+
+  console.log("error", form.watch());
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
@@ -180,7 +179,7 @@ export default function EditProductForm({ id }: { id: number }) {
               />
               <PhotoSection form={form} />
               <PricingSection form={form} />
-              <EditVariantSection existingVariants={existingVariants} />
+              <EditVariantSection form={form} existingVariants={existingVariants} />
             </div>
 
             {/* Right Column */}
@@ -192,7 +191,11 @@ export default function EditProductForm({ id }: { id: number }) {
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-4 border-t pt-6">
-            <Button type="submit" disabled={isUpdating}>
+            <Button
+              type="submit"
+              disabled={isUpdating}
+              className={"active:scale-90"}
+            >
               {isUpdating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

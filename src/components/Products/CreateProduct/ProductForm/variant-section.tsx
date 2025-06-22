@@ -17,9 +17,9 @@ import {
 import { X, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import type {
-  CreateProductPayload,
   ProductVariant,
 } from "@/types/product.types";
+import { CreateProductPayload } from "./product-form-schema";
 
 interface VariantOption {
   id: string;
@@ -51,7 +51,7 @@ export default function VariantSection({
   form,
   categoryVariantGroups,
 }: VariantSectionProps) {
-  const sss = categoryVariantGroups?.[0]?.map((variant) => {
+  const sss = categoryVariantGroups?.[0]?.map((variant: any) => {
     console.log("variant.variantGroup", variant.variantGroup);
 
     return variant.variantGroup;
@@ -247,18 +247,12 @@ export default function VariantSection({
       purchasePrice: variant.buyingPrice,
       sellingPrice: variant.sellingPrice,
       quantity: variant.stock,
-      // barcode: "", // optional
-      promoteInfo: {
-        isPromoted: false,
-        discountType: "PERCENTAGE",
-        discountValue: 0,
-        startDate: "",
-        endDate: "",
-      },
     }));
 
+    const valueIds = variantOptions.map( v => v.values.map( value => Number(value.id)));
+    form.setValue("variantValues", valueIds.flatMap( ids => ids));
     form.setValue("variants", productVariants);
-  }, [variants]);
+  }, [variants, variantOptions]);
 
   return (
     <Card>

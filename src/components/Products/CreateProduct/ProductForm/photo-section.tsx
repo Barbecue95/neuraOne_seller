@@ -7,10 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Upload, X, MoreVertical, Star } from "lucide-react"
 import { useState } from "react"
-import type { CreateProductPayload } from "@/types/product.types"
+import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 
 interface PhotoSectionProps {
-  form: UseFormReturn<CreateProductPayload>
+  form: UseFormReturn<EditProductPayload>
 }
 
 interface ImageData {

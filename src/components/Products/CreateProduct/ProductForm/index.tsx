@@ -2,7 +2,6 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -14,18 +13,20 @@ import VisibilityInventorySection from "./visibility-inventory-section";
 import OrganizationTagsSection from "./organization-tags-section";
 import PricingSection from "./pricing-section";
 import VariantSection from "./variant-section";
-import RelatedProductsSection from "./related-products-section";
 
 import {
   ProductStatus,
   TaxType,
   ProductRelationType,
-  type CreateProductPayload,
 } from "@/types/product.types";
-import { CreateProductSchema } from "./product-form-schema";
+import {
+  CreateProductPayload,
+  CreateProductSchema,
+} from "./product-form-schema";
 import { useGetCategories } from "@/queries/category.queries";
 import { useCreateProduct } from "@/queries/product.queries";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/common/Loading";
 
 export default function CreateProductForm() {
   const router = useRouter();
@@ -37,31 +38,26 @@ export default function CreateProductForm() {
     defaultValues: {
       name: "",
       description: "",
-      // brandId: null,
+      brandId: null,
       mainCategoryId: 0,
       subCategoryId: null,
       subOneCategoryId: null,
-      // tags: "",
+      tags: "",
       status: ProductStatus.PUBLISHED,
       scheduleDate: "",
       imageUrl: [],
       purchasePrice: 0,
       sellingPrice: 0,
       sku: "",
-      // barcode: "",
       quantity: 0,
       weightUnit: "kg",
       weightValue: 0,
-      taxStatus: false,
-      // taxInfo: {
-      //   taxType: TaxType.PERCENTAGE,
-      //   taxAmount: 0,
-      //   taxPercent: 0,
-      // },
       promoteInfo: {
-        isPromoted: false,
+        promoteStatus: false,
         discountType: "PERCENTAGE",
         discountValue: 0,
+        promoteAmount: 0,
+        promotePercent: 0,
         startDate: "",
         endDate: "",
       },
@@ -71,34 +67,45 @@ export default function CreateProductForm() {
     },
   });
 
-  const { data: rawCategories } = useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
   );
-  const categories = rawCategories?.data?.map((category) => {
-    return { value: category.id, label: category.name };
-  });
+  const categories = rawCategories?.data?.map(
+    (category: { id: number; name: string }) => {
+      return { value: category.id, label: category.name };
+    },
+  );
 
-  const [categoryVariantGroups, setCategoryVariantGroups] = useState();
+  const [categoryVariantGroups, setCategoryVariantGroups] = useState([]);
+
   useEffect(() => {
     setCategoryVariantGroups(
       rawCategories?.data
-        ?.filter((category) => category.id == selectedCategoryId)
-        .map((category) => category?.categoryVariantGroups),
+        ?.filter((category: any) => category.id == selectedCategoryId)
+        .map((category: any) => category?.categoryVariantGroups),
     );
   }, [selectedCategoryId]);
 
-  console.log(
-    "categoryVariantGroups",
-    form.getValues("mainCategoryId"),
-    categoryVariantGroups,
-  );
-
   const handleSubmit = async (data: CreateProductPayload) => {
-    createProduct(data);
-    console.log("create product", data);
-    router.push("/products")
+    const payload = {
+      ...data,
+      promoteInfo: {
+        ...data.promoteInfo,
+        promoteAmount:
+          data.promoteInfo?.discountType === "AMOUNT"
+            ? data.promoteInfo.discountValue
+            : 0,
+        promotePercent:
+          data.promoteInfo?.discountType != "AMOUNT"
+            ? data.promoteInfo.discountValue
+            : 0,
+      },
+    };
+    console.log("create product", data, payload);
+    createProduct(payload);
+    // router.push("/products")
   };
 
   const handleSaveAsDraft = async () => {
@@ -107,10 +114,27 @@ export default function CreateProductForm() {
       status: ProductStatus.DRAFT,
     };
 
-    createProduct(data);
-    console.log("create product", data);
-    router.push("/products")
+    const payload = {
+      ...data,
+      promoteInfo: {
+        ...data.promoteInfo,
+        promoteAmount:
+          data.promoteInfo?.discountType === "AMOUNT"
+            ? data.promoteInfo.discountValue
+            : 0,
+        promotePercent:
+          data.promoteInfo?.discountType != "AMOUNT"
+            ? data.promoteInfo.discountValue
+            : 0,
+      },
+    }
+
+    createProduct(payload);
+    // console.log("create product", data);
+    router.push("/products");
   };
+
+  if(categoryLoading) return <Loading />;
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-6">
@@ -157,7 +181,11 @@ export default function CreateProductForm() {
                 "Save as draft"
               )}
             </Button>
-            <Button type="submit" disabled={isCreating}>
+            <Button
+              type="submit"
+              disabled={isCreating}
+              className="active:scale-90"
+            >
               {isCreating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

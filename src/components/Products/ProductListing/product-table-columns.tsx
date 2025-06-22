@@ -4,6 +4,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, Trash2, ArrowUpDown } from "lucide-react";
 import { ProductSortOption, type Product } from "@/types/product.types";
 import { SortableHeader } from "./sortable-header";
+import Link from "next/link";
 
 export const ProductTableColumns = (
   onEditProduct?: (id: number) => void,
@@ -119,18 +120,16 @@ export const ProductTableColumns = (
       const product = row.original;
       return (
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={() => onEditProduct?.(product.id)}
+          <Link
+            href={`/products/edit/${product.id}`}
+            className="cursor-pointer"
+            // onClick={() => onEditProduct?.(product.id)}
           >
             <Edit className="h-4 w-4" />
-          </Button>
+          </Link>
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8"
             onClick={() => onDeleteProduct?.(product.id)}
           >
             <Trash2 className="h-4 w-4" />
