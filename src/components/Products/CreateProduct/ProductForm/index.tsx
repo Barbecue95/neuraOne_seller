@@ -105,7 +105,7 @@ export default function CreateProductForm() {
     };
     console.log("create product", data, payload);
     createProduct(payload);
-    // router.push("/products")
+    router.back()
   };
 
   const handleSaveAsDraft = async () => {

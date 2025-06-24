@@ -22,8 +22,10 @@ import { useGetCategories } from "@/queries/category.queries";
 import { useGetProductById, useUpdateProduct } from "@/queries/product.queries";
 import EditVariantSection, { VariantCombination } from "./edit-variant-section";
 import Loading from "@/components/common/Loading";
+import { useRouter } from "next/navigation";
 
 export default function EditProductForm({ id }: { id: number }) {
+  const router = useRouter();
   const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
   const form = useForm<EditProductPayload>({
     resolver: zodResolver(CreateProductSchema),
@@ -84,13 +86,18 @@ export default function EditProductForm({ id }: { id: number }) {
         promoteInfo: {
           promoteStatus: existingProduct.promoteStatus,
           discountType: existingProduct.promoteAmount ? "AMOUNT" : "PERCENTAGE",
-          discountValue: existingProduct.promoteAmount > 0 ? existingProduct.promoteAmount: existingProduct.promotePercent,
+          discountValue:
+            existingProduct.promoteAmount > 0
+              ? existingProduct.promoteAmount
+              : existingProduct.promotePercent,
           startDate: existingProduct.promoteStartDate ?? "",
           endDate: existingProduct.promoteEndDate ?? "",
         },
-        variantValues: existingProduct.variantValues 
-        ? existingProduct.variantValues.map( (value: any) => value.variantValueId )
-        : [],
+        variantValues: existingProduct.variantValues
+          ? existingProduct.variantValues.map(
+              (value: any) => value.variantValueId,
+            )
+          : [],
         variants: existingProduct.variants ?? [],
         productRelationType:
           (existingProduct.productRelationType as ProductRelationType) ??
@@ -99,7 +106,8 @@ export default function EditProductForm({ id }: { id: number }) {
     }
   }, [existingProduct, reset]);
 
-  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } =
+    useGetCategories();
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
@@ -154,13 +162,11 @@ export default function EditProductForm({ id }: { id: number }) {
     // console.log("update product", data);
     console.log("payload", payload);
     updateProduct({ payload, id });
-    // router.push("/products");
+    router.back();
   };
 
   if (isLoading || categoryLoading) {
-    return (
-     <Loading />
-    );
+    return <Loading />;
   }
 
   console.log("error", form.watch());
@@ -179,7 +185,10 @@ export default function EditProductForm({ id }: { id: number }) {
               />
               <PhotoSection form={form} />
               <PricingSection form={form} />
-              <EditVariantSection form={form} existingVariants={existingVariants} />
+              <EditVariantSection
+                form={form}
+                existingVariants={existingVariants}
+              />
             </div>
 
             {/* Right Column */}

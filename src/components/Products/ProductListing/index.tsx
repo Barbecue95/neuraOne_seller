@@ -105,7 +105,7 @@ const sortBy = getParam("sortBy") as ProductSortOption ?? ProductSortOption.NEWE
     );
 
   return (
-    <div className="w-full space-y-4 bg-white">
+    <div className="w-full space-y-4 bg-transparent">
       <ProductListHeader
         onImport={onImport}
         onExport={onExport}

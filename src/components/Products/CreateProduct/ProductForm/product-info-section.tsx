@@ -21,6 +21,7 @@ import dynamic from "next/dynamic";
 import { Editor } from "./rich-editor";
 import { SelectGroup } from "@radix-ui/react-select";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
+import { usePathname } from "next/navigation";
 
 interface ProductInfoSectionProps {
   form: UseFormReturn<EditProductPayload>;
@@ -33,7 +34,9 @@ export default function ProductInfoSection({
   categories,
   setSelectedCategoryId,
 }: ProductInfoSectionProps) {
-  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+  const pathname = usePathname();
+
+  const isEditPage = pathname.includes("edit");
 
   // if (!categories) return null;
   // console.log("form data", form.getValues("mainCategoryId"))
@@ -103,9 +106,12 @@ export default function ProductInfoSection({
                   Category <span className="text-red-500">*</span>
                 </FormLabel>
                 <Select
+                  disabled={isEditPage}
                   onValueChange={(value) => {
-                    field.onChange(Number(value));
-                    setSelectedCategoryId(Number(value));
+                    if (!isEditPage) {
+                      field.onChange(Number(value));
+                      setSelectedCategoryId(Number(value));
+                    }
                   }}
                   value={field.value?.toString() ?? ""}
                 >
@@ -128,7 +134,7 @@ export default function ProductInfoSection({
                 </Select>
                 <FormMessage />
               </FormItem>
-            )
+            );
           }}
         />
       </CardContent>
