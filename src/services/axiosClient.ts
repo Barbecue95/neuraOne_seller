@@ -1,8 +1,9 @@
 import axios from "axios";
 import { refreshAccessToken } from "./users.services";
 
+const apiURL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 const axiosClient = axios.create({
-  baseURL: "http://localhost:3001/api/v1",
+  baseURL: `${apiURL}/api/v1`,
   headers: {
     "Content-Type": "application/json",
   },
@@ -31,7 +32,6 @@ axiosClient.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response.status === 401 && !originalRequest._retry) {
-      
       originalRequest._retry = true;
 
       try {

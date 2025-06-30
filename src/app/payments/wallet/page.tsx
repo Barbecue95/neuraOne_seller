@@ -7,13 +7,34 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AddNewWallet from "@/features/payments/AddNewWallet";
 import Bank from "@/features/payments/Bank";
 import Digital from "@/features/payments/Digital";
+import { useCreateBank, useGetBanks } from "@/queries/bank.queries";
+import { CreateUpdateBankPayload } from "@/types/bank.types";
 import React from "react";
 
 const Wallet = () => {
+  const { data, isLoading } = useGetBanks();
+  const bankData = data?.data?.filter(
+    (item: CreateUpdateBankPayload) => item.accountType == "BANK",
+  );
+  const digitalData = data?.data?.filter(
+    (item: CreateUpdateBankPayload) => item.accountType == "PAY",
+  );
+  if (isLoading) {
+    return (
+      <div className="mx-8 my-4 space-y-4">
+        <Skeleton className="h-10 w-40" />
+        {[...Array(8)].map((_, i) => (
+          <Skeleton key={i} className="h-12 w-full" />
+        ))}
+      </div>
+    );
+  }
+  console.log("original data", data, "filtered data", bankData);
   return (
     <Dialog>
       <div>
@@ -35,10 +56,14 @@ const Wallet = () => {
             <TabsTrigger value="bank">Bank</TabsTrigger>
           </TabsList>
           <TabsContent value="digital">
-            <Digital />
+            <Digital
+              data={digitalData}
+              isLoading={isLoading}
+              pagination={data?.meta}
+            />
           </TabsContent>
           <TabsContent value="bank">
-            <Bank />
+            <Bank data={bankData} isLoading={isLoading} />
           </TabsContent>
         </Tabs>
         <DialogContent>

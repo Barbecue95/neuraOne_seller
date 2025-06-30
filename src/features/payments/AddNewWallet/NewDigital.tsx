@@ -9,20 +9,37 @@ import DigitalDetail from "../Digital/DigitalDetail";
 import { digitalWalletSchema } from "../paymentSchema";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
+import { useCreateBank, useGetBanks } from "@/queries/bank.queries";
+import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { CreateUpdateBankPayloadSchema } from "@/types/bank.types";
 
 const NewDigital = () => {
   // 1. Define your form.
-  const form = useForm<z.infer<typeof digitalWalletSchema>>({
-    resolver: zodResolver(digitalWalletSchema),
+  const form = useForm<CreateUpdateBankPayload>({
+    resolver: zodResolver(CreateUpdateBankPayloadSchema),
     defaultValues: {
-      qrcode: "",
+      accountType: "PAY",
+      name: "",
+      qrCodeUrl: "",
       accountName: "",
-      accountNumber: "",
-      status: "active",
+      accountNo: "",
+      cashOnDelivery: false,
+      imageUrl: "",
     },
   });
-  const onSubmit = (data: z.infer<typeof digitalWalletSchema>) => {
+
+  const { mutate: createBank } = useCreateBank(form);
+
+  const onSubmit = (data: CreateUpdateBankPayload) => {
     console.log("Form submitted with data:", data);
+    const payload = {
+      accountType: data.accountType,
+      name: data.accountName,
+      accountNo: data.accountNo,
+      accountName: data.accountName,
+      cashOnDelivery: false, // Assuming this is not applicable for digital wallets
+    };
+    createBank(payload);
   };
 
   return (

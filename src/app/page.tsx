@@ -3,24 +3,24 @@ export default function Home() {
     <div className="h-fit w-full space-y-8 p-8">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-5">
-          <div className="space-x-auto flex flex-row justify-between">
-            <div className="bg-accent flex h-32 w-50 flex-col p-2">
+          <div className="space-x-auto flex flex-row gap-5">
+            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
               <span className="text-2xl font-semibold">2,345</span>
               <span>Total Orders</span>
             </div>
-            <div className="bg-accent flex h-32 w-50 flex-col p-2">
+            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
               <span className="text-2xl font-semibold">10,3400 KS</span>
               <span>Total Sales</span>
             </div>
-            <div className="bg-accent flex h-32 w-50 flex-col p-2">
+            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
               <span className="text-2xl font-semibold">5491</span>
               <span>Total Customers</span>
             </div>
-            <div className="bg-accent flex h-32 w-50 flex-col p-2">
+            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
               <span className="text-2xl font-semibold">5491</span>
               <span>Total Customers</span>
             </div>
-            <div className="bg-accent flex h-32 w-50 flex-col p-2">
+            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
               <span className="text-2xl font-semibold">5491</span>
               <span>Total Customers</span>
             </div>

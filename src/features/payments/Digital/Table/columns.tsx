@@ -7,9 +7,12 @@ import { dummyWallet } from "../../dummy-wallet";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { digitalColumnsSchema } from "../../paymentSchema";
+import {
+  CreateUpdateBankPayload,
+  CreateUpdateBankPayloadSchema,
+} from "@/types/bank.types";
 
-const columnHelper =
-  createColumnHelper<z.infer<typeof digitalColumnsSchema>[number]>();
+const columnHelper = createColumnHelper<CreateUpdateBankPayload>();
 
 export const digitalColumns = [
   columnHelper.display({
@@ -23,26 +26,30 @@ export const digitalColumns = [
   }),
 
   columnHelper.accessor("id", {
-    header: "Wallet",
+    header: "Digital Pay",
     cell: (info) => {
       return (
         <span className="flex flex-row items-center gap-2">
-          <Image
-            src={info.row.original.qrcode}
-            width={50}
-            height={50}
-            className="size-12"
-            alt="qr-code"
-          />
-
-          {dummyWallet[info.getValue() - 1]?.label ?? ""}
+          {/* {info.row.original.imageUrl.length > 0 && (
+            <Image
+              src={info.row.original.imageUrl || ""}
+              width={50}
+              height={50}
+              className="size-12"
+              alt="qr-code"
+            />
+          )} */}
         </span>
       );
     },
   }),
-  columnHelper.accessor("status", {
-    header: "Status",
+  columnHelper.accessor("name", {
+    header: "Pay Name",
   }),
+
+  // columnHelper.accessor("status", {
+  //   header: "Status",
+  // }),
   columnHelper.display({
     id: "actions",
     header: "Actions",

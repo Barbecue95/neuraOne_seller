@@ -11,17 +11,34 @@ import {
 } from "@/components/ui/form";
 import { digitalWalletSchema } from "../paymentSchema";
 import { z } from "zod";
+import { CreateUpdateBankPayload } from "@/types/bank.types";
 
 export default function DigitalDetail({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof digitalWalletSchema>>;
+  form: UseFormReturn<CreateUpdateBankPayload>;
 }) {
   return (
     <div className="space-y-4">
       <FormField
         control={form.control}
-        name="id"
+        name="accountType"
+        render={({ field }) => {
+          return (
+            <Input
+              title="account type"
+              id="accountType"
+              placeholder="Account Type"
+              type="text"
+              className="hidden"
+              {...field}
+            />
+          );
+        }}
+      />
+      <FormField
+        control={form.control}
+        name="name"
         render={({ field }) => {
           return (
             <Combobox
@@ -36,19 +53,19 @@ export default function DigitalDetail({
       />
       <FormField
         control={form.control}
-        name="qrcode"
+        name="qrCodeUrl"
         render={({ field }) => {
           return (
             <FormItem>
               <FormControl>
                 <label
                   className="flex cursor-pointer flex-row items-center gap-2 text-sm font-medium"
-                  htmlFor="qrcode"
+                  htmlFor="qrCodeUrl"
                 >
                   <div className="bg-accent-foreground size-44" />
                   <Input
                     title="QR Code"
-                    id="qrcode"
+                    id="qrCodeUrl"
                     placeholder="Enter QR Code"
                     type="file"
                     accept="image/png, image/jpeg"
@@ -94,7 +111,7 @@ export default function DigitalDetail({
       />
       <FormField
         control={form.control}
-        name="accountNumber"
+        name="accountNo"
         render={({ field }) => {
           return (
             <FormItem>
