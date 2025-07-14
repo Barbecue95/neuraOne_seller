@@ -24,6 +24,8 @@ const Index = () => {
   }, undefined);
   const displayTitle = item?.name || "Dashboard";
 
+  if (pathname === "/login") return null;
+
   return (
     <nav className="bg-card text-primary sticky top-0 z-50 flex h-16 w-full items-center justify-between px-10">
       <Link

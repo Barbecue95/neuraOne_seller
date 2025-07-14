@@ -1,4 +1,8 @@
+import { string } from "zod/v4";
+
 export type User = {
+  avatar: string;
+  bio: string;
   age: number;
   status: string;
   id: number;
