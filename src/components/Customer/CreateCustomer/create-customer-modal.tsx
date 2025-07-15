@@ -33,7 +33,7 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, PlusCircle } from "lucide-react";
 import { User } from "@/types/users.types";
 import { useRegisterUser } from "@/queries/users.queries";
 
@@ -191,21 +191,21 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Customer
+          <Button className="h-auto cursor-pointer rounded-full bg-[#616FF5] px-4 py-2 font-medium">
+            <PlusCircle className="ml-2 size-5" />
+            <p className="mr-2 text-lg">Add Customer</p>
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="scrollbar-hide max-h-[95vh] overflow-y-auto rounded-[20px] bg-white md:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-2xl font-medium">
             Add new customer
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Customer Name and Phone Number */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
@@ -213,9 +213,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="customerName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Customer name</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030]">
+                      Customer name
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Customer name" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Customer name"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -227,9 +233,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone number</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030]">
+                      Phone number
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Phone number" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Phone number"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -244,9 +256,16 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030]">
+                      Email
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Email" type="email" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Email"
+                        type="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -258,13 +277,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="memberLevel"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Member level</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030]">
+                      Member level
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="Member level" />
                         </SelectTrigger>
                       </FormControl>
@@ -283,8 +304,8 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
             </div>
 
             {/* Address Type */}
+              {/* <Label className="text-lg font-medium text-[#303030]">Address</Label>
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Address</Label>
               <FormField
                 control={form.control}
                 name="addressType"
@@ -310,7 +331,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                   </FormItem>
                 )}
               />
-            </div>
+            </div> */}
 
             {/* Region and City */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -319,13 +340,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="region"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Region</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030]">
+                      Address
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="Region" />
                         </SelectTrigger>
                       </FormControl>
@@ -347,13 +370,14 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="city"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>City</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030] h-7">
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="City" />
                         </SelectTrigger>
                       </FormControl>
@@ -378,13 +402,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="township"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Township</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                      Township
+                    </FormLabel> */}
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="Township" />
                         </SelectTrigger>
                       </FormControl>
@@ -409,11 +435,13 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                      Address
+                    </FormLabel> */}
                     <FormControl>
-                      <Textarea
-                        placeholder="Address"
-                        className="resize-none"
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Address (Optional)"
                         {...field}
                       />
                     </FormControl>
@@ -430,9 +458,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="floorNo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Floor No (Optional)</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                      Floor No (Optional)
+                    </FormLabel> */}
                     <FormControl>
-                      <Input placeholder="Floor No (Optional)" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Floor No (Optional)"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -444,9 +478,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Unit (Optional)</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                      Unit (Optional)
+                    </FormLabel> */}
                     <FormControl>
-                      <Input placeholder="Unit (Optional)" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Unit (Optional)"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -456,7 +496,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
 
             {/* Password Section */}
             <div className="space-y-4">
-              <Label className="text-sm font-medium">Password</Label>
+              <Label className="text-lg font-medium text-[#303030]">Password</Label>
 
               <FormField
                 control={form.control}
@@ -465,6 +505,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                   <FormItem>
                     <FormControl>
                       <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
                         placeholder="password"
                         type="password"
                         {...field}
@@ -482,6 +523,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                   <FormItem>
                     <FormControl>
                       <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
                         placeholder="confirm password"
                         type="password"
                         {...field}
@@ -496,7 +538,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-gray-800 text-white hover:bg-gray-900"
+              className="w-full cursor-pointer bg-[#616FF5] text-white hover:opacity-80 h-auto py-2.5 rounded-[20px] text-lg font-medium"
               disabled={isLoading}
             >
               {isLoading ? (

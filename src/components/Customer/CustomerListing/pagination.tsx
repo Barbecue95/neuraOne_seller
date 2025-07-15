@@ -58,9 +58,24 @@ const Pagination = ({
   };
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="text-sm text-gray-600">
-        Result {startRow} - {endRow} of {total}
+    <div className="flex flex-col items-center justify-center gap-y-3 md:flex-row md:items-center md:justify-between">
+      <div className="flex items-center justify-center gap-1 text-lg font-medium text-[#303030]">
+        <span>Showing</span>
+        <Select
+          value={size.toString()}
+          onValueChange={(value) => onPageSizeChange(Number(value))}
+        >
+          <SelectTrigger className="h-8 px-1.5 text-lg font-medium text-white [&_svg:not([class*='text-'])]:text-white bg-[#616FF5] rounded-[10px]">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="10">10</SelectItem>
+            <SelectItem value="25">25</SelectItem>
+            <SelectItem value="50">50</SelectItem>
+            <SelectItem value="100">100</SelectItem>
+          </SelectContent>
+        </Select>
+        <span>of {total}</span>
       </div>
 
       <div className="flex items-center gap-2">
@@ -100,21 +115,6 @@ const Pagination = ({
         >
           <ChevronRight className="h-4 w-4" />
         </Button>
-
-        <Select
-          value={size.toString()}
-          onValueChange={(value) => onPageSizeChange(Number(value))}
-        >
-          <SelectTrigger className="h-8 w-16">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="25">25</SelectItem>
-            <SelectItem value="50">50</SelectItem>
-            <SelectItem value="100">100</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
     </div>
   );

@@ -3,13 +3,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { PaginationInfo } from "@/types/product.types";
-import { getProductCategories } from "./dummy-data";
+import { getDummyUsers } from "./dummy-data";
 import { User, UserColumnDef, UserSortOption } from "@/types/users.types";
 import { useUsers } from "@/queries/users.queries";
 import CustomerListHeader from "./customer-list-header";
 import CustomerListFilters from "./customer-list-filter";
 import CustomerTable from "./customer-list-table";
 import { useRouter } from "next/navigation";
+import { useQueryParams } from "@/hooks/use-query-params";
 
 const sortOptions = [
   { label: "Name (A-Z)", value: UserSortOption.NAME_ASC },
@@ -19,12 +20,18 @@ const sortOptions = [
   { label: "Email (A-Z)", value: UserSortOption.EMAIL_ASC },
   { label: "Email (Z-A)", value: UserSortOption.EMAIL_DESC },
   { label: "Total Orders (Asc)", value: UserSortOption.TOTAL_ORDER_COUNT_ASC },
-  { label: "Total Orders (Desc)", value: UserSortOption.TOTAL_ORDER_COUNT_DESC },
+  {
+    label: "Total Orders (Desc)",
+    value: UserSortOption.TOTAL_ORDER_COUNT_DESC,
+  },
   { label: "Total Spend (Asc)", value: UserSortOption.TOTAL_ORDER_AMOUNT_ASC },
-  { label: "Total Spend (Desc)", value: UserSortOption.TOTAL_ORDER_AMOUNT_DESC },
+  {
+    label: "Total Spend (Desc)",
+    value: UserSortOption.TOTAL_ORDER_AMOUNT_DESC,
+  },
   { label: "Newest", value: UserSortOption.NEWEST },
   { label: "Oldest", value: UserSortOption.OLDEST },
-]
+];
 export interface CustomerListProps {
   products?: User[];
   onImport?: () => void;
@@ -36,8 +43,11 @@ export default function CustomerList({
   onExport,
 }: CustomerListProps) {
   const router = useRouter();
-  const [customerLists, setCustomerLists] = useState<User[]>([]);
+  // const [customerLists, setCustomerLists] = useState<User[]>([]);
   const [sorting, setSorting] = useState<UserSortOption>(UserSortOption.NEWEST);
+  const { getParam } = useQueryParams();
+  const sortBy =
+    (getParam("sortBy") as UserSortOption) ?? UserSortOption.NEWEST;
   const [pagination, setPagination] = useState<PaginationInfo>({
     page: 1,
     size: 10,
@@ -52,31 +62,39 @@ export default function CustomerList({
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const categories = getProductCategories();
-
-  const {
-    data: rawCustomerLists,
-    isLoading: isLoadingCustomer,
-    refetch: refetchCustomerList,
-  } = useUsers({
-    sort: sorting,
+  const refetchCustomerList = () => {};
+  const isLoadingCustomer = false;
+  const rawCustomerLists = getDummyUsers({
     page: pagination.page,
-    limit: pagination.size,
+    size: pagination.size,
     searchText: debouncedSearchQuery,
   });
+  console.log(rawCustomerLists);
 
-  useEffect(() => {
-    if (rawCustomerLists?.data) {
-      setCustomerLists(
-        Array.isArray(rawCustomerLists.data) ? rawCustomerLists.data : []
-      );
-      setPagination({
-        ...pagination,
-        total: rawCustomerLists?.meta?.total || 0,
-        totalPages: Math.ceil((rawCustomerLists?.meta?.total || 0) / pagination.size),
-      });
-    }
-  }, [rawCustomerLists]);
+  // const {
+  //   data: rawCustomerLists,
+  //   isLoading: isLoadingCustomer,
+  //   refetch: refetchCustomerList,
+  // } = useUsers({
+  //   sort: sortBy,
+  //   page: pagination.page,
+  //   limit: pagination.size,
+  //   searchText: debouncedSearchQuery,
+  // });
+  const customerLists = rawCustomerLists?.data ?? [];
+
+  // useEffect(() => {
+  //   if (rawCustomerLists?.data) {
+  //     setCustomerLists(
+  //       Array.isArray(rawCustomerLists.data) ? rawCustomerLists.data : []
+  //     );
+  //     setPagination({
+  //       ...pagination,
+  //       total: rawCustomerLists?.meta?.total || 0,
+  //       totalPages: Math.ceil((rawCustomerLists?.meta?.total || 0) / pagination.size),
+  //     });
+  //   }
+  // }, [rawCustomerLists]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -106,11 +124,8 @@ export default function CustomerList({
     );
 
   return (
-    <div className="w-full space-y-4 bg-white">
-      <CustomerListHeader
-        onImport={onImport}
-        onExport={onExport}
-      />
+    <div className="w-full">
+      <CustomerListHeader onImport={onImport} onExport={onExport} />
 
       <CustomerListFilters
         searchQuery={searchQuery}
@@ -119,7 +134,6 @@ export default function CustomerList({
         onStatusFilterChange={setStatusFilter}
         categoryFilter={categoryFilter}
         onCategoryFilterChange={setCategoryFilter}
-        categories={categories}
       />
 
       <CustomerTable

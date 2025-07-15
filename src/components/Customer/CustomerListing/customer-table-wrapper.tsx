@@ -13,6 +13,7 @@ import {
 } from "@tanstack/react-table";
 import type { Product } from "@/types/product.types";
 import { User } from "@/types/users.types";
+import { cn } from "@/lib/utils";
 
 interface Props {
   table: ReactTable<User>;
@@ -26,7 +27,10 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="bg-gray-50">
+            <TableRow
+              key={headerGroup.id}
+              className="h-auto bg-[#EEEEEE] py-4 text-lg text-[#3C3C3C] hover:bg-[#EEEEEE]"
+            >
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
                   {header.isPlaceholder
@@ -40,7 +44,7 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="overflow-hidden rounded-b-[20px]">
           {loading ? (
             Array.from({ length: 5 }).map((_, i) => (
               <TableRow key={i}>
@@ -52,13 +56,18 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
               </TableRow>
             ))
           ) : table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, index) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
+                className={cn(
+                  "cursor-pointer bg-white text-lg font-normal text-[#303030]",
+                  table.getRowModel().rows.length - 1 === index &&
+                    "rounded-b-[20px]",
+                )}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className="px-4 py-4">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
