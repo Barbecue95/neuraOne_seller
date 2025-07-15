@@ -168,7 +168,7 @@ export default function EditProductModal({
                 <ProductInfoSection
                   form={form}
                   categories={categories}
-                  // setSelectedCategoryId={setSelectedCategoryId}
+                  setSelectedCategoryId={setSelectedCategoryId}
                 />
               </TabsContent>
 

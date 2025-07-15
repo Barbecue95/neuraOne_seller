@@ -2,11 +2,14 @@ import type { Product, GetDummyProductsParams } from "@/types/product.types"
 
 // Generate dummy products
 const dummyProducts: Product[] = Array.from({ length: 87 }, (_, i) => ({
-  id: `product-${i + 1}`,
+  id: i + 1,
   name: `Product ${i + 1}`,
   category: ["Men's Shoe", "Women's Shoe", "Running Shoe", "Casual Shoe"][i % 4],
   stock: Math.floor(Math.random() * 100),
-  status: ["Publish", "Draft", "Archived"][i % 3] as "Publish" | "Draft" | "Archived",
+  status: ["PUBLISH", "DRAFT", "SCHEDULE"][i % 3] as "PUBLISH" | "DRAFT" | "SCHEDULE",
+  quantity: Math.floor(Math.random() * 100),
+  sellingPrice: Math.floor(Math.random() * 1000) + 100,
+  mainCategory: { id: (i % 4) + 1, name: ["Men's Shoe", "Women's Shoe", "Running Shoe", "Casual Shoe"][i % 4] },
 }))
 
 export const getDummyProducts = ({
@@ -22,7 +25,7 @@ export const getDummyProducts = ({
   if (searchText.trim()) {
     const search = searchText.toLowerCase()
     filtered = filtered.filter(
-      (product) => product.name.toLowerCase().includes(search) || product.category.toLowerCase().includes(search),
+      (product) => product.name.toLowerCase().includes(search) || product.mainCategory.name.toLowerCase().includes(search),
     )
   }
 
@@ -33,7 +36,7 @@ export const getDummyProducts = ({
 
   // Apply category filter
   if (categoryFilter !== "all") {
-    filtered = filtered.filter((product) => product.category === categoryFilter)
+    filtered = filtered.filter((product) => product.mainCategory.name === categoryFilter)
   }
 
   // Paginate
@@ -58,6 +61,6 @@ export const getDummyProducts = ({
 
 // Get unique categories for filter dropdown
 export const getProductCategories = () => {
-  const categories = [...new Set(dummyProducts.map((product) => product.category))]
+  const categories = [...new Set(dummyProducts.map((product) => product.mainCategory.name))]
   return categories.sort()
 }

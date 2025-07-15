@@ -20,7 +20,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { z } from "zod/v4";
 
-export default function page() {
+export default function Page() {
   const params = useParams();
 
   const form = useForm({

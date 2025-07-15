@@ -6,7 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ProductRelationType, type CreateProductPayload } from "@/types/product.types"
+import { ProductRelationType } from "@/types/product.types"
+import { CreateProductPayload } from "../ProductForm/product-form-schema"
 
 interface RelatedProductsSectionProps {
   form: UseFormReturn<CreateProductPayload>

@@ -5,7 +5,6 @@ import SubNavbar from "@/components/SubNavbar";
 import Table from "@/features/category/Table";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogHeader,
   DialogTitle,

@@ -19,8 +19,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { digitalWalletSchema } from "@/features/payments/paymentSchema";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
 import { CreateUpdateBankPayload } from "@/types/bank.types";
 

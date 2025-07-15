@@ -8,7 +8,27 @@ export const getBanks = async () => {
 };
 
 export const createBank = async (payload: CreateUpdateBankPayload) => {
-  console.log("Come here");
   const res = await axiosClient.post(bankEndpoints.banks, payload);
   return res.data.data;
+};
+
+export const updateBank = async ({
+  payload,
+  id,
+}: {
+  payload: CreateUpdateBankPayload;
+  id: number;
+}) => {
+  const res = await axiosClient.put(`${bankEndpoints.banks}/${id}`, payload);
+  return res.data.data;
+};
+
+export const deleteBank = async (id: number) => {
+  const res = await axiosClient.delete(`${bankEndpoints.banks}/${id}`);
+  return res.data;
+};
+
+export const getBankById = async (id: number) => {
+  const res = await axiosClient.get(`${bankEndpoints.banks}/${id}`);
+  return res.data;
 };

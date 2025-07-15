@@ -3,7 +3,6 @@
 import CustomerInfoCard from "./customer-info-card";
 import OrderSummaryCard from "./order-summary-card";
 import ActivityTimeline from "./activity-timeline";
-import { useGetUserById } from "@/queries/users.queries";
 
 interface CustomerDetailsPageProps {
   customerId: string;

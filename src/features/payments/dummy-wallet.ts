@@ -23,18 +23,30 @@ export const dummyWallet: data[] = [
 export const dummyBank: data[] = [
   {
     id: 1,
-    label: "Bank of America",
+    label: "KBZ Bank",
   },
   {
     id: 2,
-    label: "Citi",
+    label: "UAB Bank",
   },
   {
     id: 3,
-    label: "HDFC",
+    label: "YOMA Bank",
   },
   {
     id: 4,
-    label: "ICICI",
+    label: "AYA Bank",
+  },
+  {
+    id: 5,
+    label: "Central Bank of Myanmar",
+  },
+  {
+    id: 6,
+    label: "A Bank",
+  },
+  {
+    id: 7,
+    label: "AGD Bank",
   },
 ];

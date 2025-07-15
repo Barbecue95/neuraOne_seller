@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AddNewWallet from "@/features/payments/AddNewWallet";
 import Bank from "@/features/payments/Bank";
 import Digital from "@/features/payments/Digital";
-import { useCreateBank, useGetBanks } from "@/queries/bank.queries";
+import { useGetBanks } from "@/queries/bank.queries";
 import { CreateUpdateBankPayload } from "@/types/bank.types";
 import React from "react";
 

@@ -22,6 +22,11 @@ const eslintConfig = [
     rules: {
       // Add any rules you want from the plugin here, for example:
       // "@tanstack/query/exhaustive-deps": "warn"
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "react-hooks/exhaustive-deps": "warn",
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-img-element": "warn"
     },
   },
 ];

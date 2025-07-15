@@ -11,7 +11,6 @@ import {
   Table as ReactTable,
   ColumnDef,
 } from "@tanstack/react-table";
-import type { Product } from "@/types/product.types";
 import { User } from "@/types/users.types";
 
 interface Props {

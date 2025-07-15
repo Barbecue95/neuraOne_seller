@@ -1,9 +1,7 @@
 
 import React from 'react'
 
-type Props = {}
-
-const Loading = (props: Props) => {
+const Loading = () => {
   return (
      <div className="flex h-[90vh] w-full items-center justify-center">
         <svg

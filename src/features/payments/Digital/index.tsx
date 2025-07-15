@@ -42,7 +42,7 @@ const Digital = ({ data, isLoading, pagination }: Props) => {
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageSize: Math.ceil(pagination?.total / pagination?.limit),
+        pageSize: pagination?.limit || 10,
       },
     },
   });

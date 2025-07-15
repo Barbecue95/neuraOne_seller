@@ -1,6 +1,5 @@
 "use client";
 
-import { SiteMapGroup } from "@/types/sidebar.types";
 import { Bell } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SiteMapItem } from "@/types/sidebar.types";

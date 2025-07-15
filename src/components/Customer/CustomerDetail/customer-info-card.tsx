@@ -4,15 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetUserById } from "@/queries/users.queries";
 
-interface CustomerInfo {
-  id: string;
-  name: string;
-  phone: string;
-  email: string;
-  address: string;
-  joinedDate: string;
-  avatar?: string;
-}
 
 interface CustomerInfoCardProps {
   customerId: string;
@@ -58,7 +49,7 @@ export default function CustomerInfoCard({ customerId }: CustomerInfoCardProps) 
             <AvatarFallback className="bg-gray-600 text-2xl text-white">
               {customer.name
                 .split(" ")
-                .map((n) => n[0])
+                .map((n: string) => n[0])
                 .join("")
                 .toUpperCase()}
             </AvatarFallback>

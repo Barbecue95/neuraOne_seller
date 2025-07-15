@@ -11,29 +11,86 @@ import {
 import { bankWalletSchema } from "../paymentSchema";
 import { z } from "zod";
 import { Combobox } from "@/components/ComboBox/BankComboBox";
+import { CreateUpdateBankPayload } from "@/types/bank.types";
 
 export default function BankDetail({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof bankWalletSchema>>;
+  form: UseFormReturn<CreateUpdateBankPayload>;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       <FormField
         control={form.control}
-        name="id"
+        name="accountType"
+        render={({ field }) => {
+          return (
+            <Input
+              title="account type"
+              id="accountType"
+              placeholder="Account Type"
+              type="text"
+              className="hidden"
+              {...field}
+            />
+          );
+        }}
+      />
+      <FormField
+        control={form.control}
+        name="name"
         render={({ field }) => {
           return (
             <Combobox
               List={dummyBank}
-              title="Select a Bank"
-              placeholder="Search Bank ....."
+              title="Select a bank"
+              placeholder="Search bank ....."
               form={form}
               {...field}
             />
           );
         }}
       />
+      {/* <FormField
+        control={form.control}
+        name="qrCodeUrl"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <label
+                  className="flex cursor-pointer flex-row items-center gap-2 text-sm font-medium"
+                  htmlFor="qrCodeUrl"
+                >
+                  <div className="bg-accent-foreground size-44" />
+                  <Input
+                    title="QR Code"
+                    id="qrCodeUrl"
+                    placeholder="Enter QR Code"
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    className="hidden"
+                    {...field}
+                    // TODO: Handle file upload properly
+                    // onChange={(e) => {
+                    //   if (!!e?.target?.files) {
+                    //     field.onChange({
+                    //       target: {
+                    //         value: e.target.files[0],
+                    //         name: field.name,
+                    //       },
+                    //     });
+                    //   }
+                    // }}
+                  />
+                  <span className="text-muted-foreground">Upload QR Code</span>
+                </label>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      /> */}
       <FormField
         control={form.control}
         name="accountName"
@@ -54,7 +111,7 @@ export default function BankDetail({
       />
       <FormField
         control={form.control}
-        name="accountNumber"
+        name="accountNo"
         render={({ field }) => {
           return (
             <FormItem>

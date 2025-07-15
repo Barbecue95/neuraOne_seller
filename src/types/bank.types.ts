@@ -1,11 +1,3 @@
-import {
-  bankColumnsSchema,
-  bankWalletSchema,
-  digitalColumnsSchema,
-  digitalWalletSchema,
-  transactionColumnsSchema,
-  transactionSchema,
-} from "@/features/payments/paymentSchema";
 import { z } from "zod";
 
 export type GetBankListPayload = {
@@ -36,3 +28,28 @@ export const CreateUpdateBankPayloadSchema = z.object({
 export type CreateUpdateBankPayload = z.infer<
   typeof CreateUpdateBankPayloadSchema
 >;
+
+export interface Bank {
+  id: number;
+  name: string;
+  qrCodeUrl?: string;
+  accountType: "BANK" | "PAY";
+  accountName: string;
+  accountNo: string;
+  cashOnDelivery: boolean;
+  imageUrl?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface BanksResponse {
+  data: Bank[];
+  message?: string;
+  success?: boolean;
+}
+
+export interface BankResponse {
+  data: Bank;
+  message?: string;
+  success?: boolean;
+}

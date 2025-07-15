@@ -1,7 +1,6 @@
 "use client";
 
 import ProductList from "@/components/Products/ProductListing";
-import { useRouter } from "next/navigation";
 
 const ProductPage = () => {
   const handleImport = () => {

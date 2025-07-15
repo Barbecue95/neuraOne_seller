@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { PaginationInfo } from "@/types/product.types";
 import { getProductCategories } from "./dummy-data";
-import { User, UserColumnDef, UserSortOption } from "@/types/users.types";
+import { User, UserSortOption } from "@/types/users.types";
 import { useUsers } from "@/queries/users.queries";
 import CustomerListHeader from "./customer-list-header";
 import CustomerListFilters from "./customer-list-filter";
 import CustomerTable from "./customer-list-table";
-import { useRouter } from "next/navigation";
 
 const sortOptions = [
   { label: "Name (A-Z)", value: UserSortOption.NAME_ASC },
@@ -35,7 +34,6 @@ export default function CustomerList({
   onImport,
   onExport,
 }: CustomerListProps) {
-  const router = useRouter();
   const [customerLists, setCustomerLists] = useState<User[]>([]);
   const [sorting, setSorting] = useState<UserSortOption>(UserSortOption.NEWEST);
   const [pagination, setPagination] = useState<PaginationInfo>({
@@ -57,7 +55,6 @@ export default function CustomerList({
   const {
     data: rawCustomerLists,
     isLoading: isLoadingCustomer,
-    refetch: refetchCustomerList,
   } = useUsers({
     sort: sorting,
     page: pagination.page,

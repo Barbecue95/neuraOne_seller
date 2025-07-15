@@ -43,7 +43,7 @@ export default function RelatedProductPage() {
 
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedProductIds, setSelectedProductIds] = useState<string[]>([]);
+  const [selectedProductIds, setSelectedProductIds] = useState<number[]>([]);
 
   // Get all available products from dummy data
   const allProducts = getDummyProducts({
@@ -74,7 +74,7 @@ export default function RelatedProductPage() {
     setSelectedProductIds([]);
   };
 
-  const handleProductSelection = (productId: string) => {
+  const handleProductSelection = (productId: number) => {
     setSelectedProductIds((prev) =>
       prev.includes(productId)
         ? prev.filter((id) => id !== productId)
@@ -94,10 +94,10 @@ export default function RelatedProductPage() {
     const productsToAdd = allProducts
       .filter((product) => selectedProductIds.includes(product.id))
       .map((product) => ({
-        id: product.id,
+        id: product.id.toString(),
         name: product.name,
         image: "", // Placeholder for image
-        category: product.category,
+        category: product.mainCategory.name,
         status: product.status,
       }));
 
@@ -139,7 +139,7 @@ export default function RelatedProductPage() {
   // Filter out already selected products from the modal
   const availableProducts = allProducts.filter(
     (product) =>
-      !formData.selectedProducts.some((selected) => selected.id === product.id),
+      !formData.selectedProducts.some((selected) => selected.id === product.id.toString()),
   );
 
   return (

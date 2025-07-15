@@ -3,7 +3,6 @@ import { type ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Edit, Trash2, ArrowUpDown } from "lucide-react";
-import type { Product } from "@/types/product.types";
 import { User, UserSortOption } from "@/types/users.types";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -51,10 +50,9 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "name",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="Customer"
-          column={column}
           sortName="name"
           sortOptions={sortOptions}
           handleSortChange={handleSortChange}
@@ -66,10 +64,9 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "phoneNumber",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="Phone Number"
-          column={column}
           sortName="phone"
           sortOptions={sortOptions}
           handleSortChange={handleSortChange}
@@ -79,10 +76,9 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "email",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="Email"
-          column={column}
           sortName="email"
           sortOptions={sortOptions}
           handleSortChange={handleSortChange}
@@ -92,10 +88,9 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "totalOrderCount",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="Total Orders"
-          column={column}
           sortName="order"
           sortOptions={sortOptions}
           handleSortChange={handleSortChange}
@@ -105,10 +100,9 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "totalOrderAmount",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="Total Spend"
-          column={column}
           sortName="spend"
           sortOptions={sortOptions}
           handleSortChange={handleSortChange}
@@ -118,10 +112,9 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "status",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="Status"
-          column={column}
           sortName="testing"
           sortOptions={sortOptions}
           handleSortChange={handleSortChange}
@@ -162,13 +155,11 @@ export const CustomerTableColumns = (
 
 const SortableHeader = ({
   title,
-  column,
   sortName,
   sortOptions,
   handleSortChange,
 }: {
   title: string;
-  column: any;
   sortName: string;
   handleSortChange: (value: UserSortOption) => void;
   sortOptions: {
