@@ -43,8 +43,16 @@ export const orderEndpoints = {
   status: `${ORDER_BASE_PATH}/status`,
 };
 
-// Bank End Points
+// Payment Method End Points
+const PAYMENT_METHOD_BASE_PATH = "/payment-methods";
+export const paymentMethodEndpoints = {
+  paymentMethods: PAYMENT_METHOD_BASE_PATH,
+};
+
+// Legacy bank endpoints for backward compatibility
+/** @deprecated Use paymentMethodEndpoints instead */
 const BANK_BASE_PATH = "/banks";
+/** @deprecated Use paymentMethodEndpoints instead */
 export const bankEndpoints = {
   banks: BANK_BASE_PATH,
 };

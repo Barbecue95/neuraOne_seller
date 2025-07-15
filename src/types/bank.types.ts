@@ -1,55 +1,9 @@
-import { z } from "zod";
+/**
+ * @deprecated This file is deprecated. Use payment-method.types.ts instead.
+ * This file is kept for backward compatibility during the migration period.
+ */
 
-export type GetBankListPayload = {
-  page?: number; // must be >= 1
-  limit?: number; // must be between 1 and 100
-};
+// Re-export everything from payment-method.types.ts for backward compatibility
+export * from './payment-method.types';
 
-export const CreateUpdateBankPayloadSchema = z.object({
-  id: z.number().min(1, { message: "ID is required" }).optional(),
-  name: z.string().min(1, { message: "Name is required" }),
-  qrCodeUrl: z.string().min(1, { message: "QR Code is required" }).optional(),
-  accountType: z.enum(["BANK", "PAY"], {
-    required_error: "Account type is required",
-    invalid_type_error: "Account type must be either 'BANK' or 'PAY'",
-  }),
-  accountName: z
-    .string()
-    .min(3, { message: "Account name is required" })
-    .max(50, { message: "Account name must be at most 50 characters" }),
-  accountNo: z
-    .string()
-    .min(10, { message: "Phone Number must be at least 10 characters" })
-    .max(30, { message: "Phone Number must be at most 30 characters" }),
-  cashOnDelivery: z.boolean(),
-  imageUrl: z.string().optional(),
-});
-
-export type CreateUpdateBankPayload = z.infer<
-  typeof CreateUpdateBankPayloadSchema
->;
-
-export interface Bank {
-  id: number;
-  name: string;
-  qrCodeUrl?: string;
-  accountType: "BANK" | "PAY";
-  accountName: string;
-  accountNo: string;
-  cashOnDelivery: boolean;
-  imageUrl?: string;
-  createdAt?: string;
-  updatedAt?: string;
-}
-
-export interface BanksResponse {
-  data: Bank[];
-  message?: string;
-  success?: boolean;
-}
-
-export interface BankResponse {
-  data: Bank;
-  message?: string;
-  success?: boolean;
-}
+console.warn('bank.types.ts is deprecated. Please use payment-method.types.ts instead.');

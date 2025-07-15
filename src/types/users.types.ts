@@ -17,6 +17,8 @@ export type User = {
   totalOrderAmount: number | null;
   totalOrderCount: number | null;
   role: string;
+  avatar?: string;
+  bio?: string;
   createdAt: Date;
   updatedAt: Date;
 };

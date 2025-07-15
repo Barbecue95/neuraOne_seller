@@ -271,7 +271,7 @@ export default function RelatedProductPage() {
                                 {product.name}
                               </div>
                               <div className="text-xs text-gray-500">
-                                {product.category}
+                                {product.mainCategory?.name || 'No category'}
                               </div>
                               <div className="text-xs text-gray-400">
                                 {product.status}

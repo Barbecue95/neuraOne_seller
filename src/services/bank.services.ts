@@ -1,34 +1,9 @@
-import { CreateUpdateBankPayload } from "@/types/bank.types";
-import axiosClient from "./axiosClient";
-import { bankEndpoints } from "./constants/apiEndpoints";
+/**
+ * @deprecated This file is deprecated. Use payment-method.services.ts instead.
+ * This file is kept for backward compatibility during the migration period.
+ */
 
-export const getBanks = async () => {
-  const res = await axiosClient.get(bankEndpoints.banks);
-  return res.data;
-};
+// Re-export everything from payment-method.services.ts for backward compatibility
+export * from './payment-method.services';
 
-export const createBank = async (payload: CreateUpdateBankPayload) => {
-  const res = await axiosClient.post(bankEndpoints.banks, payload);
-  return res.data.data;
-};
-
-export const updateBank = async ({
-  payload,
-  id,
-}: {
-  payload: CreateUpdateBankPayload;
-  id: number;
-}) => {
-  const res = await axiosClient.put(`${bankEndpoints.banks}/${id}`, payload);
-  return res.data.data;
-};
-
-export const deleteBank = async (id: number) => {
-  const res = await axiosClient.delete(`${bankEndpoints.banks}/${id}`);
-  return res.data;
-};
-
-export const getBankById = async (id: number) => {
-  const res = await axiosClient.get(`${bankEndpoints.banks}/${id}`);
-  return res.data;
-};
+console.warn('bank.services.ts is deprecated. Please use payment-method.services.ts instead.');
