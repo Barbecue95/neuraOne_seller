@@ -9,16 +9,16 @@ import { bankWalletSchema } from "../paymentSchema";
 import { Button } from "@/components/ui/button";
 import BankDetail from "../Bank/BankDetail";
 import { DialogTrigger } from "@/components/ui/dialog";
-import { useCreateBank } from "@/queries/bank.queries";
+import { useCreatePaymentMethod } from "@/queries/payment-method.queries";
 import {
-  CreateUpdateBankPayload,
-  CreateUpdateBankPayloadSchema,
-} from "@/types/bank.types";
+  CreateUpdatePaymentMethodPayload,
+  CreateUpdatePaymentMethodPayloadSchema,
+} from "@/types/payment-method.types";
 
 const NewBank = () => {
   // 1. Define your form.
-  const form = useForm<CreateUpdateBankPayload>({
-    resolver: zodResolver(CreateUpdateBankPayloadSchema),
+  const form = useForm<CreateUpdatePaymentMethodPayload>({
+    resolver: zodResolver(CreateUpdatePaymentMethodPayloadSchema),
     defaultValues: {
       accountType: "BANK",
       name: "",
@@ -29,9 +29,9 @@ const NewBank = () => {
       imageUrl: "",
     },
   });
-  const { mutate: createBank } = useCreateBank(form);
+  const { mutate: createPaymentMethod } = useCreatePaymentMethod(form);
 
-  const onSubmit = (data: CreateUpdateBankPayload) => {
+  const onSubmit = (data: CreateUpdatePaymentMethodPayload) => {
     console.log("Form submitted with data:", data);
     const payload = {
       accountType: data.accountType,
@@ -40,7 +40,7 @@ const NewBank = () => {
       accountName: data.accountName,
       cashOnDelivery: false, // Assuming this is not applicable for digital wallets
     };
-    createBank(payload);
+    createPaymentMethod(payload);
   };
   return (
     <Form {...form}>

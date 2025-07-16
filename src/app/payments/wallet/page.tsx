@@ -12,17 +12,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AddNewWallet from "@/features/payments/AddNewWallet";
 import Bank from "@/features/payments/Bank";
 import Digital from "@/features/payments/Digital";
-import { useGetBanks } from "@/queries/bank.queries";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { useGetPaymentMethods } from "@/queries/payment-method.queries";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
+import { PlusCircle } from "lucide-react";
 import React from "react";
 
 const Wallet = () => {
-  const { data, isLoading } = useGetBanks();
+  const { data, isLoading } = useGetPaymentMethods();
   const bankData = data?.data?.filter(
-    (item: CreateUpdateBankPayload) => item.accountType == "BANK",
+    (item: CreateUpdatePaymentMethodPayload) => item.accountType == "BANK",
   );
   const digitalData = data?.data?.filter(
-    (item: CreateUpdateBankPayload) => item.accountType == "PAY",
+    (item: CreateUpdatePaymentMethodPayload) => item.accountType == "PAY",
   );
   if (isLoading) {
     return (
@@ -40,11 +41,12 @@ const Wallet = () => {
       <div>
         <div className="text-primary flex w-full flex-row items-center justify-between px-8 py-4">
           <h2 className="text-accent-foreground text-lg font-semibold capitalize">
-            Wallet
+            Wallet List
           </h2>
           <div className="flex flex-row items-center gap-2">
             <DialogTrigger asChild>
-              <Button type="button" variant="default">
+              <Button type="button" variant="default" className="rounded-full">
+                <PlusCircle className="h-4 w-4" />
                 Add new Wallet
               </Button>
             </DialogTrigger>

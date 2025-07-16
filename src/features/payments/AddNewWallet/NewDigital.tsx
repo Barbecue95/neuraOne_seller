@@ -9,14 +9,16 @@ import DigitalDetail from "../Digital/DigitalDetail";
 import { digitalWalletSchema } from "../paymentSchema";
 import { Button } from "@/components/ui/button";
 import { DialogTrigger } from "@/components/ui/dialog";
-import { useCreateBank, useGetBanks } from "@/queries/bank.queries";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
-import { CreateUpdateBankPayloadSchema } from "@/types/bank.types";
+import { useCreatePaymentMethod } from "@/queries/payment-method.queries";
+import {
+  CreateUpdatePaymentMethodPayload,
+  CreateUpdatePaymentMethodPayloadSchema,
+} from "@/types/payment-method.types";
 
 const NewDigital = () => {
   // 1. Define your form.
-  const form = useForm<CreateUpdateBankPayload>({
-    resolver: zodResolver(CreateUpdateBankPayloadSchema),
+  const form = useForm<CreateUpdatePaymentMethodPayload>({
+    resolver: zodResolver(CreateUpdatePaymentMethodPayloadSchema),
     defaultValues: {
       accountType: "PAY",
       name: "",
@@ -28,9 +30,9 @@ const NewDigital = () => {
     },
   });
 
-  const { mutate: createBank } = useCreateBank(form);
+  const { mutate: createBank } = useCreatePaymentMethod(form);
 
-  const onSubmit = (data: CreateUpdateBankPayload) => {
+  const onSubmit = (data: CreateUpdatePaymentMethodPayload) => {
     console.log("Form submitted with data:", data);
     const payload = {
       accountType: data.accountType,

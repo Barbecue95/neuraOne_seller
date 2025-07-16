@@ -24,12 +24,12 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { digitalColumns } from "./Table/columns";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 import AppTable from "@/components/AppTable";
 import { Skeleton } from "@/components/ui/skeleton"; // if using shadcn
 
 type Props = {
-  data: CreateUpdateBankPayload[];
+  data: CreateUpdatePaymentMethodPayload[];
   isLoading: boolean;
   pagination: { total: number; page: number; limit: number };
 };

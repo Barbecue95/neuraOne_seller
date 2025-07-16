@@ -2,17 +2,21 @@
 import { z } from "zod";
 import { createColumnHelper } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { DeleteIcon, EditIcon, EyeIcon } from "lucide-react";
+import { DeleteIcon, EditIcon, EyeIcon, Trash } from "lucide-react";
 import { dummyWallet } from "../../dummy-wallet";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
 import { digitalColumnsSchema } from "../../paymentSchema";
 import {
-  CreateUpdateBankPayload,
-  CreateUpdateBankPayloadSchema,
-} from "@/types/bank.types";
+  CreateUpdatePaymentMethodPayload,
+  CreateUpdatePaymentMethodPayloadSchema,
+} from "@/types/payment-method.types";
+import {
+  useDeletePaymentMethod,
+  useUpdatePaymentMethod,
+} from "@/queries/payment-method.queries";
 
-const columnHelper = createColumnHelper<CreateUpdateBankPayload>();
+const columnHelper = createColumnHelper<CreateUpdatePaymentMethodPayload>();
 
 export const digitalColumns = [
   columnHelper.display({
@@ -54,9 +58,34 @@ export const digitalColumns = [
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {
+      const { mutate: deletePaymentMethod } = useDeletePaymentMethod();
+      const { mutate: updatePaymentMethod } = useUpdatePaymentMethod();
+      const handleUpdate = () => {
+        const payload = {
+          id: row.original.id,
+          name: row.original.name,
+          accountNo: row.original.accountNo,
+          accountName: row.original.accountName,
+          qrCodeUrl: row.original.qrCodeUrl,
+          cashOnDelivery: row.original.cashOnDelivery,
+          imageUrl: row.original.imageUrl,
+          // Add other fields as needed for updating
+        };
+        if (payload.id !== undefined) {
+          updatePaymentMethod(payload);
+        }
+      };
+      const handleDelete = () => {
+        const payload = {
+          id: row.original.id,
+        };
+        if (payload.id !== undefined) {
+          deletePaymentMethod(payload.id);
+        }
+      };
       return (
         <div className="flex flex-row gap-2">
-          <Button
+          {/* <Button
             variant="default"
             className="rounded-full"
             size="icon"
@@ -65,12 +94,12 @@ export const digitalColumns = [
             }}
           >
             <EyeIcon className="h-4 w-4" />
-          </Button>
+          </Button> */}
           <Button
             variant="default"
             className="rounded-full"
             size="icon"
-            onClick={() => {}}
+            onClick={handleUpdate}
           >
             <EditIcon className="h-4 w-4" />
           </Button>
@@ -78,9 +107,10 @@ export const digitalColumns = [
             variant="default"
             className="rounded-full"
             size="icon"
-            onClick={() => {}}
+            onClick={handleDelete}
           >
-            <DeleteIcon className="h-4 w-4" />
+            {/* <DeleteIcon className="h-4 w-4" /> */}
+            <Trash className="h-4 w-4" />
           </Button>
         </div>
       );

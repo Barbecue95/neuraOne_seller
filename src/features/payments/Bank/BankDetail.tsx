@@ -11,12 +11,12 @@ import {
 import { bankWalletSchema } from "../paymentSchema";
 import { z } from "zod";
 import { Combobox } from "@/components/ComboBox/BankComboBox";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 
 export default function BankDetail({
   form,
 }: {
-  form: UseFormReturn<CreateUpdateBankPayload>;
+  form: UseFormReturn<CreateUpdatePaymentMethodPayload>;
 }) {
   return (
     <div className="space-y-4">

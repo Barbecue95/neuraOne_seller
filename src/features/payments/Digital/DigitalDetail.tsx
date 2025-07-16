@@ -11,12 +11,12 @@ import {
 } from "@/components/ui/form";
 import { digitalWalletSchema } from "../paymentSchema";
 import { z } from "zod";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 
 export default function DigitalDetail({
   form,
 }: {
-  form: UseFormReturn<CreateUpdateBankPayload>;
+  form: UseFormReturn<CreateUpdatePaymentMethodPayload>;
 }) {
   return (
     <div className="space-y-4">

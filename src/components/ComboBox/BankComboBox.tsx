@@ -22,7 +22,7 @@ import { UseFormReturn } from "react-hook-form";
 import { z } from "zod";
 import { bankWalletSchema } from "@/features/payments/paymentSchema";
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 
 interface ListItemType {
   id: number;
@@ -38,7 +38,7 @@ export function Combobox({
   List: ListItemType[];
   placeholder?: string;
   title?: string;
-  form: UseFormReturn<CreateUpdateBankPayload>;
+  form: UseFormReturn<CreateUpdatePaymentMethodPayload>;
 }) {
   return (
     <FormField

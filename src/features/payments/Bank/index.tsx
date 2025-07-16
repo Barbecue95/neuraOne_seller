@@ -1,5 +1,5 @@
 import React from "react";
-import { useGetBanks } from "@/queries/bank.queries";
+import { useGetPaymentMethods } from "@/queries/payment-method.queries";
 import {
   ColumnDef,
   getCoreRowModel,
@@ -24,11 +24,11 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { cn } from "@/lib/utils";
-import { CreateUpdateBankPayload } from "@/types/bank.types";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 import AppTable from "@/components/AppTable";
 
 type Props = {
-  data: CreateUpdateBankPayload[];
+  data: CreateUpdatePaymentMethodPayload[];
   isLoading: boolean;
 };
 
