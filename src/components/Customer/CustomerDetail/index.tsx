@@ -4,6 +4,10 @@ import CustomerInfoCard from "./customer-info-card";
 import OrderSummaryCard from "./order-summary-card";
 import ActivityTimeline from "./activity-timeline";
 import { useGetUserById } from "@/queries/users.queries";
+import { OrderTable } from "./OrderTable/order-table";
+import { mockOrders } from "./OrderTable/dummyData";
+import { ChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface CustomerDetailsPageProps {
   customerId: string;
@@ -12,6 +16,7 @@ interface CustomerDetailsPageProps {
 export default function CustomerDetailsPage({
   customerId,
 }: CustomerDetailsPageProps) {
+  const router = useRouter();
   // Mock order data
   const orderData = {
     totalOrders: 20,
@@ -75,24 +80,27 @@ export default function CustomerDetailsPage({
   if (!customerId) return null;
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {/* Left Column - Customer Info */}
-        <div className="lg:col-span-1">
+    <div className="max-w-[1280px] mx-auto p-6">
+      <div className="flex flex-col gap-y-5">
+        <div className="flex items-center gap-1 group cursor-pointer" onClick={() => router.back()}>
+          <ChevronLeft className="w-6 h-6 text-black group-hover:text-[#616FF5]"/>
+          <p className="text-lg font-medium text-black group-hover:text-[#616FF5]">Customer Details</p>
+        </div>
+        <div className="">
           <CustomerInfoCard customerId={customerId} />
         </div>
 
-        {/* Right Column - Orders and Activity */}
-        <div className="space-y-6 lg:col-span-2">
+        <div className="">
+          <OrderTable orders={mockOrders} />
           {/* Order Summary */}
-          <OrderSummaryCard
+          {/* <OrderSummaryCard
             totalOrders={orderData.totalOrders}
             totalSpend={orderData.totalSpend}
             orders={orderData.orders}
-          />
+          /> */}
 
           {/* Activity Timeline */}
-          <ActivityTimeline activities={activityData} />
+          {/* <ActivityTimeline activities={activityData} /> */}
         </div>
       </div>
     </div>

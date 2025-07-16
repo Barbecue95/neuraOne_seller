@@ -1,18 +1,18 @@
 import { User } from "@/types/users.types";
 
 // Simulated seeded regions, cities, townships
-const regions = [
+export const regions = [
   { id: 1, name: "Yangon Region" },
   { id: 2, name: "Mandalay Region" },
 ];
 
-const cities = [
+export const cities = [
   { id: 1, name: "Yangon", regionId: 1 },
   { id: 2, name: "Twante", regionId: 1 },
   { id: 3, name: "Mandalay", regionId: 2 },
 ];
 
-const townships = [
+export const townships = [
   { id: 1, name: "Downtown", cityId: 1 },
   { id: 2, name: "Bahan", cityId: 1 },
   { id: 3, name: "Chanayethazan", cityId: 3 },

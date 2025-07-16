@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useDeleteUser } from "@/queries/users.queries";
 import { SortableHeader } from "./sortable-header";
+import { BlockUserModal } from "../BlockUserModal";
 
 export const CustomerTableColumns = (
   handleSortChange: (value: UserSortOption) => void,
@@ -17,6 +18,7 @@ export const CustomerTableColumns = (
     label: string;
     value: UserSortOption;
   }[],
+  handleBlockOpen: (user:User) => void
 ): ColumnDef<User>[] => {
   const router = useRouter();
   const { mutate: deleteUser } = useDeleteUser();
@@ -27,6 +29,7 @@ export const CustomerTableColumns = (
   const onDeleteProduct = (id: number) => {
     deleteUser(id.toString());
   };
+  
   return [
     {
       id: "select",
@@ -163,7 +166,7 @@ export const CustomerTableColumns = (
 
         return (
           <span
-            className={`inline-block rounded-full px-3 py-1 text-sm font-normal w-24 text-center ${color}`}
+            className={`inline-block w-24 rounded-full px-3 py-1 text-center text-sm font-normal ${color}`}
           >
             {status}
           </span>
@@ -175,22 +178,22 @@ export const CustomerTableColumns = (
       header: "Action",
       enableHiding: false,
       cell: ({ row }) => {
-        const product = row.original;
+        const user = row.original;
         return (
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
-              className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-[#EEEEEE] bg-[#F6F1F4] rounded-full flex items-center justify-center h-8 w-8"
-              onClick={() => onEditProduct(product.id)}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F1F4] transition-all duration-300 hover:scale-105 hover:bg-[#EEEEEE]"
+              onClick={() => onEditProduct(user.id)}
             >
-                <Edit className="h-4 w-4 text-[#616FF5]" />
+              <Edit className="h-4 w-4 text-[#616FF5]" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="cursor-pointer transition-all duration-300 hover:scale-105 hover:bg-[#EEEEEE] bg-[#F6F1F4] rounded-full flex items-center justify-center h-8 w-8"
-              onClick={() => onDeleteProduct(product.id)}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F1F4] transition-all duration-300 hover:scale-105 hover:bg-[#EEEEEE]"
+              onClick={() => handleBlockOpen(user)}
             >
               <BanIcon className="h-4 w-4 rotate-90 text-[#FF3333]" />
             </Button>

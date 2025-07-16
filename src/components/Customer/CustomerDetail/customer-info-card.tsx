@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetUserById } from "@/queries/users.queries";
+import Locationarrow from "./Locationarrow";
 
 interface CustomerInfo {
   id: string;
@@ -18,81 +19,106 @@ interface CustomerInfoCardProps {
   customerId: string;
 }
 
-export default function CustomerInfoCard({ customerId }: CustomerInfoCardProps) {
-  const { data, isLoading: fetchingUserDetail } = useGetUserById(customerId);
-  console.log(data);
-  const rawCustomerData = data?.data;
+export default function CustomerInfoCard({
+  customerId,
+}: CustomerInfoCardProps) {
+  // need to uncomment
+  // const { data, isLoading: fetchingUserDetail } = useGetUserById(customerId);
+  // console.log(data);
+  // const rawCustomerData = data?.data;
+
+  // const customer = {
+  //   id: rawCustomerData?.id,
+  //   name: rawCustomerData?.name,
+  //   phone: rawCustomerData?.phoneNumber,
+  //   email: rawCustomerData?.email,
+  //   address:
+  //     rawCustomerData?.address +
+  //     ", " +
+  //     rawCustomerData?.township +
+  //     ", " +
+  //     rawCustomerData?.city +
+  //     ", " +
+  //     rawCustomerData?.region,
+  //   joinedDate: rawCustomerData?.createdAt,
+  //   status: rawCustomerData?.status,
+  //   gender: rawCustomerData?.gender,
+  //   avatar: "",
+  // };
+
+  // if (fetchingUserDetail) return null;
 
   const customer = {
-    id: rawCustomerData?.id,
-    name: rawCustomerData?.name,
-    phone: rawCustomerData?.phoneNumber,
-    email: rawCustomerData?.email,
+    id: 1234,
+    name: "Jared Padalecki",
+    phone: "09987654321",
+    email: "johnDOe@gmail.com",
     address:
-      rawCustomerData?.address +
-      ", " +
-      rawCustomerData?.township +
-      ", " +
-      rawCustomerData?.city +
-      ", " +
-      rawCustomerData?.region,
-    joinedDate: rawCustomerData?.createdAt,
+      "Shwe Taung Street, Kamayut Township, Yangon NO 123 SHWE TAUNG STREET, ##04-05",
+    joinedDate: "20 July 2025",
+    status: "Active",
+    gender: "Male",
     avatar: "",
   };
 
-  if (fetchingUserDetail) return null;
+  const color =
+    {
+      Active: "bg-green-100 text-green-800",
+      Inactive: "bg-yellow-100 text-yellow-800",
+      Block: "bg-red-100 text-red-800",
+    }[customer.status] ?? "bg-gray-100 text-gray-800";
 
   return (
-    <Card className="bg-gray-100">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">Customer details</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Avatar */}
-        <div className="flex justify-center">
-          <Avatar className="h-24 w-24">
-            <AvatarImage
-              src={customer.avatar || "/placeholder.svg"}
-              alt={customer.name}
-            />
-            <AvatarFallback className="bg-gray-600 text-2xl text-white">
-              {customer.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")
-                .toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+    <div className="flex flex-col items-center justify-center rounded-[20px] bg-white py-4 text-base font-medium md:flex-row md:items-center md:justify-between">
+      <div className="flex md:w-[30%] flex-col md:flex-row items-center justify-center gap-5 p-5 md:p-10">
+        <Avatar className="h-28 w-28">
+          <AvatarImage
+            src={customer.avatar || "/placeholder.svg"}
+            alt={customer.name}
+          />
+          <AvatarFallback className="bg-gray-600 text-2xl text-white">
+            {customer.name
+              .split(" ")
+              .map((n) => n[0])
+              .join("")
+              .toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex flex-col text-center md:items-start justify-center gap-y-1">
+          <p>{customer?.name}</p>
+          <span className="text-base text-[#3C3C3C]">{customer?.id}</span>
         </div>
-
-        {/* Customer Information */}
-        <div className="space-y-4">
-          <div>
-            <div className="mb-1 text-sm text-gray-600">Name</div>
-            <div className="text-sm">{customer.name}</div>
-          </div>
-
-          <div>
-            <div className="mb-1 text-sm text-gray-600">Phone</div>
-            <div className="text-sm">{customer.phone}</div>
-          </div>
-
-          <div>
-            <div className="mb-1 text-sm text-gray-600">Email</div>
-            <div className="text-sm">{customer.email}</div>
-          </div>
-
-          <div>
-            <div className="mb-1 text-sm text-gray-600">Address</div>
-            <div className="text-sm">{customer.address}</div>
-          </div>
-
-          <div>
-            <div className="mb-1 text-sm text-gray-600">Joined date</div>
-            <div className="text-sm">{customer.joinedDate}</div>
-          </div>
+      </div>
+      <div className="flex h-full w-full md:w-[40%] flex-col justify-between space-y-2 md:border-x md:border-[#EEEEEE] p-5">
+        <div className="flex items-start justify-between">
+          <span className="text-[#303030]">Phone Number</span>
+          <p>{customer?.phone}</p>
         </div>
-      </CardContent>
-    </Card>
+        <div className="flex items-start justify-between">
+          <span className="text-[#303030]">Email</span>
+          <p>{customer?.email}</p>
+        </div>
+        <div className="flex items-start justify-between">
+          <span className="text-[#303030]">Gender</span>
+          <p>{customer?.gender}</p>
+        </div>
+        <div className="flex items-start justify-between">
+          <span className="text-[#303030]">Status</span>
+          <span
+            className={`inline-block w-24 rounded-full px-3 py-1 text-center text-sm font-normal ${color}`}
+          >
+            {customer?.status}
+          </span>
+        </div>
+      </div>
+      <div className="flex md:w-[30%] flex-col items-start justify-center gap-y-3 px-5">
+        <span className="text-[#303030]">Address</span>
+        <p>{customer?.address}</p>
+        <div className="flex items-start justify-center gap-1 text-[#303030]">
+          <Locationarrow />
+          <span>Near City Mart</span>
+        </div>
+      </div>
+    </div>
   );
 }
