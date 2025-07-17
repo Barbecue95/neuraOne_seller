@@ -25,12 +25,12 @@ import {
   useUpdatePaymentMethod,
 } from "@/queries/payment-method.queries";
 
-import AddNewWallet from "../../AddNewWallet";
+import UpdateDigital from "../../AddNewWallet/UpdateDigital";
 import CreditCardIcon from "@/utils/icons/CreditCardIcon";
 
 const columnHelper = createColumnHelper<CreateUpdatePaymentMethodPayload>();
 
-// Update Dialog Component (reuses your add form)
+// Update Dialog Component for digital wallets
 const UpdateDialog = ({
   isOpen,
   onOpenChange,
@@ -42,13 +42,20 @@ const UpdateDialog = ({
   initialData: CreateUpdatePaymentMethodPayload;
   onSave: (data: CreateUpdatePaymentMethodPayload) => void;
 }) => {
+  const handleSuccess = () => {
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Update Payment Method</DialogTitle>
+          <DialogTitle>Update Digital Wallet</DialogTitle>
         </DialogHeader>
-        <AddNewWallet />
+        <UpdateDigital 
+          initialData={initialData} 
+          onSuccess={handleSuccess} 
+        />
       </DialogContent>
     </Dialog>
   );

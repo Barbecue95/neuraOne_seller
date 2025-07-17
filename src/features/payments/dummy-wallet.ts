@@ -5,19 +5,23 @@ interface data {
 export const dummyWallet: data[] = [
   {
     id: 1,
-    label: "Paypal",
+    label: "KBZ Pay",
   },
   {
     id: 2,
-    label: "Stripe",
+    label: "UAB Pay",
   },
   {
     id: 3,
-    label: "Credit Card",
+    label: "Wave Money",
   },
   {
     id: 4,
-    label: "KPay",
+    label: "AYA Pay",
+  },
+  {
+    id: 5,
+    label: "CB Pay",
   },
 ];
 export const dummyBank: data[] = [

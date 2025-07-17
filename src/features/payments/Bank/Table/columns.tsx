@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger, // Add this
 } from "@/components/ui/dialog";
-import AddNewWallet from "../../AddNewWallet";
+import UpdateBank from "../../AddNewWallet/UpdateBank";
 import { useState } from "react";
 import {
   useDeletePaymentMethod,
@@ -33,13 +33,20 @@ const UpdateDialog = ({
   initialData: CreateUpdatePaymentMethodPayload;
   onSave: (data: CreateUpdatePaymentMethodPayload) => void;
 }) => {
+  const handleSuccess = () => {
+    onOpenChange(false);
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[625px]">
         <DialogHeader>
-          <DialogTitle>Update Payment Method</DialogTitle>
+          <DialogTitle>Update Bank</DialogTitle>
         </DialogHeader>
-        <AddNewWallet />
+        <UpdateBank 
+          initialData={initialData} 
+          onSuccess={handleSuccess} 
+        />
       </DialogContent>
     </Dialog>
   );

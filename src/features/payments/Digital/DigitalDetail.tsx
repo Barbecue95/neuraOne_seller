@@ -99,24 +99,14 @@ export default function DigitalDetail({
                   <Input
                     title="QR Code"
                     id="qrCodeUrl"
-                    placeholder="Enter QR Code"
-                    type="file"
-                    accept="image/png, image/jpeg"
+                    placeholder="Enter QR Code URL"
+                    type="text"
                     className="hidden"
-                    {...field}
-                    // TODO: Handle file upload properly
-                    // onChange={(e) => {
-                    //   if (!!e?.target?.files) {
-                    //     field.onChange({
-                    //       target: {
-                    //         value: e.target.files[0],
-                    //         name: field.name,
-                    //       },
-                    //     });
-                    //   }
-                    // }}
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
                   />
-                  {/* <span className="text-muted-foreground">Upload QR Code</span> */}
+                  {/* <span className="text-muted-foreground">QR Code URL (Optional)</span> */}
                 </label>
               </FormControl>
               <FormMessage />
