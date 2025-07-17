@@ -1,26 +1,34 @@
-"use client"
+"use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { X, Ban } from "lucide-react"
-import Image from "next/image"
-import { User } from "@/types/users.types"
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { X, Ban } from "lucide-react";
+import Image from "next/image";
+import { User } from "@/types/users.types";
 
 interface BlockUserModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onBlock: () => void
-  user: User | null
+  isOpen: boolean;
+  onClose: () => void;
+  onBlock: () => void;
+  user: User | null;
 }
 
-export function BlockUserModal({ isOpen, onClose, onBlock, user }: BlockUserModalProps) {
+export function BlockUserModal({
+  isOpen,
+  onClose,
+  onBlock,
+  user,
+}: BlockUserModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent showCloseButton={false} className="sm:max-w-md p-0 gap-0 bg-white rounded-2xl border-0 shadow-xl">
+      <DialogContent
+        showCloseButton={false}
+        className="gap-0 rounded-2xl border-0 bg-white p-0 shadow-xl sm:max-w-md"
+      >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute cursor-pointer right-4 top-4 z-10 rounded-full p-1 hover:bg-gray-100 transition-colors"
+          className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-1 transition-colors hover:bg-gray-100"
         >
           <X className="h-5 w-5 text-gray-500" />
         </button>
@@ -29,45 +37,51 @@ export function BlockUserModal({ isOpen, onClose, onBlock, user }: BlockUserModa
         <div className="flex flex-col items-center px-6 py-8 text-center">
           {/* Profile image with block icon */}
           <div className="relative mb-4">
-            <div className="w-20 h-20 rounded-full overflow-hidden">
+            <div className="h-20 w-20 overflow-hidden rounded-full">
               <Image
                 src={"/placeholder.svg?height=80&width=80"}
                 alt={user?.name || "user"}
                 width={80}
                 height={80}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </div>
             {/* Block icon overlay */}
-            <div className="absolute -bottom-1 -right-1 w-7 h-7 bg-red-500 rounded-full flex items-center justify-center border-2 border-white">
-              <Ban className="h-4 w-4 text-white" />
-            </div>
+            {user?.status === "ACTIVE" && (
+              <div className="absolute -right-1 -bottom-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-red-500">
+                <Ban className="h-4 w-4 text-white" />
+              </div>
+            )}
           </div>
 
           {/* User name */}
-          <h2 className="text-lg font-normal text-[#303030] mb-3">{user?.name}</h2>
+          <h2 className="mb-3 text-lg font-normal text-[#303030]">
+            {user?.name}
+          </h2>
 
           {/* Confirmation text */}
-          <p className="text-black mb-6 font-medium text-lg">Do you want to block this account?</p>
+          <p className="mb-6 text-lg font-medium text-black">
+            Do you want to {user?.status === "ACTIVE" ? "block": "unblock"} this account?
+          </p>
 
           {/* Action buttons */}
-          <div className="flex gap-3 w-full">
+          <div className="flex w-full gap-3">
             <Button
               onClick={onClose}
               variant="secondary"
-              className="flex-1 bg-gray-400 hover:bg-gray-500 text-white border-0 rounded-full py-3 font-medium"
+              className="cursor-pointer flex-1 rounded-full border-0 bg-gray-400 py-3 font-medium text-white hover:bg-gray-500"
             >
               Cancel
             </Button>
             <Button
               onClick={onBlock}
-              className="flex-1 bg-red-500 hover:bg-red-600 text-white border-0 rounded-full py-3 font-medium"
+              className="cursor-pointer flex-1 rounded-full border-0 bg-red-500 py-3 font-medium text-white hover:bg-red-600"
             >
-              Block
+              {user?.status === "ACTIVE" ? "Block": "Unblock"}
             </Button>
           </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

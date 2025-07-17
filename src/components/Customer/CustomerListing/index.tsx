@@ -62,25 +62,25 @@ export default function CustomerList({
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const refetchCustomerList = () => {};
-  const isLoadingCustomer = false;
-  const rawCustomerLists = getDummyUsers({
-    page: pagination.page,
-    size: pagination.size,
-    searchText: debouncedSearchQuery,
-  });
-  console.log(rawCustomerLists);
-
-  // const {
-  //   data: rawCustomerLists,
-  //   isLoading: isLoadingCustomer,
-  //   refetch: refetchCustomerList,
-  // } = useUsers({
-  //   sort: sortBy,
+  // const refetchCustomerList = () => {};
+  // const isLoadingCustomer = false;
+  // const rawCustomerLists = getDummyUsers({
   //   page: pagination.page,
-  //   limit: pagination.size,
+  //   size: pagination.size,
   //   searchText: debouncedSearchQuery,
   // });
+  // console.log(rawCustomerLists);
+
+  const {
+    data: rawCustomerLists,
+    isLoading: isLoadingCustomer,
+    refetch: refetchCustomerList,
+  } = useUsers({
+    sort: sortBy,
+    page: pagination.page,
+    limit: pagination.size,
+    searchText: debouncedSearchQuery,
+  });
   const customerLists = rawCustomerLists?.data ?? [];
 
   // useEffect(() => {

@@ -14,6 +14,7 @@ import type { PaginationInfo } from "@/types/product.types";
 import TableWrapper from "./customer-table-wrapper";
 import { User, UserSortOption } from "@/types/users.types";
 import { BlockUserModal } from "../BlockUserModal";
+import { useUpdateUserStatus } from "@/queries/users.queries";
 
 interface CustomerTableProps {
   data: User[];
@@ -40,24 +41,34 @@ const CustomerTable = ({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [toBlockUser, setToBlockUser] = useState<User | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [toBlockUser, setToBlockUser] = useState<User | null>(null);
+
+  const { mutate: updateStatus } = useUpdateUserStatus();
 
   const handleBlock = () => {
-    console.log("User blocked!")
-    setIsModalOpen(false)
-    // Add your block logic here
-  }
+    console.log("User blocked!");
+    setIsModalOpen(false);
+    const payload = {
+      userId: toBlockUser?.id!,
+      status: toBlockUser?.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE",
+    };
+    updateStatus(payload);
+  };
 
   const handleBlockOpen = (user: User) => {
     setIsModalOpen(true);
     setToBlockUser(user);
-  }
+  };
 
   const handleClose = () => {
-    setIsModalOpen(false)
-  }
-  const columns = CustomerTableColumns(handleSortChange, sortOptions, handleBlockOpen);
+    setIsModalOpen(false);
+  };
+  const columns = CustomerTableColumns(
+    handleSortChange,
+    sortOptions,
+    handleBlockOpen,
+  );
 
   const table = useReactTable({
     data,
@@ -85,7 +96,7 @@ const CustomerTable = ({
         onPageSizeChange={onPageSizeChange}
       />
       <BlockUserModal
-        isOpen={(isModalOpen && !!toBlockUser)}
+        isOpen={isModalOpen && !!toBlockUser}
         onClose={handleClose}
         onBlock={handleBlock}
         user={toBlockUser}

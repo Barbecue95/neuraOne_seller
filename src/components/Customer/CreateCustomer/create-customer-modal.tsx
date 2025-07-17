@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -37,6 +37,12 @@ import { Loader2, Plus, PlusCircle } from "lucide-react";
 import { User } from "@/types/users.types";
 import { useRegisterUser } from "@/queries/users.queries";
 import { cities, regions, townships } from "../CustomerListing/dummy-data";
+import {
+  useGetCities,
+  useGetRegions,
+  useGetTownships,
+} from "@/queries/location.queries";
+import { City, Region, Township } from "@/types/location.types";
 
 // Zod validation schema
 // TODO: Need to separate and move to schema file
@@ -54,7 +60,7 @@ const customerSchema = z
     // }),
     regionId: z.number().min(1, "Please select a region"),
     cityId: z.union([z.number().min(1), z.undefined()]).optional(), // Make city optional
-    townshipId: z.union([z.number().min(1), z.undefined()]).optional(), 
+    townshipId: z.union([z.number().min(1), z.undefined()]).optional(),
     address: z.string().min(5, "Address must be at least 5 characters"),
     floorNo: z.string().optional(),
     unit: z.string().optional(),
@@ -111,19 +117,29 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
     },
   });
 
-  // Watch the selected region and city
-  const selectedRegionId = form.watch("regionId");
-  const selectedCityId = form.watch("cityId");
+  const selectedRegionId = useWatch({ control: form.control, name: "regionId" });
+  const selectedCityId = useWatch({ control: form.control, name: "cityId" });
 
+  // Reset dependent selects
+  useEffect(() => {
+    form.setValue("cityId", undefined);
+    form.setValue("townshipId", undefined);
+  }, [selectedRegionId]);
+
+  useEffect(() => {
+    form.setValue("townshipId", undefined);
+  }, [selectedCityId]);
+
+  const { data: regions } = useGetRegions();
+  const { data: cities } = useGetCities(selectedRegionId?.toString() ?? "");
+  const { data: townships } = useGetTownships(selectedCityId?.toString() ?? "");
+
+  const filterRegions = regions?.data || [];
   // Filter cities based on selected region
-  const filteredCities = selectedRegionId
-    ? cities.filter((city) => city.regionId === selectedRegionId)
-    : [];
+  const filteredCities = cities?.data || [];
 
   // Filter townships based on selected city
-  const filteredTownships = selectedCityId
-    ? townships.filter((township) => township.cityId === selectedCityId)
-    : [];
+  const filteredTownships = townships?.data || [];
 
   // Reset city and township when region changes
   useEffect(() => {
@@ -167,8 +183,6 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
   const { mutateAsync: createCustomer, isLoading } = useRegisterUser();
 
   const onSubmit = async (data: CustomerFormData) => {
-    console.log("Click me");
-    
     const payload: Partial<User> = {
       name: data.customerName,
       phoneNumber: data.phoneNumber,
@@ -176,7 +190,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
       // member_level: data.memberLevel,
       gender: genders[Number(data.gender)]?.name,
       // areaType: data.addressType.toLowerCase() === "local" ? "LOCAL" : "OTHER",
-      age: 20,
+      // age: 20,
       regionId: data.regionId,
       cityId: data.cityId,
       townshipId: data.townshipId,
@@ -184,21 +198,19 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
       floorNo: data.floorNo || undefined,
       unit: data.unit || undefined,
       password: data.password,
+      role: "USER",
     };
-    try {
-      console.log("API Payload:", payload);
+    console.log("API Payload:", payload);
 
-      const response = await createCustomer(payload);
-
-      if (response.success) {
+    await createCustomer(payload)
+      .then((response) => {
         console.log("Customer created successfully:", response.data);
         form.reset();
         setIsOpen(false);
-      }
-    } catch (error) {
-      console.error("Error creating customer:", error);
-    } finally {
-    }
+      })
+      .catch((error) => {
+        console.log("Error creating customer:", error?.response?.data?.error);
+      });
   };
 
   return (
@@ -305,7 +317,10 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                       </FormControl>
                       <SelectContent>
                         {genders.map((gender) => (
-                          <SelectItem key={gender.id} value={gender.id?.toString()}>
+                          <SelectItem
+                            key={gender.id}
+                            value={gender.id?.toString()}
+                          >
                             {gender.name}
                           </SelectItem>
                         ))}
@@ -369,8 +384,11 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {regions.map((region) => (
-                          <SelectItem key={region.id} value={region.id.toString()}>
+                        {filterRegions.map((region: Region) => (
+                          <SelectItem
+                            key={region.id}
+                            value={region.id.toString()}
+                          >
                             {region.name}
                           </SelectItem>
                         ))}
@@ -400,7 +418,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {filteredCities.map((city) => (
+                        {filteredCities.map((city: City) => (
                           <SelectItem key={city.id} value={city.id.toString()}>
                             {city.name}
                           </SelectItem>
@@ -428,7 +446,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                         field.onChange(Number(value));
                       }}
                       value={field.value?.toString()}
-                      disabled={!selectedCityId} 
+                      disabled={!selectedCityId}
                     >
                       <FormControl>
                         <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
@@ -436,7 +454,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {filteredTownships.map((township) => (
+                        {filteredTownships.map((township: Township) => (
                           <SelectItem
                             key={township.id}
                             value={township.id.toString()}
