@@ -8,7 +8,7 @@ export type GetPaymentMethodListPayload = {
 export const CreateUpdatePaymentMethodPayloadSchema = z.object({
   id: z.number().min(1, { message: "ID is required" }).optional(),
   name: z.string().min(1, { message: "Name is required" }),
-  qrCodeUrl: z.string().min(1, { message: "QR Code is required" }).optional(),
+  qrCodeUrl: z.string().optional(),
   accountType: z.enum(["BANK", "PAY"], {
     required_error: "Account type is required",
     invalid_type_error: "Account type must be either 'BANK' or 'PAY'",

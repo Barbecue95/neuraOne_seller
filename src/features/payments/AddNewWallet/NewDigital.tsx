@@ -30,18 +30,20 @@ const NewDigital = () => {
     },
   });
 
-  const { mutate: createBank } = useCreatePaymentMethod(form);
+  const { mutate: createPaymentMethod } = useCreatePaymentMethod(form);
 
   const onSubmit = (data: CreateUpdatePaymentMethodPayload) => {
     console.log("Form submitted with data:", data);
     const payload = {
       accountType: data.accountType,
-      name: data.accountName,
+      name: data.name,
       accountNo: data.accountNo,
       accountName: data.accountName,
       cashOnDelivery: false, // Assuming this is not applicable for digital wallets
+      qrCodeUrl: data.qrCodeUrl, // Include qrCodeUrl field (optional)
+      imageUrl: data.imageUrl, // Include imageUrl field (optional)
     };
-    createBank(payload);
+    createPaymentMethod(payload);
   };
 
   return (
@@ -50,14 +52,8 @@ const NewDigital = () => {
         <DigitalDetail form={form} />
         <div className="flex w-full flex-row gap-2">
           <DialogTrigger asChild>
-            <Button
-              variant="outline"
-              onClick={() => {
-                form.reset();
-              }}
-              className="w-1/2"
-            >
-              Cancel
+            <Button variant="outline" onClick={() => {}} className="w-1/2">
+              Save as Draft
             </Button>
           </DialogTrigger>
           <Button type="submit" className="w-1/2">

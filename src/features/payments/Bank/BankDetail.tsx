@@ -43,7 +43,7 @@ export default function BankDetail({
           return (
             <Combobox
               List={dummyBank}
-              title="Select a bank"
+              title="Bank"
               placeholder="Search bank ....."
               form={form}
               {...field}
@@ -100,7 +100,7 @@ export default function BankDetail({
               <FormControl>
                 <Input
                   title="Account Name"
-                  placeholder="Enter Account Name"
+                  placeholder="Account Name"
                   {...field}
                 />
               </FormControl>
@@ -116,7 +116,7 @@ export default function BankDetail({
           return (
             <FormItem>
               <FormControl>
-                <Input placeholder="Enter Account Number" {...field} />
+                <Input placeholder="Account Number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

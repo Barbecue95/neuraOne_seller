@@ -29,7 +29,8 @@ export default function ProductList({
   onDeleteProduct,
 }: ProductListProps) {
   const { getParam } = useQueryParams();
-const sortBy = getParam("sortBy") as ProductSortOption ?? ProductSortOption.NEWEST;
+  const sortBy =
+    (getParam("sortBy") as ProductSortOption) ?? ProductSortOption.NEWEST;
   const [products, setProducts] = useState<Product[]>([]);
   // const [sorting, setSorting] = useState<ProductSortOption>(
   //   sortBy as ProductSortOption ?? ProductSortOption.NEWEST,
@@ -105,7 +106,7 @@ const sortBy = getParam("sortBy") as ProductSortOption ?? ProductSortOption.NEWE
     );
 
   return (
-    <div className="w-full space-y-4 bg-white">
+    <div className="w-full space-y-4">
       <ProductListHeader
         onImport={onImport}
         onExport={onExport}

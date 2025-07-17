@@ -55,7 +55,7 @@ const Bank = ({ data, isLoading }: Props) => {
 
   return (
     <div>
-      <div className="mx-8 my-4 rounded-md border">
+      <div className="my-4 rounded-md">
         {/* @ts-expect-error table type cannot be inferred for all of table */}
         <AppTable table={table} columns={bankColumns} />
       </div>

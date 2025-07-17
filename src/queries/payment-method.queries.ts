@@ -1,17 +1,20 @@
-import { 
-  createPaymentMethod, 
-  getPaymentMethods, 
-  updatePaymentMethod, 
-  deletePaymentMethod, 
+import {
+  createPaymentMethod,
+  getPaymentMethods,
+  updatePaymentMethod,
+  deletePaymentMethod,
   getPaymentMethodById,
   // Legacy imports for backward compatibility
-  createBank, 
-  getBanks, 
-  updateBank, 
-  deleteBank, 
-  getBankById 
+  createBank,
+  getBanks,
+  updateBank,
+  deleteBank,
+  getBankById,
 } from "@/services/payment-method.services";
-import { CreateUpdatePaymentMethodPayload, CreateUpdateBankPayload } from "@/types/payment-method.types";
+import {
+  CreateUpdatePaymentMethodPayload,
+  CreateUpdateBankPayload,
+} from "@/types/payment-method.types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 // New payment method hooks
@@ -24,12 +27,15 @@ export const useGetPaymentMethods = () => {
 
 export const useCreatePaymentMethod = (form: { reset: () => void }) => {
   const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: (payload: CreateUpdatePaymentMethodPayload) => createPaymentMethod(payload),
+    mutationFn: (payload: CreateUpdatePaymentMethodPayload) =>
+      createPaymentMethod(payload),
     onSuccess: () => {
       form.reset();
       queryClient.invalidateQueries({ queryKey: ["PaymentMethods"] });
+    },
+    onError: (error) => {
+      console.error("Error creating payment method:", error);
     },
   });
 };
@@ -56,7 +62,9 @@ export const useUpdatePaymentMethod = () => {
     onSuccess: (data, variables) => {
       // Invalidate both the payment methods list and the specific payment method
       queryClient.invalidateQueries({ queryKey: ["PaymentMethods"] });
-      queryClient.invalidateQueries({ queryKey: ["PaymentMethod", variables.id] });
+      queryClient.invalidateQueries({
+        queryKey: ["PaymentMethod", variables.id],
+      });
     },
   });
 };

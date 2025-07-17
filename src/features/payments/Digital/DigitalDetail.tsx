@@ -43,11 +43,44 @@ export default function DigitalDetail({
           return (
             <Combobox
               List={dummyWallet}
-              title="Select a wallet"
+              title="Digital Wallet"
               placeholder="Search wallet ....."
               form={form}
               {...field}
             />
+          );
+        }}
+      />
+
+      <FormField
+        control={form.control}
+        name="accountName"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <Input
+                  title="Account Name"
+                  placeholder="Account Name"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
+      <FormField
+        control={form.control}
+        name="accountNo"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <Input placeholder="Account Phone Number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           );
         }}
       />
@@ -62,7 +95,7 @@ export default function DigitalDetail({
                   className="flex cursor-pointer flex-row items-center gap-2 text-sm font-medium"
                   htmlFor="qrCodeUrl"
                 >
-                  <div className="bg-accent-foreground size-44" />
+                  <div className="size-44 rounded-3xl border-2 border-dashed bg-transparent" />
                   <Input
                     title="QR Code"
                     id="qrCodeUrl"
@@ -83,40 +116,8 @@ export default function DigitalDetail({
                     //   }
                     // }}
                   />
-                  <span className="text-muted-foreground">Upload QR Code</span>
+                  {/* <span className="text-muted-foreground">Upload QR Code</span> */}
                 </label>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          );
-        }}
-      />
-      <FormField
-        control={form.control}
-        name="accountName"
-        render={({ field }) => {
-          return (
-            <FormItem>
-              <FormControl>
-                <Input
-                  title="Account Name"
-                  placeholder="Enter Account Name"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          );
-        }}
-      />
-      <FormField
-        control={form.control}
-        name="accountNo"
-        render={({ field }) => {
-          return (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="Enter Phone Number" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

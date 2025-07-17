@@ -64,10 +64,10 @@ const Digital = ({ data, isLoading, pagination }: Props) => {
 
   return (
     <div>
-      <div className="mx-8 my-4 rounded-md border">
-        {/* @ts-expect-error table type cannot be inferred */}
+      <div className="rounded-xl px-4 py-6 shadow-sm">
         <AppTable table={table} columns={digitalColumns} />
       </div>
+
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
         <div className="flex flex-row items-center gap-2">
           <span className="text-nowrap">
@@ -83,9 +83,9 @@ const Digital = ({ data, isLoading, pagination }: Props) => {
               table.setPageSize(Number(value));
             }}
           >
-            <SelectTrigger className="w-16">
+            {/* <SelectTrigger className="w-16">
               <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
+            </SelectTrigger> */}
             <SelectContent className="min-w-16">
               {[8, 10, 20, 30, 40, 50].map((pageSize) => (
                 <SelectItem key={pageSize} value={pageSize.toString()}>

@@ -1,8 +1,17 @@
 "use client";
+import { useState } from "react";
 import { z } from "zod";
-import { createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper, Row } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { DeleteIcon, EditIcon, EyeIcon, Trash } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose,
+} from "@/components/ui/dialog";
+import { EditIcon, Trash2 } from "lucide-react";
 import { dummyWallet } from "../../dummy-wallet";
 import Image from "next/image";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,104 +25,209 @@ import {
   useUpdatePaymentMethod,
 } from "@/queries/payment-method.queries";
 
+import AddNewWallet from "../../AddNewWallet";
+import CreditCardIcon from "@/utils/icons/CreditCardIcon";
+
 const columnHelper = createColumnHelper<CreateUpdatePaymentMethodPayload>();
 
+// Update Dialog Component (reuses your add form)
+const UpdateDialog = ({
+  isOpen,
+  onOpenChange,
+  initialData,
+  onSave,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  initialData: CreateUpdatePaymentMethodPayload;
+  onSave: (data: CreateUpdatePaymentMethodPayload) => void;
+}) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[625px]">
+        <DialogHeader>
+          <DialogTitle>Update Payment Method</DialogTitle>
+        </DialogHeader>
+        <AddNewWallet />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Delete Confirmation Dialog
+const DeleteDialog = ({
+  isOpen,
+  onOpenChange,
+  onConfirm,
+  isLoading,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+  isLoading: boolean;
+}) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle></DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center py-4">
+          <CreditCardIcon />
+          <p>Do you want to delete this wallet?</p>
+          <p className="text-muted-foreground mt-2 text-sm">
+            This action cannot be undone.
+          </p>
+        </div>
+        <div className="flex w-full justify-center">
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button className="w-50 rounded-full" variant="outline">
+                Cancel
+              </Button>
+            </DialogClose>
+            <Button
+              variant="destructive"
+              onClick={onConfirm}
+              disabled={isLoading}
+              className="w-50 rounded-full"
+            >
+              {isLoading ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Actions Cell Component
+const ActionsCell = ({
+  row,
+}: {
+  row: Row<CreateUpdatePaymentMethodPayload>;
+}) => {
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { mutateAsync: deletePaymentMethod, isLoading: isDeleting } =
+    useDeletePaymentMethod();
+  const { mutate: updatePaymentMethod } = useUpdatePaymentMethod();
+
+  const handleUpdate = (data: CreateUpdatePaymentMethodPayload) => {
+    updatePaymentMethod(data);
+  };
+
+  const handleDelete = async () => {
+    if (row.original.id !== undefined) {
+      await deletePaymentMethod(row.original.id);
+      setDeleteDialogOpen(false);
+    }
+  };
+
+  return (
+    <div className="flex flex-row gap-2">
+      {/* Update Dialog Trigger */}
+      <Button
+        variant="default"
+        className="rounded-full"
+        size="icon"
+        onClick={() => setUpdateDialogOpen(true)}
+      >
+        <EditIcon className="h-4 w-4" />
+      </Button>
+
+      {/* Delete Dialog Trigger */}
+      <Button
+        variant="destructive"
+        className="rounded-full"
+        size="icon"
+        onClick={() => setDeleteDialogOpen(true)}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+
+      {/* Update Dialog */}
+      <UpdateDialog
+        isOpen={updateDialogOpen}
+        onOpenChange={setUpdateDialogOpen}
+        initialData={row.original}
+        onSave={handleUpdate}
+      />
+
+      {/* Delete Dialog */}
+      <DeleteDialog
+        isOpen={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleDelete}
+        isLoading={isDeleting}
+      />
+    </div>
+  );
+};
 export const digitalColumns = [
+  // Checkbox column
   columnHelper.display({
-    id: "id_select",
-    header: () => {
-      return <Checkbox />;
-    },
-    cell: ({ row }) => {
-      return <Checkbox name={row.id} id={row.id} />;
-    },
+    id: "select",
+    header: () => <Checkbox />,
+    cell: ({ row }) => <Checkbox />,
   }),
 
-  columnHelper.accessor("id", {
-    header: "Digital Pay",
-    cell: (info) => {
-      return (
-        <span className="flex flex-row items-center gap-2">
-          {/* {info.row.original.imageUrl.length > 0 && (
-            <Image
-              src={info.row.original.imageUrl || ""}
-              width={50}
-              height={50}
-              className="size-12"
-              alt="qr-code"
-            />
-          )} */}
-        </span>
-      );
-    },
-  }),
-  columnHelper.accessor("name", {
-    header: "Pay Name",
+  // Wallet name (left-aligned)
+  columnHelper.display({
+    id: "wallet",
+    header: () => <div className="text-left">Wallet name</div>,
+    cell: ({ row }) => (
+      <div className="flex items-center gap-3">
+        <Image
+          src={row.original.icon || "/default-wallet.png"}
+          alt={row.original.name}
+          width={30}
+          height={30}
+          className="rounded-md"
+        />
+        <span className="font-medium">{row.original.name}</span>
+      </div>
+    ),
   }),
 
-  // columnHelper.accessor("status", {
-  //   header: "Status",
-  // }),
+  // Spacer with fixed width, invisible content
   columnHelper.display({
-    id: "actions",
-    header: "Actions",
+    id: "spacer",
+    header: () => <div className="invisible w-32">Spacer</div>,
+    cell: () => <div className="invisible w-32">Spacer</div>,
+  }),
+
+  // Status column (right-aligned)
+  columnHelper.accessor("status", {
+    header: () => <div className="text-right">Status</div>,
     cell: ({ row }) => {
-      const { mutate: deletePaymentMethod } = useDeletePaymentMethod();
-      const { mutate: updatePaymentMethod } = useUpdatePaymentMethod();
-      const handleUpdate = () => {
-        const payload = {
-          id: row.original.id,
-          name: row.original.name,
-          accountNo: row.original.accountNo,
-          accountName: row.original.accountName,
-          qrCodeUrl: row.original.qrCodeUrl,
-          cashOnDelivery: row.original.cashOnDelivery,
-          imageUrl: row.original.imageUrl,
-          // Add other fields as needed for updating
-        };
-        if (payload.id !== undefined) {
-          updatePaymentMethod(payload);
-        }
-      };
-      const handleDelete = () => {
-        const payload = {
-          id: row.original.id,
-        };
-        if (payload.id !== undefined) {
-          deletePaymentMethod(payload.id);
-        }
-      };
+      const status = row.original.status;
+      const badgeColor =
+        status === "Active"
+          ? "bg-green-100 text-green-700"
+          : "bg-yellow-100 text-yellow-700";
+
       return (
-        <div className="flex flex-row gap-2">
-          {/* <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={() => {
-              window.location.href = `/payments/digital/${row.id}`;
-            }}
+        <div className="flex justify-end">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeColor}`}
           >
-            <EyeIcon className="h-4 w-4" />
-          </Button> */}
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={handleUpdate}
-          >
-            <EditIcon className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={handleDelete}
-          >
-            {/* <DeleteIcon className="h-4 w-4" /> */}
-            <Trash className="h-4 w-4" />
-          </Button>
+            {status}
+          </span>
         </div>
       );
     },
+  }),
+
+  // Actions column (right-aligned)
+  columnHelper.display({
+    id: "actions",
+    header: () => <div className="text-right">Action</div>,
+    cell: ({ row }) => (
+      <div className="flex justify-end gap-2">
+        <ActionsCell row={row} />
+      </div>
+    ),
   }),
 ];

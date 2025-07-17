@@ -52,22 +52,36 @@ const Wallet = () => {
             </DialogTrigger>
           </div>
         </div>
-        <Tabs defaultValue="digital" className="w-full">
-          <TabsList className="mx-8">
-            <TabsTrigger value="digital">Digital Wallet</TabsTrigger>
-            <TabsTrigger value="bank">Bank</TabsTrigger>
-          </TabsList>
-          <TabsContent value="digital">
-            <Digital
-              data={digitalData}
-              isLoading={isLoading}
-              pagination={data?.meta}
-            />
-          </TabsContent>
-          <TabsContent value="bank">
-            <Bank data={bankData} isLoading={isLoading} />
-          </TabsContent>
+        <Tabs defaultValue="digital" className="w-full px-8">
+          <div className="b rounded-2xl border px-4 pt-4 pb-6 shadow-sm">
+            <TabsList className="mb-4 flex w-fit gap-2 rounded-full bg-transparent p-1">
+              <TabsTrigger
+                value="digital"
+                className="rounded-full px-6 py-2 text-gray-500 transition data-[state=active]:border-blue-600 data-[state=active]:font-semibold"
+              >
+                Digital Wallet
+              </TabsTrigger>
+              <TabsTrigger
+                value="bank"
+                className="rounded-full px-6 py-2 text-gray-500 transition data-[state=active]:font-semibold"
+              >
+                Bank
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="digital">
+              <Digital
+                data={digitalData}
+                isLoading={isLoading}
+                pagination={data?.meta}
+              />
+            </TabsContent>
+            <TabsContent value="bank">
+              <Bank data={bankData} isLoading={isLoading} />
+            </TabsContent>
+          </div>
         </Tabs>
+
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add New Wallet</DialogTitle>
