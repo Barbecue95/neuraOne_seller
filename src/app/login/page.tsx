@@ -67,7 +67,7 @@ export default function LoginPage() {
     <>
       <div
         className={cn(
-          "hidden h-full md:flex",
+          "hidden h-full md:block",
           isMorning() || isAfternoon() ? "bg-white" : "bg-[#303030]",
         )}
       >
