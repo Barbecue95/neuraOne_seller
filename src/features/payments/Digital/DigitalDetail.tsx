@@ -12,6 +12,7 @@ import {
 import { digitalWalletSchema } from "../paymentSchema";
 import { z } from "zod";
 import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
+import { ImageIcon } from "lucide-react";
 
 export default function DigitalDetail({
   form,
@@ -95,12 +96,14 @@ export default function DigitalDetail({
                   className="flex cursor-pointer flex-row items-center gap-2 text-sm font-medium"
                   htmlFor="qrCodeUrl"
                 >
-                  <div className="size-44 rounded-3xl border-2 border-dashed bg-transparent" />
+                  <div className="flex size-44 items-center justify-center rounded-3xl border-2 border-dashed bg-transparent">
+                    <ImageIcon />
+                  </div>
                   <Input
                     title="QR Code"
                     id="qrCodeUrl"
                     placeholder="Enter QR Code URL"
-                    type="text"
+                    type="file"
                     className="hidden"
                     value={field.value || ""}
                     onChange={field.onChange}

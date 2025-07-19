@@ -19,7 +19,7 @@ export const categoryEndpoints = {
 const USER_BASE_PATH = "/users";
 export const userEndpoints = {
   users: USER_BASE_PATH,
-  login: `${USER_BASE_PATH}/login`,
+  login: `${USER_BASE_PATH}/loginSeller`,
   register: `${USER_BASE_PATH}/register`,
   refreshToken: `${USER_BASE_PATH}/refreshToken`,
 

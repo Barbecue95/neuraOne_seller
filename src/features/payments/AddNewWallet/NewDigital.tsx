@@ -14,8 +14,10 @@ import {
   CreateUpdatePaymentMethodPayload,
   CreateUpdatePaymentMethodPayloadSchema,
 } from "@/types/payment-method.types";
+import { useState } from "react";
 
 const NewDigital = () => {
+  const [isActive, setIsActive] = useState("ACTIVE");
   // 1. Define your form.
   const form = useForm<CreateUpdatePaymentMethodPayload>({
     resolver: zodResolver(CreateUpdatePaymentMethodPayloadSchema),
@@ -41,7 +43,8 @@ const NewDigital = () => {
       accountName: data.accountName,
       cashOnDelivery: false, // Assuming this is not applicable for digital wallets
       qrCodeUrl: data.qrCodeUrl, // Include qrCodeUrl field (optional)
-      imageUrl: data.imageUrl, // Include imageUrl field (optional)
+      imageUrl: data.imageUrl,
+      status: isActive === "ACTIVE" ? "ACTIVE" : "DRAFT",
     };
     createPaymentMethod(payload);
   };
@@ -52,7 +55,14 @@ const NewDigital = () => {
         <DigitalDetail form={form} />
         <div className="flex w-full flex-row gap-2">
           <DialogTrigger asChild>
-            <Button variant="outline" onClick={() => {}} className="w-1/2">
+            <Button
+              variant="outline"
+              type="submit"
+              onClick={() => {
+                setIsActive("DRAFT");
+              }}
+              className="w-1/2"
+            >
               Save as Draft
             </Button>
           </DialogTrigger>

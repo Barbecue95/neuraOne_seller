@@ -5,9 +5,7 @@ import { jwtVerify } from "jose";
 const JWT_SECRET = process.env.JWT_SECRET!;
 const encoder = new TextEncoder();
 
-const publicRoutes = [
-  "/login",
-];
+const publicRoutes = ["/login"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -16,15 +14,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = request.cookies.get("token")?.value;
-
+  const token = request.cookies.get("accessToken")?.value;
+  // console.log("token", token);
   if (!token) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
   try {
     const secret = encoder.encode(JWT_SECRET);
+    // console.log("secret", secret);
     const { payload } = await jwtVerify(token, secret);
+    // console.log("payload", payload);
 
     return NextResponse.next();
   } catch (err) {
@@ -34,5 +34,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico|api).*)"],
+  matcher: ["/((?!_next|favicon.ico|api|images).*)"],
 };
