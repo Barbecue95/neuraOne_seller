@@ -34,7 +34,7 @@ export interface GetDummyProductsParams {
 
 export enum ProductStatus {
   PUBLISHED = "PUBLISH",
-  SCHEDULED = "SCHEDULED",
+  SCHEDULED = "SCHEDULE",
   DRAFT = "DRAFT",
 }
 

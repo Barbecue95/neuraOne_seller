@@ -2,8 +2,8 @@
 
 import type React from "react";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {
@@ -30,12 +30,16 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, PlusCircle } from "lucide-react";
 import { User } from "@/types/users.types";
 import { useRegisterUser } from "@/queries/users.queries";
+import {
+  useGetCities,
+  useGetRegions,
+  useGetTownships,
+} from "@/queries/location.queries";
+import { City, Region, Township } from "@/types/location.types";
 
 // Zod validation schema
 // TODO: Need to separate and move to schema file
@@ -46,13 +50,14 @@ const customerSchema = z
       .min(2, "Customer name must be at least 2 characters"),
     phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
     email: z.string().email("Please enter a valid email address"),
-    memberLevel: z.string().min(1, "Please select a member level"),
-    addressType: z.enum(["local", "other"], {
-      required_error: "Please select address type",
-    }),
-    region: z.string().min(1, "Please select a region"),
-    city: z.string().min(1, "Please select a city"),
-    township: z.string().min(1, "Please select a township"),
+    // memberLevel: z.string().min(1, "Please select a member level"),
+    gender: z.string().min(1, "Please select gender"),
+    // addressType: z.enum(["local", "other"], {
+    //   required_error: "Please select address type",
+    // }),
+    regionId: z.number().min(1, "Please select a region"),
+    cityId: z.union([z.number().min(1), z.undefined()]).optional(), // Make city optional
+    townshipId: z.union([z.number().min(1), z.undefined()]).optional(),
     address: z.string().min(5, "Address must be at least 5 characters"),
     floorNo: z.string().optional(),
     unit: z.string().optional(),
@@ -95,11 +100,12 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
       customerName: "",
       phoneNumber: "",
       email: "",
-      memberLevel: "",
-      addressType: "local",
-      region: "",
-      city: "",
-      township: "",
+      // memberLevel: "",
+      gender: "",
+      // addressType: "local",
+      regionId: undefined,
+      cityId: undefined,
+      townshipId: undefined,
       address: "",
       floorNo: "",
       unit: "",
@@ -108,33 +114,51 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
     },
   });
 
-  // Mock regions, cities, townships data
-  const regions = [
-    { value: "yangon", label: "Yangon Region" },
-    { value: "mandalay", label: "Mandalay Region" },
-    { value: "naypyidaw", label: "Naypyidaw" },
-    { value: "shan", label: "Shan State" },
-  ];
+  const selectedRegionId = useWatch({ control: form.control, name: "regionId" });
+  const selectedCityId = useWatch({ control: form.control, name: "cityId" });
 
-  const cities = [
-    { value: "yangon", label: "Yangon" },
-    { value: "mandalay", label: "Mandalay" },
-    { value: "naypyidaw", label: "Naypyidaw" },
-    { value: "taunggyi", label: "Taunggyi" },
-  ];
+  // Reset dependent selects
+  useEffect(() => {
+    form.setValue("cityId", undefined);
+    form.setValue("townshipId", undefined);
+  }, [selectedRegionId]);
 
-  const townships = [
-    { value: "kamayut", label: "Kamayut" },
-    { value: "bahan", label: "Bahan" },
-    { value: "sanchaung", label: "Sanchaung" },
-    { value: "hlaing", label: "Hlaing" },
-  ];
+  useEffect(() => {
+    form.setValue("townshipId", undefined);
+  }, [selectedCityId]);
+
+  const { data: regions } = useGetRegions();
+  const { data: cities } = useGetCities(selectedRegionId?.toString() ?? "");
+  const { data: townships } = useGetTownships(selectedCityId?.toString() ?? "");
+
+  const filterRegions = regions?.data || [];
+  // Filter cities based on selected region
+  const filteredCities = cities?.data || [];
+
+  // Filter townships based on selected city
+  const filteredTownships = townships?.data || [];
+
+  // Reset city and township when region changes
+  useEffect(() => {
+    form.setValue("cityId", undefined);
+    form.setValue("townshipId", undefined);
+  }, [selectedRegionId, form.setValue]);
+
+  // Reset township when city changes
+  useEffect(() => {
+    form.setValue("townshipId", undefined);
+  }, [selectedCityId, form.setValue]);
 
   const memberLevels = [
     { value: "bronze", label: "Bronze" },
     { value: "silver", label: "Silver" },
     { value: "gold", label: "Gold" },
     { value: "platinum", label: "Platinum" },
+  ];
+  const genders = [
+    { id: 1, name: "Male" },
+    { id: 2, name: "Female" },
+    { id: 3, name: "Other" },
   ];
 
   // Mock API call function
@@ -161,51 +185,50 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
       phoneNumber: data.phoneNumber,
       email: data.email,
       // member_level: data.memberLevel,
-      areaType: data.addressType.toLowerCase() === "local" ? "LOCAL" : "OTHER",
-      age: 20,
-      region: data.region,
-      city: data.city,
-      township: data.township,
+      gender: genders[Number(data.gender)]?.name,
+      // areaType: data.addressType.toLowerCase() === "local" ? "LOCAL" : "OTHER",
+      // age: 20,
+      regionId: data.regionId,
+      cityId: data.cityId,
+      townshipId: data.townshipId,
       address: data.address,
       floorNo: data.floorNo || undefined,
       unit: data.unit || undefined,
       password: data.password,
+      role: "USER",
     };
-    try {
-      console.log("API Payload:", payload);
+    console.log("API Payload:", payload);
 
-      const response = await createCustomer(payload);
-
-      if (response.success) {
+    await createCustomer(payload)
+      .then((response) => {
         console.log("Customer created successfully:", response.data);
         form.reset();
         setIsOpen(false);
-      }
-    } catch (error) {
-      console.error("Error creating customer:", error);
-    } finally {
-    }
+      })
+      .catch((error) => {
+        console.log("Error creating customer:", error?.response?.data?.error);
+      });
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         {trigger || (
-          <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Customer
+          <Button className="h-auto cursor-pointer rounded-full bg-[#616FF5] px-4 py-2 font-medium">
+            <PlusCircle className="ml-2 size-5" />
+            <p className="mr-2 text-lg">Add Customer</p>
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
+      <DialogContent className="scrollbar-hide max-h-[95vh] overflow-y-auto rounded-[20px] bg-white dark:bg-gray-900 md:max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">
+          <DialogTitle className="text-2xl font-medium">
             Add new customer
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             {/* Customer Name and Phone Number */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
@@ -213,9 +236,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="customerName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Customer name</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Name
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Customer name" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Name"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -227,9 +256,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone number</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Phone number
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Phone number" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Phone number"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -237,16 +272,23 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
               />
             </div>
 
-            {/* Email and Member Level */}
+            {/* Email and Gender */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Email
+                    </FormLabel>
                     <FormControl>
-                      <Input placeholder="Email" type="email" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Email"
+                        type="email"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -255,23 +297,28 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
 
               <FormField
                 control={form.control}
-                name="memberLevel"
+                name="gender"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Member level</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Gender
+                    </FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
                     >
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Member level" />
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
+                          <SelectValue placeholder="Gender" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {memberLevels.map((level) => (
-                          <SelectItem key={level.value} value={level.value}>
-                            {level.label}
+                        {genders.map((gender) => (
+                          <SelectItem
+                            key={gender.id}
+                            value={gender.id?.toString()}
+                          >
+                            {gender.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -283,8 +330,8 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
             </div>
 
             {/* Address Type */}
+            {/* <Label className="text-lg font-medium text-[#303030] dark:text-white">Address</Label>
             <div className="space-y-3">
-              <Label className="text-sm font-medium">Address</Label>
               <FormField
                 control={form.control}
                 name="addressType"
@@ -310,29 +357,36 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                   </FormItem>
                 )}
               />
-            </div>
+            </div> */}
 
             {/* Region and City */}
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="region"
+                name="regionId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Region</FormLabel>
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Address
+                    </FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(Number(value));
+                      }}
+                      defaultValue={field.value?.toString()}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="Region" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {regions.map((region) => (
-                          <SelectItem key={region.value} value={region.value}>
-                            {region.label}
+                        {filterRegions.map((region: Region) => (
+                          <SelectItem
+                            key={region.id}
+                            value={region.id.toString()}
+                          >
+                            {region.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -344,23 +398,26 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
 
               <FormField
                 control={form.control}
-                name="city"
+                name="cityId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>City</FormLabel>
+                    <FormLabel className="h-7 text-lg font-medium text-[#303030] dark:text-white"></FormLabel>
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(Number(value));
+                      }}
+                      defaultValue={field.value?.toString()}
+                      disabled={!selectedRegionId}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="City" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {cities.map((city) => (
-                          <SelectItem key={city.value} value={city.value}>
-                            {city.label}
+                        {filteredCities.map((city: City) => (
+                          <SelectItem key={city.id} value={city.id.toString()}>
+                            {city.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -375,26 +432,31 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <FormField
                 control={form.control}
-                name="township"
+                name="townshipId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Township</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Township
+                    </FormLabel> */}
                     <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      onValueChange={(value) => {
+                        field.onChange(Number(value));
+                      }}
+                      value={field.value?.toString()}
+                      disabled={!selectedCityId}
                     >
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-auto min-h-12 w-full rounded-[20px] border border-[#A1A1A1] px-4 py-3 text-sm font-normal text-[#A1A1A1]">
                           <SelectValue placeholder="Township" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {townships.map((township) => (
+                        {filteredTownships.map((township: Township) => (
                           <SelectItem
-                            key={township.value}
-                            value={township.value}
+                            key={township.id}
+                            value={township.id.toString()}
                           >
-                            {township.label}
+                            {township.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -409,11 +471,13 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Address</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Address
+                    </FormLabel> */}
                     <FormControl>
-                      <Textarea
-                        placeholder="Address"
-                        className="resize-none"
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Address (Optional)"
                         {...field}
                       />
                     </FormControl>
@@ -430,9 +494,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="floorNo"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Floor No (Optional)</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Floor No (Optional)
+                    </FormLabel> */}
                     <FormControl>
-                      <Input placeholder="Floor No (Optional)" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Floor No (Optional)"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -444,9 +514,15 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Unit (Optional)</FormLabel>
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
+                      Unit (Optional)
+                    </FormLabel> */}
                     <FormControl>
-                      <Input placeholder="Unit (Optional)" {...field} />
+                      <Input
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Unit (Optional)"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -456,7 +532,9 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
 
             {/* Password Section */}
             <div className="space-y-4">
-              <Label className="text-sm font-medium">Password</Label>
+              <Label className="text-lg font-medium text-[#303030] dark:text-white">
+                Password
+              </Label>
 
               <FormField
                 control={form.control}
@@ -465,7 +543,8 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="password"
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Password"
                         type="password"
                         {...field}
                       />
@@ -482,7 +561,8 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="confirm password"
+                        className="h-auto rounded-[20px] border border-[#A1A1A1] p-3 text-lg font-normal text-[#A1A1A1]"
+                        placeholder="Confirm Password"
                         type="password"
                         {...field}
                       />
@@ -496,16 +576,16 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
             {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-gray-800 text-white hover:bg-gray-900"
+              className="h-auto w-full cursor-pointer rounded-[20px] bg-[#616FF5] py-2.5 text-lg font-medium text-white hover:opacity-80"
               disabled={isLoading}
             >
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Creating account...
+                  Saving...
                 </>
               ) : (
-                "Create account"
+                "Save"
               )}
             </Button>
           </form>

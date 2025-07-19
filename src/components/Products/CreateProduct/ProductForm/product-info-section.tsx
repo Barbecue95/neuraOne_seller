@@ -21,6 +21,7 @@ import dynamic from "next/dynamic";
 import { Editor } from "./rich-editor";
 import { SelectGroup } from "@radix-ui/react-select";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
+import { usePathname } from "next/navigation";
 
 interface ProductInfoSectionProps {
   form: UseFormReturn<EditProductPayload>;

@@ -1,6 +1,12 @@
-import { getDeleteUser, getUserById, getUsers, registerUser } from "@/services/users.services";
+import {
+  getDeleteUser,
+  getUserById,
+  getUsers,
+  registerUser,
+  updateUserStatus,
+} from "@/services/users.services";
 import { User, UserSortOption } from "@/types/users.types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface UseUsersParams {
   sort?: UserSortOption;
@@ -10,8 +16,12 @@ interface UseUsersParams {
 }
 
 export const useRegisterUser = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (payload: Partial<User>) => registerUser(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
   });
 };
 
@@ -32,5 +42,16 @@ export const useGetUserById = (id: string) => {
 export const useDeleteUser = () => {
   return useMutation({
     mutationFn: (id: string) => getDeleteUser(id),
+  });
+};
+
+export const useUpdateUserStatus = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { userId: number; status: string }) =>
+      updateUserStatus(payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["Users"] });
+    },
   });
 };

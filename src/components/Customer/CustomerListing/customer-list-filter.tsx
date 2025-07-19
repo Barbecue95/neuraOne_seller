@@ -1,13 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Search } from "lucide-react";
 
 interface CustomerListFiltersProps {
@@ -17,7 +10,6 @@ interface CustomerListFiltersProps {
   onStatusFilterChange: (value: string) => void;
   categoryFilter: string;
   onCategoryFilterChange: (value: string) => void;
-  categories: string[];
 }
 
 const CustomerListFilters = ({
@@ -27,19 +19,18 @@ const CustomerListFilters = ({
   onStatusFilterChange,
   categoryFilter,
   onCategoryFilterChange,
-  categories,
 }: CustomerListFiltersProps) => {
   return (
-    <div className="flex items-center justify-between">
-      <h1>All Customers</h1>
+    <div className="flex items-center justify-between bg-white dark:bg-gray-900 rounded-t-[20px] p-5">
+      <h1 className="text-xl font-medium">All Customers</h1>
 
-      <div className="relative w-64">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+      <div className="relative max-w-40 md:max-w-80">
+        <Search className="absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 transform text-[#A1A1A1]" />
         <Input
-          placeholder="Search product"
+          placeholder="Search customer name or id"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10"
+          className="pl-10 text-lg font-medium text-[#A1A1A1] h-auto pt-2.5 pb-2 rounded-[20px]"
         />
       </div>
     </div>

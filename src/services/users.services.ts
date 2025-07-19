@@ -54,3 +54,8 @@ export const refreshAccessToken = async () => {
   });
   return res.data;
 };
+
+export const updateUserStatus = async(payload: {userId: number, status: string}) => {
+  const res = await axiosClient.post(`${userEndpoints.updateStatus}`, payload)
+  return res.data;
+}

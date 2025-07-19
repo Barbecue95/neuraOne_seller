@@ -188,6 +188,16 @@
   }
 }
 
+/* Hide scrollbar globally */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 .ql-toolbar {
   @apply rounded-tl-xl rounded-tr-xl border border-[#979797] bg-[#F6F1F4]; /* or customize as needed */
 }

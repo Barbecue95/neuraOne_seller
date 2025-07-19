@@ -3,7 +3,6 @@ import { SiteMapGroup } from "@/types/sidebar.types";
 
 import {
   BadgePercent,
-  ChartNoAxesColumn,
   ReceiptText,
   Store,
   UsersRound,
