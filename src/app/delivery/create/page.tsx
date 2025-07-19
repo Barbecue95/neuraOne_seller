@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod/v4";
-export default function page() {
+export default function Page() {
   const form = useForm({
     resolver: zodResolver(deliverySchema),
     defaultValues: {
