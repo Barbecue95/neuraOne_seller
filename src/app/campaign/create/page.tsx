@@ -6,7 +6,7 @@ import CreateStandardCampaign from "@/features/campaign/standard/Create";
 import {} from "@radix-ui/react-tabs";
 import React from "react";
 
-export default function page() {
+export default function Page() {
   return (
     <div>
       <SubNavbar title="Create Campaign" />

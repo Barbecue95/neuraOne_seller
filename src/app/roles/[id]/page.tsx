@@ -6,7 +6,7 @@ import { data as usersList } from "@/features/roles/users/Table/dummy-data";
 import { useParams, useRouter } from "next/navigation";
 import React from "react";
 
-export default function page() {
+export default function Page() {
   const params = useParams();
   const router = useRouter();
   const [role] = rolesList.filter((role) => role.id === Number(params.id)) || [
