@@ -1,31 +1,47 @@
 "use client";
 
 import ProductList from "@/components/Products/ProductListing";
+import ProductListHeader from "@/components/Products/ProductListing/product-list-header";
+import ProductPagination from "@/components/Products/ProductListing/product-list-pagination";
+import useProducts from "@/features/products/useProducts";
 
 const ProductPage = () => {
-  const handleImport = () => {
-    console.log("Import clicked");
-  };
-
-  const handleExport = () => {
-    console.log("Export clicked");
-  };
-
-  const handleEditProduct = (id: string) => {
-    console.log("Edit product:", id);
-  };
-
-  const handleDeleteProduct = (id: string) => {
-    console.log("Delete product:", id);
-  };
+  const {
+    pagination,
+    products,
+    table,
+    columns,
+    searchQuery,
+    isLoadingProducts,
+    handlePageChange,
+    handleSearchChange,
+    handlePageSizeChange,
+    handleDeleteProducts,
+  } = useProducts();
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="container mx-auto px-8 py-4">
+      <ProductListHeader />
       <ProductList
-        onImport={handleImport}
-        onExport={handleExport}
-        onEditProduct={handleEditProduct}
-        onDeleteProduct={handleDeleteProduct}
+        table={table}
+        columns={columns}
+        products={products}
+        pagination={pagination}
+        isLoadingProducts={isLoadingProducts}
+        hasSomeSelectedRows={
+          table.getIsSomeRowsSelected() || table.getIsAllRowsSelected()
+        }
+        // Search
+        searchQuery={searchQuery}
+        handleSearchChange={handleSearchChange}
+        // Delete
+        handleDeleteProducts={handleDeleteProducts}
+      />
+
+      <ProductPagination
+        pagination={pagination}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
       />
     </div>
   );

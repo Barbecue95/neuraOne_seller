@@ -34,7 +34,7 @@ export interface GetDummyProductsParams {
 
 export enum ProductStatus {
   PUBLISHED = "PUBLISH",
-  SCHEDULED = "SCHEDULED",
+  SCHEDULED = "SCHEDULE",
   DRAFT = "DRAFT",
 }
 
@@ -70,16 +70,16 @@ export interface PromoteInfo {
   endDate?: string;
 }
 
-export interface ProductVariant {
-  id?: number;
-  name: string;
-  purchasePrice: number;
-  sellingPrice: number;
-  quantity: number;
-  sku: string;
-  // barcode?: string | null
-  // promoteInfo: PromoteInfo;
-}
+// export interface ProductVariant {
+//   id?: number;
+//   name: string;
+//   : number;
+//   sellingPrice: number;
+//   quantity: number;
+//   sku: string;
+//   // barcode?: string | null
+//   // promoteInfo: PromoteInfo;
+// }
 
 export enum ProductSortOption {
   NEWEST = "newest",
@@ -96,3 +96,77 @@ export enum ProductSortOption {
   STATUS_DESC = "statusDesc",
 }
 
+interface meta {
+  limit: number;
+  page: number;
+  total: number;
+}
+export interface GetProductsParams {
+  sort?: ProductSortOption;
+  page?: number;
+  limit?: number;
+  searchText?: string;
+}
+
+export interface GetProductsResponse {
+  status: boolean;
+  message: string;
+  data: Product[];
+  meta: meta;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  discription: string;
+  status: boolean;
+  categoryVariantGroups: CategoryVariantGroup[];
+}
+
+export interface CategoryVarientValue {
+  id: number;
+  value: string;
+}
+
+export interface CategoryVariantGroup {
+  id: number;
+  name: string;
+  values: CategoryVarientValue[];
+}
+export interface getCategoriesResponse {
+  status: boolean;
+  message: string;
+  data: Category[];
+  meta: meta;
+}
+
+export interface GetProductByIdResponse {
+  status: boolean;
+  message: string;
+  data: Product;
+}
+
+export interface VariantCombination {
+  id: string;
+  name: string;
+  sku: string;
+  purchasePrice: number;
+  sellingPrice: number;
+  quantity: number;
+  combination?: { [key: string]: string };
+  weightValue?: number;
+  weightUnit?: string;
+  sizeValue?: string;
+  sizeUnit?: string;
+}
+
+export interface VariantValue {
+  id: string;
+  value: string;
+}
+
+export interface VariantOption {
+  id: string;
+  name: string;
+  values: VariantValue[];
+}

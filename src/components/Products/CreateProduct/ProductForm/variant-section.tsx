@@ -1,6 +1,6 @@
 "use client";
-
-import type { UseFormReturn } from "react-hook-form";
+import type { UseFormReturn, Path } from "react-hook-form";
+import { useWatch } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -14,333 +14,279 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { X, Trash2 } from "lucide-react";
+import { Trash2, XCircleIcon } from "lucide-react";
 import { useState, useEffect } from "react";
-import type {
-  ProductVariant,
-} from "@/types/product.types";
 import { CreateProductPayload } from "./product-form-schema";
-
-interface VariantOption {
-  id: string;
-  name: string;
-  values: VariantValue[];
-}
-
-interface VariantValue {
-  id: string;
-  value: string;
-}
-
-export interface VariantCombination {
-  id: string;
-  name: string;
-  sku: string;
-  buyingPrice: number;
-  sellingPrice: number;
-  stock: number;
-  combination?: { [key: string]: string };
-}
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { toast } from "sonner";
+import { handleInputAmountChange } from "@/utils/numberFormat";
+import { Dialog } from "@/components/ui/dialog";
+import VariantEditDialog from "./variant-edit-dialog";
+import { VariantCombination, VariantOption } from "@/types/product.types";
 
 interface VariantSectionProps {
   form: UseFormReturn<CreateProductPayload>;
   categoryVariantGroups: any[];
+  existingVariants?: VariantCombination[];
+  isDuplicate?: boolean;
 }
 
 export default function VariantSection({
   form,
   categoryVariantGroups,
+  existingVariants = [],
+  isDuplicate = false,
 }: VariantSectionProps) {
-  const sss = categoryVariantGroups?.[0]?.map((variant: any) => {
-    console.log("variant.variantGroup", variant.variantGroup);
+  const {
+    control,
+    watch,
+    getValues,
+    setValue,
+    formState: { errors },
+  } = form;
 
-    return variant.variantGroup;
-  });
+  // 1) Build variant-options from categoryVariantGroups
   const [variantOptions, setVariantOptions] = useState<VariantOption[]>([]);
   useEffect(() => {
-    if (sss?.length > 0) {
-      setVariantOptions(sss);
-    }
-    if (sss?.length === 0) {
+    if (categoryVariantGroups?.[0]?.length) {
+      const groups = categoryVariantGroups[0].map((v: any) => v.variantGroup);
+      setVariantOptions(groups);
+    } else {
       setVariantOptions([]);
     }
   }, [categoryVariantGroups]);
-  console.log("variant Option", categoryVariantGroups, variantOptions, sss);
 
-  const [variants, setVariants] = useState<VariantCombination[]>([]);
-  const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
-  const [newOptionTitle, setNewOptionTitle] = useState("");
-  const [newOptionValues, setNewOptionValues] = useState<{
-    [key: string]: string;
-  }>({});
-  // Generate all possible variant combinations
-  const generateVariantCombinations = () => {
+  // 2) On duplicate: clear each SKU & zero out quantity in form
+  useEffect(() => {
+    if (!isDuplicate) return;
+    const curr = (getValues("variants") as VariantCombination[]) || [];
+    const resetVars = curr.map((v) => ({
+      ...v,
+      sku: "",
+      quantity: 0,
+    }));
+    setValue("variants", resetVars, { shouldValidate: true });
+  }, [isDuplicate, getValues, setValue]);
+
+  // 3) Auto-generate combos when SKU/prices/options change
+  useEffect(() => {
+    const existing = (getValues("variants") as VariantCombination[]) || [];
     if (
-      variantOptions.length === 0 ||
-      variantOptions.some((option) => option.values.length === 0)
+      existing.length ||
+      !variantOptions.length ||
+      variantOptions.some((o) => o.values.length === 0)
     ) {
-      setVariants([]);
       return;
     }
+    const combos: Record<string, string>[] = [];
 
-    const combinations: { [key: string]: string }[] = [];
-
-    const generateCombinations = (
-      optionIndex: number,
-      currentCombination: { [key: string]: string },
-    ) => {
-      if (optionIndex === variantOptions.length) {
-        combinations.push({ ...currentCombination });
+    const recurse = (idx: number, curr: Record<string, string>) => {
+      if (idx === variantOptions.length) {
+        combos.push({ ...curr });
         return;
       }
-
-      const currentOption = variantOptions[optionIndex];
-      for (const value of currentOption.values) {
-        generateCombinations(optionIndex + 1, {
-          ...currentCombination,
-          [currentOption.name]: value.value,
-        });
-      }
+      const opt = variantOptions[idx];
+      opt.values.forEach((v) =>
+        recurse(idx + 1, { ...curr, [opt.name]: v.value }),
+      );
     };
+    recurse(0, {});
 
-    generateCombinations(0, {});
-
-    // Convert combinations to variants
-    const newVariants = combinations.map((combination, index) => {
-      const variantName = Object.values(combination).join("-");
-      const baseSku = form.getValues("sku") || "SKU";
-      const variantSku = `${baseSku}-${Object.values(combination).join("-")}`;
-
-      return {
-        id: `variant-${index + 1}`,
-        name: variantName,
-        sku: variantSku,
-        buyingPrice: form.getValues("purchasePrice") || 0,
-        sellingPrice: form.getValues("sellingPrice") || 0,
-        stock: 0,
-        combination,
-      };
-    });
-
-    setVariants(newVariants);
-    setSelectedVariants([]); // Clear selection when variants change
-  };
-  console.log("Testing 123", variants);
-  
-
-  // Generate variants when options change
-  useEffect(() => {
-    generateVariantCombinations();
+    const baseSku = getValues("sku") || "SKU";
+    const newVars: VariantCombination[] = combos.map((comb, i) => ({
+      id: `variant-${i + 1}`,
+      name: Object.values(comb).join("-"),
+      sku: `${baseSku}-${Object.values(comb).join("-")}`,
+      purchasePrice: getValues("purchasePrice") || 0,
+      sellingPrice: getValues("sellingPrice") || 0,
+      quantity: 0,
+      combination: comb,
+    }));
+    setValue("variants", newVars, { shouldValidate: true });
   }, [
     variantOptions,
-    form.watch("purchasePrice"),
-    form.watch("sellingPrice"),
-    form.watch("sku"),
+    watch("sku"),
+    watch("purchasePrice"),
+    watch("sellingPrice"),
+    getValues,
+    setValue,
   ]);
 
-  // Add new variant option
-  const addVariantOption = () => {
-    if (!newOptionTitle.trim()) return;
+  // 4) Sync variantValues from options
+  useEffect(() => {
+    const ids = variantOptions
+      .map((v) => v.values.map((val) => Number(val.id)))
+      .flat();
+    setValue("variantValues", ids, { shouldValidate: true });
+  }, [variantOptions, setValue]);
 
-    const newOption: VariantOption = {
-      id: Date.now().toString(),
-      name: newOptionTitle.trim(),
-      values: [],
-    };
+  // 5) Watch the variants array from RHF
+  const variants =
+    (useWatch({ control, name: "variants" }) as VariantCombination[]) || [];
 
-    setVariantOptions([...variantOptions, newOption]);
-    setNewOptionTitle("");
-  };
-
-  // Remove variant option
-  const removeVariantOption = (optionId: string) => {
-    setVariantOptions(
-      variantOptions.filter((option) => option.id !== optionId),
-    );
-  };
-
-  // Add value to variant option
-  const addValueToOption = (optionId: string) => {
-    const newValue = newOptionValues[optionId]?.trim();
-    if (!newValue) return;
-
-    setVariantOptions(
-      variantOptions.map((option) =>
-        option.id === optionId
-          ? {
-              ...option,
-              values: [
-                ...option.values,
-                { id: Date.now().toString(), value: newValue },
-              ],
-            }
-          : option,
-      ),
-    );
-
-    setNewOptionValues({ ...newOptionValues, [optionId]: "" });
-  };
-
-  // Remove value from variant option
-  const removeValueFromOption = (optionId: string, valueId: string) => {
-    setVariantOptions(
-      variantOptions.map((option) =>
-        option.id === optionId
-          ? {
-              ...option,
-              values: option.values.filter((value) => value.id !== valueId),
-            }
-          : option,
-      ),
-    );
-  };
-
-  // Handle variant field changes
-  const updateVariantField = (
-    variantId: string,
-    field: keyof VariantCombination,
-    value: any,
-  ) => {
-    setVariants(
-      variants.map((variant) =>
-        variant.id === variantId ? { ...variant, [field]: value } : variant,
-      ),
-    );
-  };
-
-  // Handle variant selection
-  const toggleVariantSelection = (variantId: string) => {
+  // 6) Selection & batch delete
+  const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
+  const toggleVariantSelection = (id: string) =>
     setSelectedVariants((prev) =>
-      prev.includes(variantId)
-        ? prev.filter((id) => id !== variantId)
-        : [...prev, variantId],
+      prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
-  };
-
-  // Select all variants
-  const toggleSelectAll = () => {
-    if (selectedVariants.length === variants.length) {
-      setSelectedVariants([]);
-    } else {
-      setSelectedVariants(variants.map((v) => v.id));
-    }
-  };
-
-  // Delete selected variants
-  const deleteSelectedVariants = () => {
-    setVariants(
-      variants.filter((variant) => !selectedVariants.includes(variant.id)),
+  const toggleSelectAll = () =>
+    setSelectedVariants((prev) =>
+      prev.length === variants.length ? [] : variants.map((v) => v.id!),
     );
+  const deleteSelected = () => {
+    const kept = variants.filter((v) => !selectedVariants.includes(v.id!));
+    setValue("variants", kept, { shouldValidate: true });
+    toast.info("Variant deleted successfully !!");
     setSelectedVariants([]);
   };
 
-  // Delete single variant
-  const deleteVariant = (variantId: string) => {
-    setVariants(variants.filter((variant) => variant.id !== variantId));
-    setSelectedVariants(selectedVariants.filter((id) => id !== variantId));
+  // 7) Field-level updates
+  type FieldKey = "purchasePrice" | "sellingPrice" | "quantity" | "sku";
+  const updateField = (
+    idx: number,
+    field: FieldKey,
+    value: VariantCombination[FieldKey],
+  ) => {
+    const path = `variants.${idx}.${field}` as Path<CreateProductPayload>;
+    setValue(path, value, { shouldValidate: true });
+  };
+  const updateFields = (
+    idx: number,
+    data: Partial<Pick<VariantCombination, FieldKey>>,
+  ) => {
+    (Object.keys(data) as FieldKey[]).forEach((field) => {
+      const path = `variants.${idx}.${field}` as Path<CreateProductPayload>;
+      setValue(path, data[field] as any, {
+        shouldValidate: true,
+      });
+    });
   };
 
-  useEffect(() => {
-    const productVariants: ProductVariant[] = variants.map((variant) => ({
-      name: variant.name,
-      sku: variant.sku,
-      purchasePrice: variant.buyingPrice,
-      sellingPrice: variant.sellingPrice,
-      quantity: variant.stock,
-    }));
+  // 8) Dialog state
+  const [dialogSelectedVariant, setDialogSelectedVariant] =
+    useState<VariantCombination | null>(null);
 
-    const valueIds = variantOptions.map( v => v.values.map( value => Number(value.id)));
-    form.setValue("variantValues", valueIds.flatMap( ids => ids));
-    form.setValue("variants", productVariants);
-  }, [variants, variantOptions]);
+  // 9) Remove a single option-value
+  const removeValueFromOption = (optionId: string, valueId: string) => {
+    const opt = variantOptions.find((o) => o.id === optionId);
+    if (!opt) return;
+    const val = opt.values.find((v) => v.id === valueId);
+    if (!val) return;
+    const newOpts = variantOptions.reduce<VariantOption[]>((acc, o) => {
+      if (o.id === optionId) {
+        const filtered = o.values.filter((v) => v.id !== valueId);
+        if (filtered.length) {
+          acc.push({ ...o, values: filtered });
+        }
+      } else acc.push(o);
+      return acc;
+    }, []);
+    setVariantOptions(newOpts);
+
+    const curr = (getValues("variants") as VariantCombination[]) || [];
+    const pruned = curr
+      .filter((v) => v.combination?.[opt.name] !== val.value)
+      .map((v) => {
+        if (!newOpts.some((n) => n.name === opt.name) && v.combination) {
+          const { [opt.name]: _, ...rest } = v.combination;
+          return { ...v, combination: rest };
+        }
+        return v;
+      });
+    setValue("variants", pruned, { shouldValidate: true });
+  };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Variant</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Variant Options */}
-        <div className="space-y-4">
-          <div className="grid grid-cols-4 gap-4">
-            <div className="col-span-1">
-              <div className="mb-2 text-sm font-medium">Option title</div>
-              <div className="space-y-3">
-                {variantOptions?.map((option) => (
-                  <div key={option.id} className="flex items-center gap-2">
-                    <Badge
-                      variant="outline"
-                      className="flex items-center gap-1 px-3 py-1"
-                    >
-                      {option?.name}
-                      <button
-                        onClick={() => removeVariantOption(option.id)}
-                        className="ml-1 rounded-full p-0.5 hover:bg-gray-200"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="col-span-3">
-              <div className="mb-2 text-sm font-medium">Option values</div>
-              <div className="space-y-3">
-                {variantOptions?.map((option, optionIndex) => (
-                  <div key={option.id} className="space-y-2">
-                    <div className="flex flex-wrap gap-1">
-                      {option.values.map((value) => (
-                        <Badge
-                          key={value.id}
-                          className={`bg-blue-500 text-xs text-white`}
-                        >
-                          {value.value}
-                          <button
-                            onClick={() =>
-                              removeValueFromOption(option.id, value.id)
-                            }
-                            className="ml-1 rounded-full p-0.5 hover:bg-black/20"
-                          >
-                            <X className="h-2 w-2" />
-                          </button>
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bulk Actions */}
-        {selectedVariants?.length > 0 && (
-          <div className="flex items-center gap-2 rounded-lg bg-blue-50 p-3">
-            <span className="text-sm text-blue-700">
-              {selectedVariants?.length} variant
-              {selectedVariants?.length > 1 ? "s" : ""} selected
-            </span>
+    <Dialog
+      open={!!dialogSelectedVariant}
+      onOpenChange={(open) => {
+        if (!open) setDialogSelectedVariant(null);
+      }}
+    >
+      <Card>
+        <CardHeader>
+          <div className="flex h-8 items-center justify-between">
+            <CardTitle className="inline-block text-xl font-medium">
+              Variant
+            </CardTitle>
             <Button
               type="button"
               size="sm"
               variant="destructive"
-              onClick={deleteSelectedVariants}
-              className="ml-auto"
+              onClick={deleteSelected}
+              className={cn([
+                "w-fit cursor-pointer",
+                { hidden: selectedVariants.length <= 0 },
+              ])}
             >
               <Trash2 className="mr-1 h-4 w-4" />
-              Delete Selected
+              Delete
             </Button>
           </div>
-        )}
-
-        {/* Variants Table */}
-        {variants.length > 0 && (
-          <div className="rounded-lg border">
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Option titles */}
+          {!existingVariants && (
+            <div
+              className={cn([
+                "flex flex-row gap-4",
+                { hidden: variantOptions.length === 0 },
+              ])}
+            >
+              <div className="flex-1">
+                <div className="mb-2 text-lg font-medium">Option title</div>
+                <div className="space-y-3">
+                  {variantOptions.map((opt) => (
+                    <Badge
+                      key={opt.id}
+                      variant="outline"
+                      className="line-clamp-1 flex w-28 !items-center justify-between gap-2 rounded-3xl p-4 text-xl font-medium capitalize"
+                      asChild
+                    >
+                      <span>{opt.name}</span>
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-2/3">
+                <div className="mb-2 text-lg font-medium">Option values</div>
+                <div className="space-y-3">
+                  {variantOptions.map((opt) => (
+                    <div key={opt.id} className="space-y-2">
+                      <div className="flex flex-wrap gap-2.5 rounded-3xl border px-4 py-2.5">
+                        {opt.values.map((val) => (
+                          <Badge
+                            key={val.id}
+                            className="bg-primary flex gap-3 rounded-full px-2.5 py-1 text-xl font-medium text-white"
+                            asChild
+                          >
+                            <span>
+                              {val.value}
+                              <button
+                                onClick={() =>
+                                  removeValueFromOption(opt.id, val.id)
+                                }
+                                className="no-row-click rounded-full hover:bg-black/20"
+                              >
+                                <XCircleIcon className="size-[18px] translate-y-0.5" />
+                              </button>
+                            </span>
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+          {/* Variants table or empty */}
+          {variants.length > 0 ? (
             <Table>
               <TableHeader>
-                <TableRow>
+                <TableRow className="border-t !border-b-0 border-[#A1A1A1B2]">
                   <TableHead className="w-12">
                     <Checkbox
                       checked={
@@ -348,109 +294,179 @@ export default function VariantSection({
                         variants.length > 0
                       }
                       onCheckedChange={toggleSelectAll}
+                      className="border-[#303030] data-[state=checked]:!bg-[#3C3C3C]"
                     />
                   </TableHead>
                   <TableHead>Variants</TableHead>
-                  <TableHead>SKU</TableHead>
                   <TableHead>Buying price</TableHead>
                   <TableHead>Selling price</TableHead>
-                  <TableHead>Stock</TableHead>
-                  <TableHead className="w-12">Action</TableHead>
+                  {isDuplicate ? (
+                    <TableHead>Sku</TableHead>
+                  ) : (
+                    <TableHead>Stock</TableHead>
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {variants.map((variant) => (
-                  <TableRow key={variant.id}>
-                    <TableCell>
-                      <Checkbox
-                        checked={selectedVariants.includes(variant.id)}
-                        onCheckedChange={() =>
-                          toggleVariantSelection(variant.id)
-                        }
-                      />
-                    </TableCell>
-                    <TableCell className="font-medium">
-                      {variant.name}
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        value={variant.sku}
-                        onChange={(e) =>
-                          updateVariantField(variant.id, "sku", e.target.value)
-                        }
-                        className="h-8 w-32"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={variant.buyingPrice}
-                        onChange={(e) =>
-                          updateVariantField(
-                            variant.id,
-                            "buyingPrice",
-                            Number(e.target.value),
+                {variants.map((variant, idx) => {
+                  const errRow = (errors.variants?.[idx] ?? {}) as any;
+                  return (
+                    <TableRow
+                      key={variant.id}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement;
+                        if (
+                          target.closest(
+                            "input, button, a, select, textarea, .no-row-click",
                           )
+                        ) {
+                          return;
                         }
-                        className="h-8 w-24"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={variant.sellingPrice}
-                        onChange={(e) =>
-                          updateVariantField(
-                            variant.id,
-                            "sellingPrice",
-                            Number(e.target.value),
-                          )
-                        }
-                        className="h-8 w-24"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Input
-                        type="number"
-                        value={variant.stock}
-                        onChange={(e) =>
-                          updateVariantField(
-                            variant.id,
-                            "stock",
-                            Number(e.target.value),
-                          )
-                        }
-                        className="h-8 w-20"
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteVariant(variant.id)}
-                        className="h-8 w-8 text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        setDialogSelectedVariant(variant);
+                      }}
+                      className="cursor-pointer border-none"
+                    >
+                      <TableCell>
+                        <Checkbox
+                          checked={selectedVariants.includes(variant.id!)}
+                          onCheckedChange={() =>
+                            toggleVariantSelection(variant.id!)
+                          }
+                          className="border-[#303030] data-[state=checked]:!bg-[#3C3C3C]"
+                        />
+                      </TableCell>
+                      <TableCell className="font-medium">
+                        {variant.name}
+                      </TableCell>
+                      <TableCell>
+                        <div className="relative w-24">
+                          <Input
+                            type="text"
+                            value={variant.purchasePrice}
+                            onChange={(e) =>
+                              updateField(
+                                idx,
+                                "purchasePrice",
+                                handleInputAmountChange(e),
+                              )
+                            }
+                            className="h-8 w-24"
+                          />
+                          <span className="absolute top-1/2 -right-5 -translate-y-1/2 transform text-gray-500">
+                            Ks
+                          </span>
+                        </div>
+                        {errRow.purchasePrice && (
+                          <p className="text-destructive mt-1 text-xs">
+                            {errRow.purchasePrice.message}
+                          </p>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <div className="relative w-24">
+                          <Input
+                            type="text"
+                            value={variant.sellingPrice}
+                            onChange={(e) =>
+                              updateField(
+                                idx,
+                                "sellingPrice",
+                                handleInputAmountChange(e),
+                              )
+                            }
+                            className="h-8 w-24"
+                          />
+                          <span className="absolute top-1/2 -right-5 -translate-y-1/2 transform text-gray-500">
+                            Ks
+                          </span>
+                        </div>
+                        {errRow.sellingPrice && (
+                          <p className="text-destructive mt-1 text-xs">
+                            {errRow.sellingPrice.message}
+                          </p>
+                        )}
+                      </TableCell>
+                      {isDuplicate ? (
+                        <TableCell>
+                          <Input
+                            type="text"
+                            value={variant.sku}
+                            onChange={(e) =>
+                              updateField(idx, "sku", e.target.value)
+                            }
+                            className="h-8 w-20"
+                          />
+                          {errRow.sku && (
+                            <p className="text-destructive mt-1 text-xs">
+                              {errRow.sku.message}
+                            </p>
+                          )}
+                        </TableCell>
+                      ) : (
+                        <TableCell>
+                          <Input
+                            type="text"
+                            value={variant.quantity}
+                            onChange={(e) =>
+                              updateField(
+                                idx,
+                                "quantity",
+                                handleInputAmountChange(e),
+                              )
+                            }
+                            className="h-8 w-20"
+                          />
+                          {errRow.quantity && (
+                            <p className="text-destructive mt-1 text-xs">
+                              {errRow.quantity.message}
+                            </p>
+                          )}
+                        </TableCell>
+                      )}
+                    </TableRow>
+                  );
+                })}
               </TableBody>
             </Table>
-          </div>
-        )}
+          ) : (
+            <div className="space-y-2">
+              <Button
+                variant="outline"
+                className="flex min-h-32 flex-col justify-center rounded-lg border-2 border-dashed border-gray-200 py-8 text-center text-gray-500"
+                asChild
+              >
+                <Link href="#product-info">
+                  <p className="text-sm">
+                    Variants will appear here once you select a category.
+                  </p>
+                  <p className="mt-1 text-xs text-gray-400">
+                    Select a category to view generated variants
+                  </p>
+                </Link>
+              </Button>
 
-        {/* Empty State */}
-        {variants.length === 0 && (
-          <div className="rounded-lg border-2 border-dashed border-gray-200 py-8 text-center text-gray-500">
-            <p className="text-sm">No variants generated</p>
-            <p className="mt-1 text-xs text-gray-400">
-              Add option titles and values to generate product variants
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+              {/* show the Zod “min(1)” message */}
+              {errors.variants?.message && (
+                <p className="text-destructive text-xs">
+                  {errors.variants.message}
+                </p>
+              )}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {dialogSelectedVariant && (
+        <VariantEditDialog
+          variants={variants}
+          SelectedVariant={dialogSelectedVariant}
+          updateVariantFields={(vid, data) => {
+            const i = variants.findIndex((v) => v.id === vid);
+            if (i > -1) updateFields(i, data);
+          }}
+          handleClose={() => setDialogSelectedVariant(null)}
+        />
+      )}
+    </Dialog>
   );
 }

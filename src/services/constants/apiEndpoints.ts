@@ -22,6 +22,7 @@ export const userEndpoints = {
   login: `${USER_BASE_PATH}/loginSeller`,
   register: `${USER_BASE_PATH}/register`,
   refreshToken: `${USER_BASE_PATH}/refreshToken`,
+  updateStatus: `${USER_BASE_PATH}/status`,
 
   // seller
   sellers: `${USER_BASE_PATH}/sellers`,
@@ -55,4 +56,12 @@ const BANK_BASE_PATH = "/banks";
 /** @deprecated Use paymentMethodEndpoints instead */
 export const bankEndpoints = {
   banks: BANK_BASE_PATH,
+};
+
+// Location End Points
+const LOCATION_BASE_PATH = "/locations";
+export const locationEndpoints = {
+  regions: `${LOCATION_BASE_PATH}/region`,
+  cities: `${LOCATION_BASE_PATH}/city`,
+  townships: `${LOCATION_BASE_PATH}/township`,
 };

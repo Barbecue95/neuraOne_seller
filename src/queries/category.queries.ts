@@ -1,9 +1,10 @@
 import { getCategories } from "@/services/category.services";
-import { useQuery } from "@tanstack/react-query";
+import { getCategoriesResponse } from "@/types/product.types";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 export const useGetCategories = () => {
-  return useQuery({
+  return useQuery<getCategoriesResponse, Error>({
     queryKey: ["Categories"],
-    queryFn: () => getCategories(),
+    queryFn: getCategories,
   });
 };

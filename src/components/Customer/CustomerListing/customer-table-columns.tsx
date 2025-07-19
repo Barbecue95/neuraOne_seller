@@ -2,12 +2,13 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, Trash2, ArrowUpDown } from "lucide-react";
+import { Edit, ArrowUpDown, BanIcon } from "lucide-react";
 import { User, UserSortOption } from "@/types/users.types";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useDeleteUser } from "@/queries/users.queries";
+import { SortableHeader } from "./sortable-header";
 
 export const CustomerTableColumns = (
   handleSortChange: (value: UserSortOption) => void,
@@ -15,6 +16,7 @@ export const CustomerTableColumns = (
     label: string;
     value: UserSortOption;
   }[],
+  handleBlockOpen: (user:User) => void
 ): ColumnDef<User>[] => {
   const router = useRouter();
   const { mutate: deleteUser } = useDeleteUser();
@@ -25,6 +27,7 @@ export const CustomerTableColumns = (
   const onDeleteProduct = (id: number) => {
     deleteUser(id.toString());
   };
+  
   return [
     {
       id: "select",
@@ -36,6 +39,7 @@ export const CustomerTableColumns = (
           }
           onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
           aria-label="Select all"
+          className="text-[#303030]"
         />
       ),
       cell: ({ row }) => (
@@ -43,19 +47,51 @@ export const CustomerTableColumns = (
           checked={row.getIsSelected()}
           onCheckedChange={(value) => row.toggleSelected(!!value)}
           aria-label="Select row"
+          className="text-[#303030]"
         />
       ),
       enableSorting: false,
       enableHiding: false,
     },
     {
+      accessorKey: "id",
+      header: ({ column }) => (
+        <SortableHeader
+          title="ID"
+          sortOptions={[
+            { label: "Newest", value: UserSortOption.NEWEST },
+            { label: "Oldest", value: UserSortOption.OLDEST },
+          ]}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("id")}</div>
+      ),
+    },
+    {
+      accessorKey: "id",
+      header: ({ column }) => (
+        <SortableHeader
+          title="ID"
+          sortOptions={[
+            { label: "Newest", value: UserSortOption.NEWEST },
+            { label: "Oldest", value: UserSortOption.OLDEST },
+          ]}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("id")}</div>
+      ),
+    },
+    {
       accessorKey: "name",
       header: () => (
         <SortableHeader
           title="Customer"
-          sortName="name"
-          sortOptions={sortOptions}
-          handleSortChange={handleSortChange}
+          sortOptions={[
+            { label: "Name (A → Z)", value: UserSortOption.NAME_ASC },
+            { label: "Name (Z → A)", value: UserSortOption.NAME_DESC },
+          ]}
         />
       ),
       cell: ({ row }) => (
@@ -67,9 +103,10 @@ export const CustomerTableColumns = (
       header: () => (
         <SortableHeader
           title="Phone Number"
-          sortName="phone"
-          sortOptions={sortOptions}
-          handleSortChange={handleSortChange}
+          sortOptions={[
+            { label: "Phone (0 → 9)", value: UserSortOption.PHONE_ASC },
+            { label: "Hhone (9 → 0)", value: UserSortOption.PHONE_DESC },
+          ]}
         />
       ),
       cell: ({ row }) => <div>{row.getValue("phoneNumber")}</div>,
@@ -79,9 +116,10 @@ export const CustomerTableColumns = (
       header: () => (
         <SortableHeader
           title="Email"
-          sortName="email"
-          sortOptions={sortOptions}
-          handleSortChange={handleSortChange}
+          sortOptions={[
+            { label: "Email (A → Z)", value: UserSortOption.EMAIL_ASC },
+            { label: "Email (Z → A)", value: UserSortOption.EMAIL_DESC },
+          ]}
         />
       ),
       cell: ({ row }) => <div>{row.getValue("email")}</div>,
@@ -91,60 +129,83 @@ export const CustomerTableColumns = (
       header: () => (
         <SortableHeader
           title="Total Orders"
-          sortName="order"
-          sortOptions={sortOptions}
-          handleSortChange={handleSortChange}
+          sortOptions={[
+            {
+              label: "Total (0 → 9)",
+              value: UserSortOption.TOTAL_ORDER_COUNT_ASC,
+            },
+            {
+              label: "Total (9 → 0)",
+              value: UserSortOption.TOTAL_ORDER_COUNT_DESC,
+            },
+          ]}
         />
       ),
       cell: ({ row }) => <div>{row.getValue("totalOrderCount")}</div>,
     },
-    {
-      accessorKey: "totalOrderAmount",
-      header: () => (
-        <SortableHeader
-          title="Total Spend"
-          sortName="spend"
-          sortOptions={sortOptions}
-          handleSortChange={handleSortChange}
-        />
-      ),
-      cell: ({ row }) => <div>{row.getValue("totalOrderAmount")}</div>,
-    },
+    // {
+    //   accessorKey: "totalOrderAmount",
+    //   header: ({ column }) => (
+    //     <SortableHeader
+    //       title="Total Spend"
+    //       sortOptions={[
+    //         { label: "Total (0 → 9)", value: UserSortOption.TOTAL_ORDER_AMOUNT_ASC },
+    //         { label: "Total (9 → 0)", value: UserSortOption.TOTAL_ORDER_AMOUNT_DESC },
+    //       ]}
+    //     />
+    //   ),
+    //   cell: ({ row }) => <div>{row.getValue("totalOrderAmount")}</div>,
+    // },
     {
       accessorKey: "status",
       header: () => (
         <SortableHeader
           title="Status"
-          sortName="testing"
-          sortOptions={sortOptions}
-          handleSortChange={handleSortChange}
+          sortOptions={[]}
         />
       ),
-      cell: ({ row }) => <div>{row.getValue("status")}</div>,
+      cell: ({ getValue }) => {
+        const status = getValue() as string;
+
+        const color =
+          {
+            ACTIVE: "bg-green-100 text-green-800",
+            INACTIVE: "bg-yellow-100 text-yellow-800",
+            SUSPENDED: "bg-red-100 text-red-800",
+          }[status] ?? "bg-gray-100 text-gray-800";
+
+        return (
+          <span
+            className={`inline-block w-24 rounded-full px-3 py-1 text-center text-sm font-normal ${color}`}
+          >
+            {status == "ACTIVE" ? "Active" : "Blocked"}
+          </span>
+        );
+      },
     },
     {
       id: "actions",
       header: "Action",
       enableHiding: false,
       cell: ({ row }) => {
-        const product = row.original;
+        const user = row.original;
         return (
           <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
-              onClick={() => onEditProduct(product.id)}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F1F4] transition-all duration-300 hover:scale-105 hover:bg-[#EEEEEE]"
+              onClick={() => onEditProduct(user.id)}
             >
-              <Edit className="h-4 w-4" />
+              <Edit className="h-4 w-4 text-[#616FF5]" />
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8"
-              onClick={() => onDeleteProduct(product.id)}
+              className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-[#F6F1F4] transition-all duration-300 hover:scale-105 hover:bg-[#EEEEEE]"
+              onClick={() => handleBlockOpen(user)}
             >
-              <Trash2 className="h-4 w-4" />
+              <BanIcon className="h-4 w-4 rotate-90 text-[#FF3333]" />
             </Button>
           </div>
         );
@@ -153,7 +214,7 @@ export const CustomerTableColumns = (
   ];
 };
 
-const SortableHeader = ({
+const SortableHeaderV1 = ({
   title,
   sortName,
   sortOptions,
