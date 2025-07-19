@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { ArrowUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { ProductSortOption } from "@/types/product.types";
 import { UserSortOption } from "@/types/users.types";
 
 interface SortOption {

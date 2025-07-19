@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { PaginationInfo } from "@/types/product.types";
-import { getDummyUsers } from "./dummy-data";
-import { User, UserColumnDef, UserSortOption } from "@/types/users.types";
+import { User, UserSortOption } from "@/types/users.types";
 import { useUsers } from "@/queries/users.queries";
 import CustomerListHeader from "./customer-list-header";
 import CustomerListFilters from "./customer-list-filter";

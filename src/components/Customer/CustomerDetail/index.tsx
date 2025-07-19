@@ -1,9 +1,6 @@
 "use client";
 
 import CustomerInfoCard from "./customer-info-card";
-import OrderSummaryCard from "./order-summary-card";
-import ActivityTimeline from "./activity-timeline";
-import { useGetUserById } from "@/queries/users.queries";
 import { OrderTable } from "./OrderTable/order-table";
 import { mockOrders } from "./OrderTable/dummyData";
 import { ChevronLeft } from "lucide-react";
@@ -83,8 +80,8 @@ export default function CustomerDetailsPage({
     <div className="max-w-[1280px] mx-auto p-6">
       <div className="flex flex-col gap-y-5">
         <div className="flex items-center gap-1 group cursor-pointer" onClick={() => router.back()}>
-          <ChevronLeft className="w-6 h-6 text-black group-hover:text-[#616FF5]"/>
-          <p className="text-lg font-medium text-black group-hover:text-[#616FF5]">Customer Details</p>
+          <ChevronLeft className="w-6 h-6 text-black dark:text-white group-hover:text-[#616FF5]"/>
+          <p className="text-lg font-medium text-black dark:text-white group-hover:text-[#616FF5]">Customer Details</p>
         </div>
         <div className="">
           <CustomerInfoCard customerId={customerId} />

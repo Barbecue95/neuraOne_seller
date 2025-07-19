@@ -40,7 +40,7 @@ export function SortDropdown() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="h-auto cursor-pointer rounded-full bg-[#E4E6FF] text-[#303030] text-lg px-4 py-2 font-medium"
+          className="h-auto cursor-pointer rounded-full bg-[#E4E6FF] dark:bg-gray-900 text-[#303030] dark:text-white text-lg px-4 py-2 font-medium"
         >
           <SortDescIcon className="mt-1 size-5 scale-x-[-1]" />
           Sort by: {selectedLabel}
@@ -48,16 +48,16 @@ export function SortDropdown() {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="w-44 border bg-white shadow-lg p-0 rounded-[10px]"
+        className="w-44 border bg-white dark:bg-gray-700 shadow-lg p-0 rounded-[10px]"
       >
         {sortOptions.map((option) => (
           <DropdownMenuItem
             key={option.value}
             onClick={() => handleSortSelect(option.value)}
-            className={`cursor-pointer px-3 py-2 text-sm text-[#303030] ${
+            className={`cursor-pointer px-3 py-2 text-sm text-[#303030] dark:text-white ${
               selectedSort === option.value
-                ? "bg-[#E4E6FF] font-medium"
-                : "hover:bg-[#E4E6FF]"
+                ? "bg-[#E4E6FF] dark:bg-gray-700 font-medium"
+                : "hover:bg-[#E4E6FF] hover:dark:bg-gray-800"
             }`}
           >
             {option.label}

@@ -30,13 +30,10 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Loader2, Plus, PlusCircle } from "lucide-react";
 import { User } from "@/types/users.types";
 import { useRegisterUser } from "@/queries/users.queries";
-import { cities, regions, townships } from "../CustomerListing/dummy-data";
 import {
   useGetCities,
   useGetRegions,
@@ -223,7 +220,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="scrollbar-hide max-h-[95vh] overflow-y-auto rounded-[20px] bg-white md:max-w-2xl">
+      <DialogContent className="scrollbar-hide max-h-[95vh] overflow-y-auto rounded-[20px] bg-white dark:bg-gray-900 md:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-2xl font-medium">
             Add new customer
@@ -239,7 +236,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="customerName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg font-medium text-[#303030]">
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Name
                     </FormLabel>
                     <FormControl>
@@ -259,7 +256,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="phoneNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg font-medium text-[#303030]">
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Phone number
                     </FormLabel>
                     <FormControl>
@@ -282,7 +279,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg font-medium text-[#303030]">
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Email
                     </FormLabel>
                     <FormControl>
@@ -303,7 +300,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="gender"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg font-medium text-[#303030]">
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Gender
                     </FormLabel>
                     <Select
@@ -333,7 +330,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
             </div>
 
             {/* Address Type */}
-            {/* <Label className="text-lg font-medium text-[#303030]">Address</Label>
+            {/* <Label className="text-lg font-medium text-[#303030] dark:text-white">Address</Label>
             <div className="space-y-3">
               <FormField
                 control={form.control}
@@ -369,7 +366,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="regionId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg font-medium text-[#303030]">
+                    <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Address
                     </FormLabel>
                     <Select
@@ -404,7 +401,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="cityId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="h-7 text-lg font-medium text-[#303030]"></FormLabel>
+                    <FormLabel className="h-7 text-lg font-medium text-[#303030] dark:text-white"></FormLabel>
                     <Select
                       onValueChange={(value) => {
                         field.onChange(Number(value));
@@ -438,7 +435,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="townshipId"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Township
                     </FormLabel> */}
                     <Select
@@ -474,7 +471,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Address
                     </FormLabel> */}
                     <FormControl>
@@ -497,7 +494,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="floorNo"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Floor No (Optional)
                     </FormLabel> */}
                     <FormControl>
@@ -517,7 +514,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
                 name="unit"
                 render={({ field }) => (
                   <FormItem>
-                    {/* <FormLabel className="text-lg font-medium text-[#303030]">
+                    {/* <FormLabel className="text-lg font-medium text-[#303030] dark:text-white">
                       Unit (Optional)
                     </FormLabel> */}
                     <FormControl>
@@ -535,7 +532,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
 
             {/* Password Section */}
             <div className="space-y-4">
-              <Label className="text-lg font-medium text-[#303030]">
+              <Label className="text-lg font-medium text-[#303030] dark:text-white">
                 Password
               </Label>
 

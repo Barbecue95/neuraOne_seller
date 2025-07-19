@@ -23,12 +23,12 @@ export function BlockUserModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         showCloseButton={false}
-        className="gap-0 rounded-2xl border-0 bg-white p-0 shadow-xl sm:max-w-md"
+        className="gap-0 rounded-2xl border-0 bg-white dark:bg-gray-800 p-0 shadow-xl sm:max-w-md"
       >
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-1 transition-colors hover:bg-gray-100"
+          className="absolute top-4 right-4 z-10 cursor-pointer rounded-full p-1 transition-colors hover:bg-gray-100 dark:hover:gray-600"
         >
           <X className="h-5 w-5 text-gray-500" />
         </button>
@@ -55,12 +55,12 @@ export function BlockUserModal({
           </div>
 
           {/* User name */}
-          <h2 className="mb-3 text-lg font-normal text-[#303030]">
+          <h2 className="mb-3 text-lg font-normal text-[#303030] dark:text-white">
             {user?.name}
           </h2>
 
           {/* Confirmation text */}
-          <p className="mb-6 text-lg font-medium text-black">
+          <p className="mb-6 text-lg font-medium text-black dark:text-white">
             Do you want to {user?.status === "ACTIVE" ? "block": "unblock"} this account?
           </p>
 

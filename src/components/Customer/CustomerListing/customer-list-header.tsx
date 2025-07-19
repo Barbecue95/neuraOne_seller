@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { useRouter } from "next/navigation";
 import AddCustomerModal from "../CreateCustomer/create-customer-modal";

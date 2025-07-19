@@ -1,13 +1,6 @@
 "use client";
 
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Search } from "lucide-react";
 
 interface CustomerListFiltersProps {
@@ -28,7 +21,7 @@ const CustomerListFilters = ({
   onCategoryFilterChange,
 }: CustomerListFiltersProps) => {
   return (
-    <div className="flex items-center justify-between bg-white rounded-t-[20px] p-5">
+    <div className="flex items-center justify-between bg-white dark:bg-gray-900 rounded-t-[20px] p-5">
       <h1 className="text-xl font-medium">All Customers</h1>
 
       <div className="relative max-w-40 md:max-w-80">

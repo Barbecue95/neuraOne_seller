@@ -2,15 +2,13 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, Trash2, ArrowUpDown, BanIcon } from "lucide-react";
-import type { Product } from "@/types/product.types";
+import { Edit, ArrowUpDown, BanIcon } from "lucide-react";
 import { User, UserSortOption } from "@/types/users.types";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { useDeleteUser } from "@/queries/users.queries";
 import { SortableHeader } from "./sortable-header";
-import { BlockUserModal } from "../BlockUserModal";
 
 export const CustomerTableColumns = (
   handleSortChange: (value: UserSortOption) => void,
@@ -165,7 +163,7 @@ export const CustomerTableColumns = (
           <span
             className={`inline-block w-24 rounded-full px-3 py-1 text-center text-sm font-normal ${color}`}
           >
-            {status == "ACTIVE" ? "Active" : "Block"}
+            {status == "ACTIVE" ? "Active" : "Blocked"}
           </span>
         );
       },

@@ -75,7 +75,7 @@ export default function CustomerInfoCard({
     }[status] ?? "bg-gray-100 text-gray-800";
 
   return (
-    <div className="flex flex-col items-center justify-center rounded-[20px] bg-white py-4 text-base font-medium md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col items-center justify-center rounded-[20px] bg-white dark:bg-gray-900 py-4 text-base font-medium md:flex-row md:items-center md:justify-between">
       <div className="flex flex-col items-center justify-center gap-5 p-5 md:w-[30%] md:flex-row md:p-10">
         <Avatar className="h-28 w-28">
           <AvatarImage
@@ -92,24 +92,24 @@ export default function CustomerInfoCard({
         </Avatar>
         <div className="flex flex-col justify-center gap-y-1 text-center md:items-start">
           <p>{customer?.name}</p>
-          <span className="text-base text-[#3C3C3C]">{customer?.id}</span>
+          <span className="text-base text-[#3C3C3C] dark:text-gray-200">{customer?.id}</span>
         </div>
       </div>
       <div className="flex h-full w-full flex-col justify-between space-y-2 p-5 md:w-[40%] md:border-x md:border-[#EEEEEE]">
         <div className="flex items-start justify-between">
-          <span className="text-[#303030]">Phone Number</span>
+          <span className="text-[#303030] dark:text-gray-300">Phone Number</span>
           <p>{customer?.phone}</p>
         </div>
         <div className="flex items-start justify-between">
-          <span className="text-[#303030]">Email</span>
+          <span className="text-[#303030] dark:text-gray-300">Email</span>
           <p>{customer?.email}</p>
         </div>
         <div className="flex items-start justify-between">
-          <span className="text-[#303030]">Gender</span>
+          <span className="text-[#303030] dark:text-gray-300">Gender</span>
           <p>{customer?.gender}</p>
         </div>
         <div className="flex items-start justify-between">
-          <span className="text-[#303030]">Status</span>
+          <span className="text-[#303030] dark:text-gray-300">Status</span>
           <span
             className={`inline-block w-24 rounded-full px-3 py-1 text-center text-sm font-normal ${color}`}
           >
@@ -118,9 +118,9 @@ export default function CustomerInfoCard({
         </div>
       </div>
       <div className="flex flex-col items-start justify-center gap-y-3 px-5 md:w-[30%]">
-        <span className="text-[#303030]">Address</span>
+        <span className="text-[#303030] dark:text-gray-300">Address</span>
         <p>{customer?.address}</p>
-        <div className="flex items-start justify-center gap-1 text-[#303030]">
+        <div className="flex items-start justify-center gap-1 text-[#303030] dark:text-gray-300">
           <Locationarrow />
           <span>Near City Mart</span>
         </div>

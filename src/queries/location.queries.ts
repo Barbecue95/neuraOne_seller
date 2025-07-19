@@ -1,12 +1,5 @@
 import { getCities, getRegions, getTownships } from "@/services/location.services";
-import {
-  getDeleteUser,
-  getUserById,
-  getUsers,
-  registerUser,
-  updateUserStatus,
-} from "@/services/users.services";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 
 
 export const useGetRegions = () => {

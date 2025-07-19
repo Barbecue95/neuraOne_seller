@@ -11,7 +11,6 @@ import {
   Table as ReactTable,
   ColumnDef,
 } from "@tanstack/react-table";
-import type { Product } from "@/types/product.types";
 import { User } from "@/types/users.types";
 import { cn } from "@/lib/utils";
 
@@ -29,7 +28,7 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow
               key={headerGroup.id}
-              className="h-auto bg-[#EEEEEE] py-4 text-lg text-[#3C3C3C] hover:bg-[#EEEEEE]"
+              className="h-auto bg-[#EEEEEE] dark:bg-gray-700 py-4 text-lg text-[#3C3C3C] dark:text-white hover:bg-[#EEEEEE] dark:hover:bg-gray-800"
             >
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
@@ -50,7 +49,7 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
               <TableRow key={i}>
                 {columns.map((_, j) => (
                   <TableCell key={j}>
-                    <div className="h-4 animate-pulse rounded bg-gray-200" />
+                    <div className="h-4 animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
                   </TableCell>
                 ))}
               </TableRow>
@@ -61,7 +60,7 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
                 className={cn(
-                  "cursor-pointer bg-white text-lg font-normal text-[#303030]",
+                  "cursor-pointer bg-white dark:bg-gray-800 text-lg font-normal text-[#303030] dark:text-white",
                   table.getRowModel().rows.length - 1 === index &&
                     "rounded-b-[20px]",
                 )}

@@ -59,7 +59,7 @@ const Pagination = ({
 
   return (
     <div className="flex flex-col items-center justify-center gap-y-3 md:flex-row md:items-center md:justify-between">
-      <div className="flex items-center justify-center gap-1 text-lg font-medium text-[#303030]">
+      <div className="flex items-center justify-center gap-1 text-lg font-medium text-[#303030] dark:text-white">
         <span>Showing</span>
         <Select
           value={size.toString()}

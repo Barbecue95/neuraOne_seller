@@ -1,4 +1,3 @@
-import { User, UserSortOption } from "@/types/users.types";
 import axiosClient from "./axiosClient";
 import { locationEndpoints } from "./constants/apiEndpoints";
 
