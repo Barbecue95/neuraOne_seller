@@ -36,25 +36,29 @@ export default function LoginPage() {
       { email, password },
       {
         onSuccess: (res) => {
-          const { createdAt, ...userData } = res?.data?.user;
-          console.log("Login successful:", userData);
-          // dispatch(
-          //   setUserInfo({
-          //     ...userData,
-          //   }),
-          // );
-          localStorage.setItem("userInfo", JSON.stringify(userData));
+          if (res?.status) {
+            const { createdAt, ...userData } = res?.data?.user;
+            console.log("Login successful:", res);
+            // dispatch(
+            //   setUserInfo({
+            //     ...userData,
+            //   }),
+            // );
+            localStorage.setItem("userInfo", JSON.stringify(userData));
 
-          Cookies.set("accessToken", res?.data?.accessToken, {
-            expires: 7,
-            path: "/",
-          });
-          Cookies.set("refreshToken", res?.data?.refreshToken, {
-            expires: 7,
-            path: "/",
-          });
-          // router.push("/");
-          window.location.href = "/";
+            Cookies.set("accessToken", res?.data?.accessToken, {
+              expires: 7,
+              path: "/",
+            });
+            Cookies.set("refreshToken", res?.data?.refreshToken, {
+              expires: 7,
+              path: "/",
+            });
+            // router.push("/");
+            window.location.href = "/";
+          } else {
+            setLoginError(res?.error || "Login failed. Please try again.");
+          }
         },
         onError: (error: any) => {
           setLoginError(error.message || "Login failed. Please try again.");
@@ -177,7 +181,7 @@ export default function LoginPage() {
                   </Button>
                 </form>
                 {loginError && (
-                  <p className="mt-4 text-sm text-red-500">{loginError}</p>
+                  <p className="mt-4 text-sm bg-white px-3 text-red-500">{loginError}</p>
                 )}
               </div>
             </div>
