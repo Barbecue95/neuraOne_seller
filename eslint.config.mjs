@@ -20,6 +20,8 @@ const eslintConfig = [
       "@tanstack/query": pluginTanstackQuery,
     },
     rules: {
+      "@typescript-eslint/no-unused-vars": "warn",
+      "@typescript-eslint/no-explicit-any": "warn",
       // Add any rules you want from the plugin here, for example:
       // "@tanstack/query/exhaustive-deps": "warn"
     },
