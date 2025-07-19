@@ -1,36 +1,24 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Search } from "lucide-react";
+import { Search, Trash2Icon } from "lucide-react";
 
 interface ProductListFiltersProps {
   searchQuery: string;
   onSearchChange: (value: string) => void;
-  statusFilter: string;
-  onStatusFilterChange: (value: string) => void;
-  categoryFilter: string;
-  onCategoryFilterChange: (value: string) => void;
-  categories: string[];
+  hasSomeSelectedRows: boolean;
+  handleDeleteProducts: () => void;
 }
 
 const ProductListFilters = ({
   searchQuery,
+  hasSomeSelectedRows,
   onSearchChange,
-  statusFilter,
-  onStatusFilterChange,
-  categoryFilter,
-  onCategoryFilterChange,
-  categories,
+  handleDeleteProducts,
 }: ProductListFiltersProps) => {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between p-4">
       <div className="flex items-center gap-2">
         {/* <Select value={statusFilter} onValueChange={onStatusFilterChange}>
           <SelectTrigger className="w-32">
@@ -57,6 +45,19 @@ const ProductListFilters = ({
             ))}
           </SelectContent>
         </Select> */}
+        <h1 className="scroll-m-20 text-xl font-medium tracking-tight">
+          All Products
+        </h1>
+        {hasSomeSelectedRows && (
+          <Button
+            variant="destructive"
+            className="rounded-[10px] bg-[#FFDCDC] text-[#FF3333] hover:bg-[#FFB4B4] hover:text-[#FF3333]"
+            onClick={() => handleDeleteProducts()}
+          >
+            Delete
+            <Trash2Icon className="h-4 w-4" />
+          </Button>
+        )}
       </div>
 
       <div className="relative w-64">
@@ -65,7 +66,7 @@ const ProductListFilters = ({
           placeholder="Search product"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10"
+          className="rounded-3xl pl-10"
         />
       </div>
     </div>
