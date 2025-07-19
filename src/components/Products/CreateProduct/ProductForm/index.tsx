@@ -1,152 +1,48 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 import ProductInfoSection from "./product-info-section";
 import PhotoSection from "./photo-section";
 import VisibilityInventorySection from "./visibility-inventory-section";
-import OrganizationTagsSection from "./organization-tags-section";
+// import OrganizationTagsSection from "./organization-tags-section";
 import PricingSection from "./pricing-section";
 import VariantSection from "./variant-section";
-
-import {
-  ProductStatus,
-  TaxType,
-  ProductRelationType,
-} from "@/types/product.types";
-import {
-  CreateProductPayload,
-  CreateProductSchema,
-} from "./product-form-schema";
-import { useGetCategories } from "@/queries/category.queries";
-import { useCreateProduct } from "@/queries/product.queries";
-import { useRouter } from "next/navigation";
 import Loading from "@/components/common/Loading";
+import useCreateProducts from "@/features/products/useCreateProducts";
+import ProductHeader from "./product-Header";
 
 export default function CreateProductForm() {
-  const router = useRouter();
-  const [isDraftLoading, setIsDraftLoading] = useState(false);
-
-  const { mutate: createProduct, isLoading: isCreating } = useCreateProduct();
-  const form = useForm<CreateProductPayload>({
-    resolver: zodResolver(CreateProductSchema),
-    defaultValues: {
-      name: "",
-      description: "",
-      brandId: null,
-      mainCategoryId: 0,
-      subCategoryId: null,
-      subOneCategoryId: null,
-      tags: "",
-      status: ProductStatus.PUBLISHED,
-      scheduleDate: "",
-      imageUrl: [],
-      purchasePrice: 0,
-      sellingPrice: 0,
-      sku: "",
-      quantity: 0,
-      weightUnit: "kg",
-      weightValue: 0,
-      promoteInfo: {
-        promoteStatus: false,
-        discountType: "PERCENTAGE",
-        discountValue: 0,
-        promoteAmount: 0,
-        promotePercent: 0,
-        startDate: "",
-        endDate: "",
-      },
-      variantValues: [],
-      variants: [],
-      productRelationType: ProductRelationType.TAG,
-    },
-  });
-
-  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories();
-
-  const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
-    null,
-  );
-  const categories = rawCategories?.data?.map(
-    (category: { id: number; name: string }) => {
-      return { value: category.id, label: category.name };
-    },
-  );
-
-  const [categoryVariantGroups, setCategoryVariantGroups] = useState([]);
-
-  useEffect(() => {
-    setCategoryVariantGroups(
-      rawCategories?.data
-        ?.filter((category: any) => category.id == selectedCategoryId)
-        .map((category: any) => category?.categoryVariantGroups),
-    );
-  }, [selectedCategoryId]);
-
-  const handleSubmit = async (data: CreateProductPayload) => {
-    const payload = {
-      ...data,
-      promoteInfo: {
-        ...data.promoteInfo,
-        promoteAmount:
-          data.promoteInfo?.discountType === "AMOUNT"
-            ? data.promoteInfo.discountValue
-            : 0,
-        promotePercent:
-          data.promoteInfo?.discountType != "AMOUNT"
-            ? data.promoteInfo.discountValue
-            : 0,
-      },
-    };
-    console.log("create product", data, payload);
-    createProduct(payload);
-    router.back()
-  };
-
-  const handleSaveAsDraft = async () => {
-    const data = {
-      ...form.getValues(),
-      status: ProductStatus.DRAFT,
-    };
-
-    const payload = {
-      ...data,
-      promoteInfo: {
-        ...data.promoteInfo,
-        promoteAmount:
-          data.promoteInfo?.discountType === "AMOUNT"
-            ? data.promoteInfo.discountValue
-            : 0,
-        promotePercent:
-          data.promoteInfo?.discountType != "AMOUNT"
-            ? data.promoteInfo.discountValue
-            : 0,
-      },
-    }
-
-    createProduct(payload);
-    // console.log("create product", data);
-    router.push("/products");
-  };
-
-  if(categoryLoading) return <Loading />;
+  const {
+    categories,
+    categoryVariantGroups,
+    form,
+    categoryLoading,
+    isDraftLoading,
+    isCreating,
+    handleCategoryChange,
+    handleCreateProductSubmit,
+    handleSaveAsDraft,
+  } = useCreateProducts();
+  if (categoryLoading) return <Loading />;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-6 p-6">
+    <div className="max-w-full space-y-6 px-8 py-5">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+        <form
+          onSubmit={form.handleSubmit(handleCreateProductSubmit)}
+          className="space-y-6"
+        >
+          <ProductHeader />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             {/* Left Column */}
             <div className="space-y-6 lg:col-span-2">
               <ProductInfoSection
                 form={form}
                 categories={categories}
-                setSelectedCategoryId={setSelectedCategoryId}
+                setSelectedCategoryId={handleCategoryChange}
               />
               <PhotoSection form={form} />
               <PricingSection form={form} />
@@ -160,7 +56,7 @@ export default function CreateProductForm() {
             {/* Right Column */}
             <div className="space-y-6">
               <VisibilityInventorySection form={form} />
-              <OrganizationTagsSection form={form} />
+              {/* <OrganizationTagsSection form={form} /> */}
             </div>
           </div>
 

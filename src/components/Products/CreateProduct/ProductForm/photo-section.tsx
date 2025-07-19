@@ -1,36 +1,44 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import type { UseFormReturn } from "react-hook-form"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Upload, X, MoreVertical, Star } from "lucide-react"
-import { useState } from "react"
+import type { UseFormReturn } from "react-hook-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Upload, X, MoreVertical, Star, Icon } from "lucide-react";
+import { useState } from "react";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
+import IconImagePlus from "@/utils/icons/IconImagePlus";
 
 interface PhotoSectionProps {
-  form: UseFormReturn<EditProductPayload>
+  form: UseFormReturn<EditProductPayload>;
 }
 
 interface ImageData {
-  id: string
-  url: string
-  file: File
-  isMain: boolean
+  id: string;
+  url: string;
+  file: File;
+  isMain: boolean;
 }
 
 export default function PhotoSection({ form }: PhotoSectionProps) {
-  const [images, setImages] = useState<ImageData[]>([])
-  const maxImages = 5
+  const [images, setImages] = useState<ImageData[]>([]);
+  const maxImages = 5;
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || [])
-    const remainingSlots = maxImages - images.length
+    const files = Array.from(event.target.files || []);
+    const remainingSlots = maxImages - images.length;
 
     if (files.length > remainingSlots) {
-      alert(`You can only upload ${remainingSlots} more image${remainingSlots !== 1 ? "s" : ""}`)
-      return
+      alert(
+        `You can only upload ${remainingSlots} more image${remainingSlots !== 1 ? "s" : ""}`,
+      );
+      return;
     }
 
     const newImages: ImageData[] = files.map((file, index) => ({
@@ -38,128 +46,154 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
       url: URL.createObjectURL(file),
       file,
       isMain: images.length === 0 && index === 0, // First image becomes main if no images exist
-    }))
+    }));
 
-    const updatedImages = [...images, ...newImages]
-    setImages(updatedImages)
+    const updatedImages = [...images, ...newImages];
+    setImages(updatedImages);
 
     // Update form with image URLs
     const imageUrls = updatedImages.map((img) => ({
       url: img.url,
       isMain: img.isMain,
-    }))
-    form.setValue("imageUrl", imageUrls)
+    }));
+    form.setValue("imageUrl", imageUrls);
 
     // Reset input
-    event.target.value = ""
-  }
+    event.target.value = "";
+  };
 
   const removeImage = (imageId: string) => {
-    const imageToRemove = images.find((img) => img.id === imageId)
-    if (!imageToRemove) return
+    const imageToRemove = images.find((img) => img.id === imageId);
+    if (!imageToRemove) return;
 
-    const updatedImages = images.filter((img) => img.id !== imageId)
+    const updatedImages = images.filter((img) => img.id !== imageId);
 
     // If we're removing the main image, make the first remaining image the main one
     if (imageToRemove.isMain && updatedImages.length > 0) {
-      updatedImages[0].isMain = true
+      updatedImages[0].isMain = true;
     }
 
-    setImages(updatedImages)
+    setImages(updatedImages);
 
     // Update form
     const imageUrls = updatedImages.map((img) => ({
       url: img.url,
       isMain: img.isMain,
-    }))
-    form.setValue("imageUrl", imageUrls)
+    }));
+    form.setValue("imageUrl", imageUrls);
 
     // Revoke URL to free memory
-    URL.revokeObjectURL(imageToRemove.url)
-  }
+    URL.revokeObjectURL(imageToRemove.url);
+  };
 
   const setAsShowcase = (imageId: string) => {
     const updatedImages = images.map((img) => ({
       ...img,
       isMain: img.id === imageId,
-    }))
+    }));
 
-    setImages(updatedImages)
+    setImages(updatedImages);
 
     // Update form
     const imageUrls = updatedImages.map((img) => ({
       url: img.url,
       isMain: img.isMain,
-    }))
-    form.setValue("imageUrl", imageUrls)
-  }
+    }));
+    form.setValue("imageUrl", imageUrls);
+  };
 
   const getShowcaseImage = () => {
-    return images.find((img) => img.isMain) || images[0]
-  }
+    return images.find((img) => img.isMain) || images[0];
+  };
 
   const getNonShowcaseImages = () => {
-    const showcase = getShowcaseImage()
-    return images.filter((img) => img.id !== showcase?.id)
-  }
+    const showcase = getShowcaseImage();
+    return images.filter((img) => img.id !== showcase?.id);
+  };
 
   const renderImageSlot = (image: ImageData, isShowcase = false) => (
     <div
       key={image.id}
       className={`relative ${
-        isShowcase ? "w-32 h-32" : "w-20 h-20"
-      } border-2 border-dashed border-gray-300 rounded-lg overflow-hidden group`}
+        isShowcase ? "h-48 w-40" : "size-32"
+      } group overflow-hidden rounded-lg border-2 border-dashed border-gray-300`}
     >
-      <img src={image.url || "/placeholder.svg"} alt="Product" className="w-full h-full object-cover" />
+      <img
+        src={image.url || "/placeholder.svg"}
+        alt="Product"
+        className="h-full w-full object-cover"
+      />
 
       {/* Showcase indicator */}
       {isShowcase && (
-        <div className="absolute top-1 left-1 bg-yellow-500 text-white rounded-full p-1">
-          <Star className="w-3 h-3 fill-current" />
+        <div className="absolute top-1 left-1 rounded-full bg-yellow-500 p-1 text-white">
+          <Star className="h-3 w-3 fill-current" />
         </div>
       )}
 
       {/* Menu dropdown */}
-      <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="absolute top-1 right-1 opacity-0 transition-opacity group-hover:opacity-100">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="bg-black/50 text-white rounded-full p-1 hover:bg-black/70">
-              <MoreVertical className="w-3 h-3" />
+            <button className="rounded-full bg-black/50 p-1 text-white hover:bg-black/70">
+              <MoreVertical className="h-3 w-3" />
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-40">
             {!isShowcase && (
-              <DropdownMenuItem onClick={() => setAsShowcase(image.id)} className="text-sm">
-                <Star className="w-3 h-3 mr-2" />
+              <DropdownMenuItem
+                onClick={() => setAsShowcase(image.id)}
+                className="text-sm"
+              >
+                <Star className="mr-2 h-3 w-3" />
                 Set as showcase
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem onClick={() => removeImage(image.id)} className="text-sm text-red-600">
-              <X className="w-3 h-3 mr-2" />
+            <DropdownMenuItem
+              onClick={() => removeImage(image.id)}
+              className="text-sm text-red-600"
+            >
+              <X className="mr-2 h-3 w-3" />
               Delete
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
     </div>
-  )
+  );
 
-  const renderUploadSlot = () => (
-    <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg">
-      <label className="w-full h-full flex items-center justify-center cursor-pointer hover:bg-gray-50">
-        <Upload className="w-6 h-6 text-gray-400" />
-        <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="hidden" />
-      </label>
-    </div>
-  )
+  const renderUploadSlot = (remainingSlots: number) => {
+    if (remainingSlots <= 0) remainingSlots = 4;
+    return (
+      <>
+        {new Array(remainingSlots).fill(0).map((_, index) => (
+          <div
+            className="size-32 overflow-hidden rounded-lg border-2 border-dashed border-gray-300"
+            key={index}
+          >
+            <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-gray-50 hover:dark:bg-neutral-800">
+              <IconImagePlus className="h-6 w-6 text-gray-400" />
+              <input
+                type="file"
+                multiple
+                accept="image/*"
+                onChange={handleImageUpload}
+                className="hidden"
+              />
+            </label>
+          </div>
+        ))}
+      </>
+    );
+  };
 
   const renderEmptySlot = () => (
-    <div className="w-20 h-20 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50"></div>
-  )
+    <div className="h-20 w-20 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"></div>
+  );
 
-  const showcaseImage = getShowcaseImage()
-  const otherImages = getNonShowcaseImages()
-  const remainingSlots = maxImages - images.length
+  const showcaseImage = getShowcaseImage();
+  const otherImages = getNonShowcaseImages();
+  const remainingSlots = maxImages - images.length;
 
   return (
     <Card>
@@ -176,27 +210,38 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
             {showcaseImage ? (
               renderImageSlot(showcaseImage, true)
             ) : (
-              <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
+              <label className="flex h-48 w-40 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:bg-transparent hover:dark:bg-neutral-800">
                 <div className="text-center text-gray-400">
-                  <Upload className="w-8 h-8 mx-auto mb-1" />
+                  <IconImagePlus className="mx-auto mb-1 h-8 w-8" />
                   <div className="text-xs">Upload photos</div>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    hidden
+                  />
                 </div>
-              </div>
+              </label>
             )}
           </div>
 
           {/* Photos Grid */}
-          <div className="space-y-2 flex-1">
+          <div className="flex-1 space-y-2">
             <div className="text-sm font-medium">
-              Photos <span className="text-gray-500">(max {maxImages} photos)</span>{" "}
+              Photos{" "}
+              <span className="text-gray-500">(max {maxImages} photos)</span>
               <span className="text-red-500">*</span>
             </div>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid max-w-[600px] grid-cols-4 justify-items-start gap-2">
               {/* Render other uploaded images */}
               {otherImages.map((image) => renderImageSlot(image))}
 
               {/* Render upload slot if we haven't reached max */}
-              {images.length < maxImages && renderUploadSlot()}
+              {images.length < maxImages &&
+                renderUploadSlot(
+                  images.length > 0 ? maxImages - otherImages.length - 1 : 4,
+                )}
 
               {/* Render empty slots */}
               {/* {Array.from({ length: Math.max(0, maxImages - images.length - 1) }).map((_, index) => renderEmptySlot())} */}
@@ -205,11 +250,12 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
         </div>
 
         {/* Upload info */}
-        <div className="mt-4 text-xs text-gray-500">
+        {/* <div className="mt-4 text-xs text-gray-500">
           {images.length}/{maxImages} photos uploaded
-          {images.length < maxImages && ` • ${maxImages - images.length} slots remaining`}
-        </div>
+          {images.length < maxImages &&
+            ` • ${maxImages - images.length} slots remaining`}
+        </div> */}
       </CardContent>
     </Card>
-  )
+  );
 }
