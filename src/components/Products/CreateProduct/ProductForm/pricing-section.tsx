@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
+import { handleInputAmountChange } from "@/utils/numberFormat";
 
 interface PricingSectionProps {
   form: UseFormReturn<EditProductPayload>;
@@ -21,6 +22,7 @@ interface PricingSectionProps {
 
 export default function PricingSection({ form }: PricingSectionProps) {
   const discountEnabled = form.watch("promoteInfo.promoteStatus");
+  const discountType = form.watch("promoteInfo.discountType");
 
   return (
     <Card>
@@ -39,16 +41,21 @@ export default function PricingSection({ form }: PricingSectionProps) {
                   Buying Price <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Buying price"
-                    {...field}
-                    onChange={(e) => {
-                      console.log("even", Number(e.target.value))
-                      field.onChange(Number(e.target.value))
-                    }}
-                    value={field.value === 0 ? '' : field.value ?? ''} 
-                  />
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Buying price"
+                      className="h-12 rounded-[20px] p-4"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(handleInputAmountChange(e))
+                      }
+                      value={field.value === 0 ? "" : (field.value ?? "")}
+                    />
+                    <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
+                      Ks
+                    </span>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -64,13 +71,21 @@ export default function PricingSection({ form }: PricingSectionProps) {
                   Selling Price <span className="text-red-500">*</span>
                 </FormLabel>
                 <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Selling price"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    value={field.value === 0 ? '' : field.value ?? ''} 
-                  />
+                  <div className="relative">
+                    <Input
+                      type="text"
+                      placeholder="Selling price"
+                      className="h-12 rounded-[20px] p-4"
+                      {...field}
+                      onChange={(e) =>
+                        field.onChange(handleInputAmountChange(e))
+                      }
+                      value={field.value === 0 ? "" : (field.value ?? "")}
+                    />
+                    <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
+                      Ks
+                    </span>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -92,7 +107,13 @@ export default function PricingSection({ form }: PricingSectionProps) {
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(v) => {
+                      field.onChange(v);
+                      if (v) {
+                        form.setValue("promoteInfo.discountValue", undefined);
+                      }
+                    }}
+                    className="cursor-pointer"
                   />
                 </FormControl>
                 <FormLabel>Discount</FormLabel>
@@ -109,7 +130,10 @@ export default function PricingSection({ form }: PricingSectionProps) {
                   <FormItem>
                     <FormControl>
                       <RadioGroup
-                        onValueChange={field.onChange}
+                        onValueChange={(value) => {
+                          form.setValue("promoteInfo.discountValue", 0);
+                          field.onChange(value);
+                        }}
                         value={field.value}
                         className="flex space-x-6"
                       >
@@ -117,14 +141,27 @@ export default function PricingSection({ form }: PricingSectionProps) {
                           <RadioGroupItem
                             value="PERCENTAGE"
                             id="discount-percentage"
+                            className="cursor-pointer"
                           />
-                          <Label htmlFor="discount-percentage">
+                          <Label
+                            htmlFor="discount-percentage"
+                            className="cursor-pointer"
+                          >
                             Percentage
                           </Label>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <RadioGroupItem value="AMOUNT" id="discount-amount" />
-                          <Label htmlFor="discount-amount">Amount</Label>
+                          <RadioGroupItem
+                            value="AMOUNT"
+                            id="discount-amount"
+                            className="cursor-pointer"
+                          />
+                          <Label
+                            htmlFor="discount-amount"
+                            className="cursor-pointer"
+                          >
+                            Amount
+                          </Label>
                         </div>
                       </RadioGroup>
                     </FormControl>
@@ -141,16 +178,24 @@ export default function PricingSection({ form }: PricingSectionProps) {
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type="number"
-                          placeholder="Amount"
+                          type="text"
+                          placeholder={
+                            discountType === "AMOUNT" ? "Amount" : "Percentage"
+                          }
                           {...field}
                           onChange={(e) =>
-                            field.onChange(Number(e.target.value))
+                            field.onChange(
+                              handleInputAmountChange(
+                                e,
+                                discountType === "AMOUNT" ? 10 : 2,
+                              ),
+                            )
                           }
-                          value={field.value === 0 ? '' : field.value ?? ''} 
+                          value={field.value === 0 ? "" : (field.value ?? "")}
+                          className="h-12 rounded-[20px] p-4"
                         />
                         <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
-                          Ks
+                          {discountType === "AMOUNT" ? "Ks" : "%"}
                         </span>
                       </div>
                     </FormControl>

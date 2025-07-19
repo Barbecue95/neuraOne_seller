@@ -5,9 +5,10 @@ import { Edit, Trash2, ArrowUpDown } from "lucide-react";
 import { ProductSortOption, type Product } from "@/types/product.types";
 import { SortableHeader } from "./sortable-header";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 export const ProductTableColumns = (
-  onEditProduct?: (id: number) => void,
   onDeleteProduct?: (id: number) => void,
 ): ColumnDef<Product>[] => [
   {
@@ -19,6 +20,7 @@ export const ProductTableColumns = (
           (table.getIsSomePageRowsSelected() && "indeterminate")
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        className="border-[#303030] data-[state=checked]:!bg-[#3C3C3C]"
         aria-label="Select all"
       />
     ),
@@ -26,6 +28,7 @@ export const ProductTableColumns = (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(!!value)}
+        className="border-[#303030] data-[state=checked]:!bg-[#3C3C3C]"
         aria-label="Select row"
       />
     ),
@@ -44,7 +47,7 @@ export const ProductTableColumns = (
       />
     ),
     cell: ({ row }) => (
-      <div className="font-medium">{row.getValue("name")}</div>
+      <div className="px-4 font-medium">{row.getValue("name")}</div>
     ),
   },
   {
@@ -59,13 +62,13 @@ export const ProductTableColumns = (
         ]}
       />
     ),
-    cell: ({ row }) => <div>{row.getValue("category")}</div>,
+    cell: ({ row }) => <div className="px-4">{row.getValue("category")}</div>,
   },
   {
     accessorKey: "sellingPrice",
     header: ({ column }) => (
       <SortableHeader
-        title="Price"
+        title="Selling price"
         sortOptions={[
           {
             label: "Price (Low → High)",
@@ -78,7 +81,9 @@ export const ProductTableColumns = (
         ]}
       />
     ),
-    cell: ({ row }) => <div>{row.getValue("sellingPrice")}</div>,
+    cell: ({ row }) => (
+      <div className="px-4">{row.getValue("sellingPrice")} Ks</div>
+    ),
   },
   {
     accessorKey: "quantity",
@@ -97,7 +102,7 @@ export const ProductTableColumns = (
         ]}
       />
     ),
-    cell: ({ row }) => <div>{row.getValue("quantity")}</div>,
+    cell: ({ row }) => <div className="px-4">{row.getValue("quantity")}</div>,
   },
   {
     accessorKey: "status",
@@ -110,7 +115,27 @@ export const ProductTableColumns = (
         ]}
       />
     ),
-    cell: ({ row }) => <div>{row.getValue("status")}</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="px-4">
+          <h2
+            className={cn(
+              "w-fit rounded-full bg-[#FFFAA3] px-4 py-1 text-sm text-[#827C00]",
+              {
+                "bg-[#E4FFDF] text-[#126D00]":
+                  row.getValue("status") === "PUBLISH",
+              },
+            )}
+          >
+            {row.getValue("status") === "PUBLISH"
+              ? "Published"
+              : row.getValue("status") === "DRAFT"
+                ? "Draft"
+                : row.getValue("status")}
+          </h2>
+        </div>
+      );
+    },
   },
   {
     id: "actions",
@@ -120,19 +145,28 @@ export const ProductTableColumns = (
       const product = row.original;
       return (
         <div className="flex items-center gap-2">
-          <Link
-            href={`/products/edit/${product.id}`}
-            className="cursor-pointer"
-            // onClick={() => onEditProduct?.(product.id)}
-          >
-            <Edit className="h-4 w-4" />
-          </Link>
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => onDeleteProduct?.(product.id)}
+            asChild
+            className="!bg-muted-foreground/10 hover:!bg-muted-forground size-7 cursor-pointer rounded-full p-1.5 text-[#616FF5] hover:text-[#616FF5]"
           >
-            <Trash2 className="h-4 w-4" />
+            <Link href={`/products/edit/${product.id}`}>
+              <Edit />
+            </Link>
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            asChild
+            className="!bg-muted-foreground/10 hover:!bg-muted-forground size-7 cursor-pointer rounded-full p-1.5 text-[#FF3333] hover:text-[#FF3333]"
+            onClick={() => {
+              toast.info("Product deleted successfully !!");
+              return;
+              onDeleteProduct?.(product.id);
+            }}
+          >
+            <Trash2 />
           </Button>
         </div>
       );

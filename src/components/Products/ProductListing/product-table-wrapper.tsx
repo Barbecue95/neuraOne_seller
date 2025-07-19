@@ -25,7 +25,10 @@ const TableWrapper = ({ table, columns, loading }: Props) => {
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="bg-gray-50">
+            <TableRow
+              key={headerGroup.id}
+              className="!bg-gray-200 dark:!bg-neutral-800"
+            >
               {headerGroup.headers.map((header) => (
                 <TableHead key={header.id}>
                   {header.isPlaceholder

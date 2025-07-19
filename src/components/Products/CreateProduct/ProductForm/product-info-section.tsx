@@ -24,7 +24,7 @@ import { EditProductPayload } from "@/components/Products/CreateProduct/ProductF
 
 interface ProductInfoSectionProps {
   form: UseFormReturn<EditProductPayload>;
-  categories: any[];
+  categories: { value: number; label: string }[];
   setSelectedCategoryId: (value: number) => void;
 }
 
@@ -33,13 +33,11 @@ export default function ProductInfoSection({
   categories,
   setSelectedCategoryId,
 }: ProductInfoSectionProps) {
-  const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-
   // if (!categories) return null;
   // console.log("form data", form.getValues("mainCategoryId"))
 
   return (
-    <Card>
+    <Card id="product-info">
       <CardHeader>
         <CardTitle>Product Info</CardTitle>
       </CardHeader>
@@ -54,7 +52,11 @@ export default function ProductInfoSection({
                 Product name <span className="text-red-500">*</span>
               </FormLabel>
               <FormControl>
-                <Input placeholder="Product name" {...field} />
+                <Input
+                  placeholder="Product name"
+                  {...field}
+                  className="h-12 rounded-[20px] p-4"
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -92,44 +94,45 @@ export default function ProductInfoSection({
           }}
         />
 
-        {/* Category */}
         <FormField
           control={form.control}
           name="mainCategoryId"
-          render={({ field }) => {
-            return (
-              <FormItem>
-                <FormLabel>
-                  Category <span className="text-red-500">*</span>
-                </FormLabel>
-                <Select
-                  onValueChange={(value) => {
-                    field.onChange(Number(value));
-                    setSelectedCategoryId(Number(value));
-                  }}
-                  value={field.value?.toString() ?? ""}
-                >
-                  <SelectTrigger className="w-40">
-                    <SelectValue placeholder="Main category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      <SelectItem value="0">Main category</SelectItem>
-                      {categories?.map((category) => (
-                        <SelectItem
-                          key={category.value}
-                          value={category.value.toString()}
-                        >
-                          {category.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                <FormMessage />
-              </FormItem>
-            )
-          }}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>
+                Category <span className="text-red-500">*</span>
+              </FormLabel>
+
+              <Select
+                value={field.value?.toString() ?? ""}
+                onValueChange={(value) => {
+                  const n = Number(value);
+                  field.onChange(n);
+                  setSelectedCategoryId(n);
+                }}
+              >
+                <SelectTrigger className="!h-12 w-full cursor-pointer rounded-2xl">
+                  <SelectValue placeholder="Main category" />
+                </SelectTrigger>
+
+                <SelectContent>
+                  <SelectGroup>
+                    {categories.map((cat) => (
+                      <SelectItem
+                        key={cat.value}
+                        value={cat.value.toString()}
+                        className="cursor-pointer"
+                      >
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+
+              <FormMessage />
+            </FormItem>
+          )}
         />
       </CardContent>
     </Card>
