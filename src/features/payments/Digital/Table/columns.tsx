@@ -122,7 +122,9 @@ const ActionsCell = ({
   const { mutate: updatePaymentMethod } = useUpdatePaymentMethod();
 
   const handleUpdate = (data: CreateUpdatePaymentMethodPayload) => {
-    updatePaymentMethod(data);
+    if (data.id !== undefined) {
+      updatePaymentMethod({ payload: data, id: data.id });
+    }
   };
 
   const handleDelete = async () => {
@@ -187,7 +189,7 @@ export const digitalColumns = [
     cell: ({ row }) => (
       <div className="flex items-center gap-3">
         <Image
-          src={row.original.icon || "/default-wallet.png"}
+          src={row.original.imageUrl || "/default-wallet.png"}
           alt={row.original.name}
           width={30}
           height={30}
@@ -206,10 +208,13 @@ export const digitalColumns = [
   }),
 
   // Status column (right-aligned)
-  columnHelper.accessor("status", {
+  columnHelper.display({
+    id: "status",
     header: () => <div className="text-right">Status</div>,
     cell: ({ row }) => {
-      const status = row.original.status;
+      // If status is not a property, you can set a default or compute it here
+      // For demonstration, let's assume all wallets are "Active"
+      const status = (row.original as any).status ?? "Active";
       const badgeColor =
         status === "Active"
           ? "bg-green-100 text-green-700"

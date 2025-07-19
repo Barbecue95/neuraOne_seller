@@ -37,9 +37,10 @@ export const ActionsCell = ({
       qrCodeUrl: row.original.qrCodeUrl,
       cashOnDelivery: row.original.cashOnDelivery,
       imageUrl: row.original.imageUrl,
+      accountType: row.original.accountType,
     };
     if (payload.id !== undefined) {
-      updatePaymentMethod(payload);
+      updatePaymentMethod({payload, id: row.original.id!});
     }
     setIsUpdateDialogOpen(false);
   };

@@ -29,6 +29,10 @@ const dummyUsers: User[] = Array.from({ length: 100 }, (_, i) => {
   const validTownships = townships.filter((t) => t.cityId === city.id);
   const township = validTownships[i % validTownships.length];
 
+  // Add gender property, alternating between 'male' and 'female'
+  const genders = ["male", "female"];
+  const gender = genders[i % genders.length];
+
   return {
     id: i + 1,
     name: `User ${i + 1}`,
@@ -48,6 +52,7 @@ const dummyUsers: User[] = Array.from({ length: 100 }, (_, i) => {
     status: statuses[i % statuses.length],
     role: roles[i % roles.length],
     age: 18 + (i % 42),
+    gender: gender,
     createdAt: new Date(),
     updatedAt: new Date(),
   };

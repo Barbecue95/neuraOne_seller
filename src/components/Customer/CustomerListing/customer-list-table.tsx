@@ -49,9 +49,10 @@ const CustomerTable = ({
   const handleBlock = () => {
     console.log("User blocked!");
     setIsModalOpen(false);
+    if (!toBlockUser) return;
     const payload = {
-      userId: toBlockUser?.id!,
-      status: toBlockUser?.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE",
+      userId: toBlockUser.id!,
+      status: toBlockUser.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE",
     };
     updateStatus(payload);
   };

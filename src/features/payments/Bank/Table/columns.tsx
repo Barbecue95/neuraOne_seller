@@ -106,7 +106,7 @@ const ActionsCell = ({
   const { mutate: updatePaymentMethod } = useUpdatePaymentMethod();
 
   const handleUpdate = (data: CreateUpdatePaymentMethodPayload) => {
-    updatePaymentMethod(data);
+    updatePaymentMethod({payload: data, id: row.original.id!});
   };
 
   const handleDelete = async () => {

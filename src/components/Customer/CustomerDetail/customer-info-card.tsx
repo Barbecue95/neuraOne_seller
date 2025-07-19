@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGetUserById } from "@/queries/users.queries";
+import Locationarrow from "./Locationarrow";
 
 interface CustomerInfo {
   id: string;
@@ -84,7 +85,7 @@ export default function CustomerInfoCard({
           <AvatarFallback className="bg-gray-600 text-2xl text-white">
             {customer.name
               .split(" ")
-              .map((n) => n[0])
+              .map((n: string[]) => n[0])
               .join("")
               .toUpperCase()}
           </AvatarFallback>

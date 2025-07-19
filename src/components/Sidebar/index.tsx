@@ -75,7 +75,7 @@ export function AppSidebar() {
               className={cn([
                 "font-brand flex cursor-default flex-nowrap items-center text-2xl font-extralight",
                 {
-                  hidden: state === "collapsed",
+                  hidden: state != "expanded",
                 },
               ])}
             >
@@ -84,8 +84,13 @@ export function AppSidebar() {
               </span>
             </h1>
             <div
-              onClick={() => {
-                isMobile ? setOpenMobile(false) : setOpen(false);
+                onClick={() => {
+                  if(isMobile) {
+                    setOpenMobile(false);
+                  } else {
+                    setOpen(false);
+                  }
+                // isMobile ? setOpenMobile(false) : setOpen(false);
               }}
               className="flex cursor-pointer items-center justify-center rounded-full bg-[#E4E6FF] p-1"
             >

@@ -13,9 +13,6 @@ const initialState: User = {
   age: 30,
   status: "active",
   password: "hashed_password",
-  region: "Yangon",
-  city: "Yangon",
-  township: "Kamayut",
   floorNo: null,
   unit: null,
   areaType: "urban",
@@ -25,6 +22,10 @@ const initialState: User = {
   totalOrderCount: null,
   createdAt: new Date(),
   updatedAt: new Date(),
+  gender: "",
+  regionId: 1,
+  cityId: 1,
+  townshipId: 1,
 };
 const userSlice = createSlice({
   name: "user",
