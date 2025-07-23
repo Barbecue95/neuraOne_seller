@@ -4,6 +4,7 @@ import {
   CreateCategoryResponse,
   getCategoriesResponse,
   ProductSortOption,
+  UpdateCategoryType,
   VariantOptionCreateFormType,
   VariantOptionCreateResponse,
   VariantOptionPayloadType,
@@ -47,7 +48,7 @@ export const createCategory = async (
 };
 
 export const updateCategory = async (
-  data: CategoryType,
+  data: UpdateCategoryType,
 ): Promise<CreateCategoryResponse> => {
   const res = await axiosClient.put(categoryEndpoints.categories, data);
   return res.data;
@@ -62,7 +63,7 @@ export const createVariants = async (
 
 export const updateVariants = async (
   data: VariantOptionType,
-): Promise<VariantOptionCreateResponse> => {
+): Promise<VariantOptionResponseType> => {
   const res = await axiosClient.put(categoryEndpoints.updateVariants, data);
   return res.data;
 };

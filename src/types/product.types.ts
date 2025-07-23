@@ -134,15 +134,12 @@ export const categoryVariantGroupSchema = z.object({
 });
 
 export const categorySchema = z.object({
-  id: z
-    .number()
-    .int({ error: "ID is not a number" })
-    .nonnegative({ error: "ID must be a positive number" }),
+  id: z.number().optional(),
   name: z.string().nonempty({ error: "Name is required" }).max(255, {
     error: "Name must be less than 255 characters",
   }),
-  Description: z.string().optional(),
-  status: z.enum(["PUBLISH", "DRAFT"]).optional(),
+  description: z.string().optional(),
+  status: z.boolean().default(false),
   productsCount: z.number().default(20),
   children: z.array(z.number()),
   categoryVariantGroups: z.array(categoryVariantGroupSchema),
@@ -200,10 +197,12 @@ export const VariantOptionCreateFormSchema = z.object({
   variantOptions: z
     .array(
       z.object({
+        id: z.string().optional(),
         name: z.string().min(1, "Name is required"),
         variantValues: z
           .array(
             z.object({
+              id: z.string().optional(),
               value: z.string().min(1, "Value is required"),
             }),
           )
@@ -214,18 +213,22 @@ export const VariantOptionCreateFormSchema = z.object({
 });
 export const VariantOptionPayloadSchema = z.object({
   name: z.string().min(1, "Name is required"),
+  id: z.string().optional(),
   variantValues: z
     .array(
       z.object({
+        id: z.string().optional(),
         value: z.string().min(1, "Value is required"),
       }),
     )
     .min(1, "At least one value is required"),
 });
 export const VariantOptionSchema = z.object({
+  id: z.string().optional(),
   name: z.string(),
   variantValues: z.array(
     z.object({
+      id: z.string().optional(),
       value: z.string(),
     }),
   ),
@@ -248,12 +251,23 @@ export const VariantOptionResponseSchema = z.object({
 });
 
 export const categoryFormSchema = z.object({
+  id: z.string().optional(),
   name: z
     .string()
     .min(1, { message: "Name is required" })
     .max(255, { message: "Name must be < 255 chars" }),
-  Description: z.string().optional(),
-  status: z.enum(["PUBLISH", "DRAFT"]).optional(),
+  description: z.string().optional(),
+  status: z.boolean(),
+  variantGroupIds: z.array(z.string()).optional(),
+});
+export const updateCategorySchema = z.object({
+  categoryId: z.number(),
+  name: z.string().min(1, { message: "Name is required" }).max(255, {
+    message: "Name must be < 255 chars",
+  }),
+  description: z.string().optional(),
+  status: z.boolean(),
+  parentId: z.null(),
   variantGroupIds: z.array(z.string()).optional(),
 });
 
@@ -284,6 +298,6 @@ export type VariantOptionPayloadType = z.infer<
 export type VariantOptionResponseType = z.infer<
   typeof VariantOptionResponseSchema
 >;
-
+export type UpdateCategoryType = z.infer<typeof updateCategorySchema>;
 export type CategoryFormType = z.infer<typeof categoryFormSchema>;
 export type VariantOptionType = z.infer<typeof VariantOptionSchema>;

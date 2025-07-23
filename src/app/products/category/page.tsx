@@ -14,7 +14,10 @@ export default function Home() {
     form,
     table,
     columns,
+    variants,
     searchQuery,
+    variantForm,
+    isSubmitting,
     categoryLoading,
     deleteConfirmation,
     deleteCategoryMutation,
@@ -26,6 +29,9 @@ export default function Home() {
     handleCloseDeleteDialog,
     handleOnPageChange,
     handleOnPageSizeChange,
+    handleKeyDown,
+
+    onSave,
   } = useCategory();
 
   if (categoryLoading) return <Loading />;
@@ -46,7 +52,15 @@ export default function Home() {
 
       {/* Category Add/Edit Dialog */}
       <Dialog open={openDialog} onOpenChange={handleToggleDialog}>
-        <CategoryContentDialog form={form} onClose={handleToggleDialog} />
+        <CategoryContentDialog
+          form={form}
+          variants={variants}
+          variantForm={variantForm}
+          isSubmitting={isSubmitting}
+          onSave={onSave}
+          onClose={handleToggleDialog}
+          handleKeyDown={handleKeyDown}
+        />
       </Dialog>
 
       {/* Delete Confirmation Dialog */}

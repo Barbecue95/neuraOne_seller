@@ -1,23 +1,6 @@
 "use client";
 import { ColumnDef, type Table } from "@tanstack/react-table";
 import React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../../../components/ui/pagination";
-import { cn } from "@/lib/utils";
 import AppTable from "@/components/AppTable";
 import { Input } from "@/components/ui/input";
 import { CategoryType, PaginationInfo } from "@/types/product.types";

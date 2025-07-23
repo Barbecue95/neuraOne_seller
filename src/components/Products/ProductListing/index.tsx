@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnDef, RowModel, Table } from "@tanstack/react-table";
+import { ColumnDef, Table } from "@tanstack/react-table";
 import ProductListFilters from "./product-list-filter";
 import ProductTable from "./product-list-table";
 import { PaginationInfo, Product } from "@/types/product.types";

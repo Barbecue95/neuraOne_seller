@@ -13,12 +13,13 @@ import {
 } from "@/types/product.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createCategoryColumns } from "./Table/colums";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { toast } from "sonner";
+import useCategoryVariant from "./useCategoryVariant";
 
 export default function useCategory() {
   const { getParam } = useQueryParams();
@@ -29,6 +30,7 @@ export default function useCategory() {
   const [CategoryDialog, setCategoryDialog] = useState<CategoryType | null>(
     null,
   );
+  const [isEditing, setIsEditing] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
@@ -67,12 +69,12 @@ export default function useCategory() {
     limit: pagination.size,
   });
 
-  const form = useForm<CategoryFormType>({
+  const form = useForm({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
       name: "",
-      Description: "",
-      status: "DRAFT",
+      description: "",
+      status: false,
       variantGroupIds: [],
     },
   });
@@ -82,41 +84,27 @@ export default function useCategory() {
     setCategoryDialog({
       id: 0,
       name: "",
-      Description: "",
-      status: "DRAFT",
+      description: "",
+      status: false,
       productsCount: 0,
       children: [],
       categoryVariantGroups: [],
     });
   };
 
-  const handleEditCategory = (id: number) => {
-    const category = rawCategories?.data?.find((cat) => cat.id === id);
-    if (category) {
-      setCategoryDialog(category);
-      // Set form values for editing
-      form.reset({
-        name: category.name,
-        Description: category.Description,
-        status: category.status,
-        variantGroupIds:
-          category.categoryVariantGroups?.map((vg) =>
-            vg.variantGroup.id.toString(),
-          ) || [],
-      });
-    }
-  };
-
   // This function opens the confirmation dialog
-  const handleDeleteCategory = (id: number) => {
-    const category = rawCategories?.data?.find((cat) => cat.id === id);
+  const handleDeleteCategory = useCallback(
+    (id: number) => {
+      const category = rawCategories?.data?.find((cat) => cat.id === id);
 
-    setDeleteConfirmation({
-      open: true,
-      categoryId: id,
-      categoryName: category?.name || "Unknown",
-    });
-  };
+      setDeleteConfirmation({
+        open: true,
+        categoryId: id,
+        categoryName: category?.name || "Unknown",
+      });
+    },
+    [rawCategories],
+  );
 
   // This function actually performs the deletion
   const confirmDelete = async () => {
@@ -147,8 +135,53 @@ export default function useCategory() {
 
   // Function to close confirmation dialog without deleting
   const handleCloseDeleteDialog = () => {
+    setIsEditing(false);
     setDeleteConfirmation({ open: false, categoryId: null, categoryName: "" });
   };
+
+  const {
+    isSubmitting,
+    form: variantForm,
+    variants,
+    onSave,
+  } = useCategoryVariant({
+    catForm: form,
+    onClose: handleCloseDeleteDialog,
+    isEditing,
+  });
+
+  const handleEditCategory = useCallback(
+    (id: number) => {
+      setIsEditing(true);
+      const category = rawCategories?.data?.find((cat) => cat.id === id);
+      if (category) {
+        setCategoryDialog(category);
+        // Set form values for editing
+        form.reset({
+          id: category?.id !== undefined ? category.id.toString() : "",
+          name: category.name,
+          description: category.description,
+          status: category.status,
+          variantGroupIds:
+            category.categoryVariantGroups?.map((vg) =>
+              vg.variantGroup.id.toString(),
+            ) || [],
+        });
+        variantForm.reset({
+          variantOptions:
+            category.categoryVariantGroups?.map((vg) => ({
+              id: vg.variantGroup.id.toString(),
+              name: vg.variantGroup.name,
+              variantValues: vg.variantGroup.values.map((v) => ({
+                id: v.id.toString(),
+                value: v.value,
+              })),
+            })) || [],
+        });
+      }
+    },
+    [rawCategories],
+  );
 
   const columns = useMemo(
     () => createCategoryColumns(handleEditCategory, handleDeleteCategory),
@@ -165,6 +198,13 @@ export default function useCategory() {
       },
     },
   });
+
+  // Prevent Enter key from submitting forms
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
 
   const handleToggleDialog = () => {
     setCategoryDialog(null);
@@ -184,6 +224,7 @@ export default function useCategory() {
       hasPrevPage: pagination.hasPrevPage,
     });
   };
+
   const handleOnPageSizeChange = (size: number) => {
     setPagination({
       page: pagination.page,
@@ -206,14 +247,19 @@ export default function useCategory() {
     deleteConfirmation,
     deleteCategoryMutation,
     pagination,
+    isSubmitting,
+    variantForm,
+    variants,
+    onSave,
+    confirmDelete,
     handleSearchChange,
     handleEditCategory,
-    handleDeleteCategory,
     handleToggleDialog,
     handleAddCategory,
-    confirmDelete,
     handleOnPageChange,
+    handleDeleteCategory,
     handleOnPageSizeChange,
     handleCloseDeleteDialog,
+    handleKeyDown,
   };
 }

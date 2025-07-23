@@ -6,10 +6,12 @@ import { EditIcon, Trash2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SortableHeader } from "@/components/Products/ProductListing/sortable-header";
 import { categorySchema, ProductSortOption } from "@/types/product.types";
-import Link from "next/link";
 
 const columnHelper = createColumnHelper<z.infer<typeof categorySchema>>();
-export const createCategoryColumns = (onEdit: (id: number) => void, onDelete: (id: number) => void) => [
+export const createCategoryColumns = (
+  onEdit: (id: number) => void,
+  onDelete: (id: number) => void,
+) => [
   columnHelper.accessor("name", {
     header: () => (
       <SortableHeader
@@ -24,7 +26,7 @@ export const createCategoryColumns = (onEdit: (id: number) => void, onDelete: (i
   }),
 
   columnHelper.accessor("productsCount", {
-    header: ({ column }) => (
+    header: () => (
       <SortableHeader
         title="Products"
         sortOptions={[
@@ -39,7 +41,9 @@ export const createCategoryColumns = (onEdit: (id: number) => void, onDelete: (i
         ]}
       />
     ),
-    cell: ({ row }) => <div className="px-4">24</div>,
+    cell: ({ row }) => {
+      return <div className="px-4">{row.getValue("productsCount")}</div>;
+    },
   }),
   columnHelper.accessor("status", {
     header: () => (
@@ -55,20 +59,13 @@ export const createCategoryColumns = (onEdit: (id: number) => void, onDelete: (i
       return (
         <h2
           className={cn(
-            // "w-fit rounded-full bg-[#FFFAA3] px-4 py-1 text-sm text-[#827C00] ",
-            "w-fit rounded-full bg-[#E4FFDF] px-4 py-1 text-sm text-[#126D00]",
-            // {
-            //   "bg-[#E4FFDF] text-[#126D00]":
-            //     row.getValue("status") === "PUBLISH",
-            // },
+            "w-fit rounded-full bg-[#FFFAA3] px-4 py-1 text-sm text-[#827C00]",
+            {
+              "bg-[#E4FFDF] text-[#126D00]": row.getValue("status"),
+            },
           )}
         >
-          Published
-          {/* {row.getValue("status") === "PUBLISH"
-              ? "Published"
-              : row.getValue("status") === "DRAFT"
-                ? "Draft"
-                : row.getValue("status")} */}
+          {row.getValue("status") ? "Published" : "Draft"}
         </h2>
       );
     },
@@ -84,7 +81,7 @@ export const createCategoryColumns = (onEdit: (id: number) => void, onDelete: (i
             variant="ghost"
             size="icon"
             className="!bg-muted-foreground/10 hover:!bg-muted-forground size-7 cursor-pointer rounded-full p-1.5 text-[#616FF5] hover:text-[#616FF5]"
-            onClick={() => onEdit(row.original.id)}
+            onClick={() => onEdit(row.original.id as number)}
           >
             <EditIcon />
           </Button>
@@ -93,7 +90,7 @@ export const createCategoryColumns = (onEdit: (id: number) => void, onDelete: (i
             size="icon"
             asChild
             className="!bg-muted-foreground/10 hover:!bg-muted-forground size-7 cursor-pointer rounded-full p-1.5 text-[#FF3333] hover:text-[#FF3333]"
-            onClick={() => onDelete(row.original.id)}
+            onClick={() => onDelete(row.original.id as number)}
           >
             <Trash2Icon />
           </Button>

@@ -31,8 +31,8 @@ export default function useCreateProducts() {
   );
 
   const categories =
-    rawCategories?.data?.map((category: { id: number; name: string }) => {
-      return { value: category.id, label: category.name };
+    rawCategories?.data?.map((category: { id?: number; name: string }) => {
+      return { value: category.id ?? 0, label: category.name };
     }) ?? [];
   // #endregion
 

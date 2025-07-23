@@ -8,7 +8,6 @@ import { useUsers } from "@/queries/users.queries";
 import CustomerListHeader from "./customer-list-header";
 import CustomerListFilters from "./customer-list-filter";
 import CustomerTable from "./customer-list-table";
-import { useRouter } from "next/navigation";
 import { useQueryParams } from "@/hooks/use-query-params";
 
 const sortOptions = [
@@ -41,7 +40,6 @@ export default function CustomerList({
   onImport,
   onExport,
 }: CustomerListProps) {
-  const router = useRouter();
   // const [customerLists, setCustomerLists] = useState<User[]>([]);
   const [sorting, setSorting] = useState<UserSortOption>(UserSortOption.NEWEST);
   const { getParam } = useQueryParams();
@@ -70,11 +68,7 @@ export default function CustomerList({
   // });
   // console.log(rawCustomerLists);
 
-  const {
-    data: rawCustomerLists,
-    isLoading: isLoadingCustomer,
-    refetch: refetchCustomerList,
-  } = useUsers({
+  const { data: rawCustomerLists, isLoading: isLoadingCustomer } = useUsers({
     sort: sortBy,
     page: pagination.page,
     limit: pagination.size,

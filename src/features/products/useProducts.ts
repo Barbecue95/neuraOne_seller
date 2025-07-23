@@ -42,7 +42,6 @@ export default function useProducts() {
   // #region Tanstack Query
 
   const { mutate: deleteProducts } = useDeleteProducts();
-  const categories = getProductCategories();
 
   // #endregion
 
@@ -52,16 +51,13 @@ export default function useProducts() {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  const {
-    data: rawProductList,
-    isLoading: isLoadingProducts,
-    refetch: refetchProductList,
-  } = useGetProductListing({
-    sort: sortSearchParamValue ?? ProductSortOption.NEWEST,
-    page: pagination.page,
-    limit: pagination.size,
-    searchText: debouncedSearchQuery,
-  });
+  const { data: rawProductList, isLoading: isLoadingProducts } =
+    useGetProductListing({
+      sort: sortSearchParamValue ?? ProductSortOption.NEWEST,
+      page: pagination.page,
+      limit: pagination.size,
+      searchText: debouncedSearchQuery,
+    });
 
   // #region Handle Events
   const handlePageChange = (page: number) => {

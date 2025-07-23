@@ -17,11 +17,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import dynamic from "next/dynamic";
 import { Editor } from "./rich-editor";
 import { SelectGroup } from "@radix-ui/react-select";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
-import { usePathname } from "next/navigation";
 
 interface ProductInfoSectionProps {
   form: UseFormReturn<EditProductPayload>;
@@ -68,9 +66,7 @@ export default function ProductInfoSection({
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => {
-            const { ref, onChange, ...rest } = field;
-
+          render={() => {
             return (
               <FormItem>
                 <FormLabel>

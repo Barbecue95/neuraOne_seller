@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Upload, X, MoreVertical, Star, Icon } from "lucide-react";
+import { X, MoreVertical, Star } from "lucide-react";
 import { useState } from "react";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 import IconImagePlus from "@/utils/icons/IconImagePlus";
@@ -187,13 +187,13 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
     );
   };
 
-  const renderEmptySlot = () => (
-    <div className="h-20 w-20 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"></div>
-  );
+  // const renderEmptySlot = () => (
+  //   <div className="h-20 w-20 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"></div>
+  // );
 
   const showcaseImage = getShowcaseImage();
   const otherImages = getNonShowcaseImages();
-  const remainingSlots = maxImages - images.length;
+  // const remainingSlots = maxImages - images.length;
 
   return (
     <Card>

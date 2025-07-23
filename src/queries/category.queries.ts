@@ -8,17 +8,15 @@ import {
 } from "@/services/category.services";
 import {
   CategoryFormType,
-  CategoryType,
   CreateCategoryResponse,
   getCategoriesResponse,
   ProductSortOption,
-  VariantOptionCreateFormType,
-  VariantOptionCreateResponse,
+  UpdateCategoryType,
   VariantOptionPayloadType,
   VariantOptionResponseType,
   VariantOptionType,
 } from "@/types/product.types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useGetCategories = ({
   sort,
@@ -38,9 +36,13 @@ export const useGetCategories = ({
 };
 
 export const useCreateCategory = () => {
+  const qr = useQueryClient();
   return useMutation<CreateCategoryResponse, Error, CategoryFormType>({
     mutationKey: ["Create-Category"],
     mutationFn: (data: CategoryFormType) => createCategory(data),
+    onSuccess() {
+      qr.invalidateQueries(["Categories"]);
+    },
   });
 };
 
@@ -56,22 +58,30 @@ export const useCreateVariants = () => {
 };
 
 export const useUpdateVariants = () => {
-  return useMutation<VariantOptionCreateResponse, Error, VariantOptionType>({
+  return useMutation<VariantOptionResponseType, Error, VariantOptionType>({
     mutationKey: ["Update-Variants"],
     mutationFn: (data: VariantOptionType) => updateVariants(data),
   });
 };
 
 export const useUpdateCategory = () => {
-  return useMutation<CreateCategoryResponse, Error, CategoryType>({
+  const qr = useQueryClient();
+  return useMutation<CreateCategoryResponse, Error, UpdateCategoryType>({
     mutationKey: ["Update-Category"],
-    mutationFn: (data: CategoryType) => updateCategory(data),
+    mutationFn: (data) => updateCategory(data),
+    onSuccess() {
+      qr.invalidateQueries(["Categories"]);
+    },
   });
 };
 
 export const useDeleteCategory = () => {
+  const qr = useQueryClient();
   return useMutation<CreateCategoryResponse, Error, number>({
     mutationKey: ["Delete-Category"],
     mutationFn: (id: number) => deleteCategory(id),
+    onSuccess() {
+      qr.invalidateQueries(["Categories"]);
+    },
   });
 };

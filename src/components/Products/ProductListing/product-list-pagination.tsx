@@ -25,8 +25,8 @@ const ProductPagination = ({
 }: ProductPaginationProps) => {
   const { page, size, total, totalPages, hasNextPage, hasPrevPage } =
     pagination;
-  const startRow = (page - 1) * size + 1;
-  const endRow = Math.min(page * size, total);
+  // const startRow = (page - 1) * size + 1;
+  // const endRow = Math.min(page * size, total);
 
   const getVisiblePages = () => {
     const delta = 2;

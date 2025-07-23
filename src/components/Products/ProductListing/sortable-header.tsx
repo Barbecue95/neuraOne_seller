@@ -65,7 +65,7 @@ export const SortableHeader = ({ title, sortOptions }: SortableHeaderProps) => {
         </PopoverTrigger>
       </Button>
       <PopoverContent align="start" className="w-56 rounded-lg p-1 shadow">
-        {sortOptions.map((option, index) => (
+        {sortOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => handleSortChange(option.value)}

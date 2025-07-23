@@ -73,7 +73,7 @@ export default function DeleteConfirmationDialog({
               {defaultTitle}
               {itemName && itemName?.length > 0 && (
                 <span className="block text-center text-lg font-medium text-gray-700">
-                  "{itemName}"
+                  &ldquo;{itemName}&rdquo;
                 </span>
               )}
             </AlertDialogTitle>

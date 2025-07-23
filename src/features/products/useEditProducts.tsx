@@ -23,13 +23,13 @@ import {
 export default function useEditProducts(id: number) {
   const router = useRouter();
   const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
-  const { mutate: createProduct } = useCreateProduct();
   const { data: rawProductData, isLoading: productLoading } =
     useGetProductById(id);
   const existingProduct = rawProductData?.data;
 
-  const { data: rawCategories, isLoading: categoryLoading } =
-    useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories(
+    {},
+  );
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
@@ -143,7 +143,7 @@ export default function useEditProducts(id: number) {
       form.setValue("variants", resetVars);
       setExistingVariants((prev) => prev.map((v) => ({ ...v, sku: "" })));
     }
-  }, [isDuplicate]);
+  }, [isDuplicate, form]);
 
   // Populate form with existing product data
   useEffect(() => {
