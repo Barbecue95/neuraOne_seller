@@ -50,7 +50,7 @@ const CustomerTable = ({
     console.log("User blocked!");
     setIsModalOpen(false);
     const payload = {
-      userId: toBlockUser?.id!,
+      userId: toBlockUser?.id ?? 0,
       status: toBlockUser?.status === "ACTIVE" ? "SUSPENDED" : "ACTIVE",
     };
     updateStatus(payload);
