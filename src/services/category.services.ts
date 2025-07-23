@@ -1,12 +1,9 @@
 import {
   CategoryFormType,
-  CategoryType,
   CreateCategoryResponse,
   getCategoriesResponse,
   ProductSortOption,
   UpdateCategoryType,
-  VariantOptionCreateFormType,
-  VariantOptionCreateResponse,
   VariantOptionPayloadType,
   VariantOptionResponseType,
   VariantOptionType,
