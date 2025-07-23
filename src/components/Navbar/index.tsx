@@ -26,10 +26,10 @@ const Index = () => {
   const { state, setOpenMobile } = useSidebar();
 
   return (
-    <nav className="bg-card text-primary sticky top-0 z-50 flex h-24 w-full flex-col-reverse justify-around py-2 px-10 md:h-16 md:flex-row md:items-center md:justify-between">
+    <nav className="bg-card text-primary sticky top-0 z-50 flex h-24 w-full flex-col-reverse justify-around px-10 py-2 md:h-16 md:flex-row md:items-center md:justify-between">
       <div className="flex w-full items-center justify-start gap-2 md:w-auto md:justify-center">
         <Image
-          src="logo.svg"
+          src="/logo.svg"
           alt="logo"
           width={30}
           height={40}
@@ -45,7 +45,7 @@ const Index = () => {
       <div className="flex items-center justify-between gap-2 md:justify-center">
         <div
           onClick={() => setOpenMobile(true)}
-          className="flex md:hidden items-center justify-center rounded-full bg-[#E4E6FF] p-2"
+          className="flex items-center justify-center rounded-full bg-[#E4E6FF] p-2 md:hidden"
         >
           <svg
             width="24"
@@ -60,7 +60,7 @@ const Index = () => {
             />
           </svg>
         </div>
-        <div className="flex items-center justify-center gap-1 ">
+        <div className="flex items-center justify-center gap-1">
           {/* <Search /> */}
           <Button
             variant="ghost"

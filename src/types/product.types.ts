@@ -1,3 +1,5 @@
+import { z } from "zod/v4";
+
 export interface Product {
   id: number;
   name: string;
@@ -94,9 +96,11 @@ export enum ProductSortOption {
   QUANTITY_HIGH_LOW = "quantityHighLow",
   STATUS_ASC = "statusAsc",
   STATUS_DESC = "statusDesc",
+  PRODUCT_COUNT_ASC = "productCountAsc",
+  PRODUCT_COUNT_DESC = "productCountDesc",
 }
 
-interface meta {
+export interface metaType {
   limit: number;
   page: number;
   total: number;
@@ -112,34 +116,54 @@ export interface GetProductsResponse {
   status: boolean;
   message: string;
   data: Product[];
-  meta: meta;
+  meta: metaType;
 }
+// #region Category
 
-export interface Category {
-  id: number;
-  name: string;
-  discription: string;
-  status: boolean;
-  categoryVariantGroups: CategoryVariantGroup[];
-}
+export const categoryVariantGroupSchema = z.object({
+  variantGroup: z.object({
+    id: z.number(),
+    name: z.string(),
+    values: z.array(
+      z.object({
+        id: z.number(),
+        value: z.string(),
+      }),
+    ),
+  }),
+});
 
-export interface CategoryVarientValue {
-  id: number;
-  value: string;
-}
+export const categorySchema = z.object({
+  id: z
+    .number()
+    .int({ error: "ID is not a number" })
+    .nonnegative({ error: "ID must be a positive number" }),
+  name: z.string().nonempty({ error: "Name is required" }).max(255, {
+    error: "Name must be less than 255 characters",
+  }),
+  Description: z.string().optional(),
+  status: z.enum(["PUBLISH", "DRAFT"]).optional(),
+  productsCount: z.number().default(20),
+  children: z.array(z.number()),
+  categoryVariantGroups: z.array(categoryVariantGroupSchema),
+});
 
-export interface CategoryVariantGroup {
-  id: number;
-  name: string;
-  values: CategoryVarientValue[];
-}
-export interface getCategoriesResponse {
-  status: boolean;
-  message: string;
-  data: Category[];
-  meta: meta;
-}
+export const getCategoriesResponseShema = z.object({
+  status: z.boolean(),
+  message: z.string(),
+  data: z.array(categorySchema),
+  meta: z.object({
+    limit: z.number(),
+    page: z.number(),
+    total: z.number(),
+  }),
+});
 
+export type CategoryType = z.infer<typeof categorySchema>;
+export type CategoryVariantGroup = z.infer<typeof categoryVariantGroupSchema>;
+export type getCategoriesResponse = z.infer<typeof getCategoriesResponseShema>;
+
+// #endregion
 export interface GetProductByIdResponse {
   status: boolean;
   message: string;
@@ -170,3 +194,96 @@ export interface VariantOption {
   name: string;
   values: VariantValue[];
 }
+
+// #region Category Variant
+export const VariantOptionCreateFormSchema = z.object({
+  variantOptions: z
+    .array(
+      z.object({
+        name: z.string().min(1, "Name is required"),
+        variantValues: z
+          .array(
+            z.object({
+              value: z.string().min(1, "Value is required"),
+            }),
+          )
+          .min(1, "At least one value is required"),
+      }),
+    )
+    .min(1, "At least one variant option is required"),
+});
+export const VariantOptionPayloadSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  variantValues: z
+    .array(
+      z.object({
+        value: z.string().min(1, "Value is required"),
+      }),
+    )
+    .min(1, "At least one value is required"),
+});
+export const VariantOptionSchema = z.object({
+  name: z.string(),
+  variantValues: z.array(
+    z.object({
+      value: z.string(),
+    }),
+  ),
+});
+
+export const VariantOptionResponseSchema = z.object({
+  status: z.boolean(),
+  data: z.object({
+    id: z.string(),
+    name: z.string(),
+    variantValues: z.array(
+      z.object({
+        id: z.string(),
+        value: z.string(),
+      }),
+    ),
+  }),
+
+  message: z.string(),
+});
+
+export const categoryFormSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: "Name is required" })
+    .max(255, { message: "Name must be < 255 chars" }),
+  Description: z.string().optional(),
+  status: z.enum(["PUBLISH", "DRAFT"]).optional(),
+  variantGroupIds: z.array(z.string()).optional(),
+});
+
+export const createCategoryResponseSchema = z.object({
+  status: z.boolean(),
+  data: categorySchema,
+  message: z.string(),
+});
+
+export const createVariantsResponseSchema = z.object({
+  status: z.boolean(),
+  data: z.array(categoryVariantGroupSchema),
+  message: z.string(),
+});
+
+export type VariantOptionCreateFormType = z.infer<
+  typeof VariantOptionCreateFormSchema
+>;
+export type VariantOptionCreateResponse = z.infer<
+  typeof createVariantsResponseSchema
+>;
+export type CreateCategoryResponse = z.infer<
+  typeof createCategoryResponseSchema
+>;
+export type VariantOptionPayloadType = z.infer<
+  typeof VariantOptionPayloadSchema
+>;
+export type VariantOptionResponseType = z.infer<
+  typeof VariantOptionResponseSchema
+>;
+
+export type CategoryFormType = z.infer<typeof categoryFormSchema>;
+export type VariantOptionType = z.infer<typeof VariantOptionSchema>;

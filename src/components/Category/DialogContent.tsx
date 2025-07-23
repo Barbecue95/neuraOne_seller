@@ -1,0 +1,336 @@
+import React, { useState } from "react";
+import { UseFormReturn, useFieldArray } from "react-hook-form";
+import {
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
+import { CircleXIcon, XCircleIcon } from "lucide-react";
+import useCategoryVariant from "@/features/category/useCategoryVariant";
+import {
+  CategoryFormType,
+  VariantOptionCreateFormType,
+} from "@/types/product.types";
+import { Badge } from "../ui/badge";
+import {
+  useCreateVariants,
+  useCreateCategory,
+} from "@/queries/category.queries";
+import { toast } from "sonner";
+
+type NestedValuesProps = {
+  nestIndex: number;
+  control: VariantOptionCreateFormType extends any ? any : unknown;
+};
+
+export function NestedValues({ nestIndex, control }: NestedValuesProps) {
+  const { fields, append, remove } = useFieldArray<
+    VariantOptionCreateFormType,
+    `variantOptions.${number}.variantValues`
+  >({
+    control,
+    name: `variantOptions.${nestIndex}.variantValues`,
+  });
+
+  const [inputValue, setInputValue] = React.useState("");
+
+  const addTag = (val: string) => {
+    const t = val.trim();
+    if (t) append({ value: t });
+  };
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag(inputValue);
+      setInputValue("");
+    }
+  };
+
+  const onBlur = () => {
+    if (inputValue.trim() !== "") {
+      addTag(inputValue);
+      setInputValue("");
+    }
+  };
+
+  return (
+    <FormField
+      control={control}
+      name={`variantOptions.${nestIndex}.variantValues`}
+      render={({ field }) => {
+        return (
+          <FormItem className="flex w-3/4 flex-col gap-2">
+            <FormLabel>Option Value</FormLabel>
+            {fields.length > 0 && (
+              <div className="scrollbar-hide flex h-fit max-h-32 w-full flex-wrap gap-1 overflow-y-scroll rounded-[20px] border bg-white p-2">
+                {fields.map((f, idx) => (
+                  <Badge
+                    key={f.id}
+                    className="bg-primary flex gap-2 rounded-full px-2.5 py-1 text-xl font-medium text-white"
+                    asChild
+                  >
+                    <span>
+                      {f.value}
+                      <button
+                        onClick={() => remove(idx)}
+                        className="no-row-click rounded-full hover:bg-black/20"
+                      >
+                        <XCircleIcon className="size-[18px] translate-y-0.5" />
+                      </button>
+                    </span>
+                  </Badge>
+                ))}
+              </div>
+            )}
+            <FormControl>
+              <Input
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={onKeyDown}
+                onBlur={onBlur}
+                placeholder="Type and press , or Enter"
+                className="h-12 max-h-12 w-full min-w-[150px] flex-1 rounded-[20px] p-4"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+}
+
+export default function CategoryContentDialog({
+  form: catForm,
+  onClose,
+}: {
+  form: UseFormReturn<CategoryFormType>;
+  onClose?: () => void;
+}) {
+  const { form: variantForm, variants } = useCategoryVariant();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Mutations
+  const createVariantsMutation = useCreateVariants();
+  const createCategoryMutation = useCreateCategory();
+
+  // Prevent Enter key from submitting forms
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+    }
+  };
+
+  const onSave = async (isDraft: boolean = false) => {
+    setIsSubmitting(true);
+    try {
+      // First validate both forms
+      const [catFormValid, variantFormValid] = await Promise.all([
+        catForm.trigger(),
+        variantForm.trigger(),
+      ]);
+      console.log("Category Form Valid:", catFormValid);
+      console.log(
+        "Variant Form Valid:",
+        variantFormValid,
+        !catFormValid && !variantFormValid,
+      );
+
+      if (!catFormValid || !variantFormValid) {
+        toast.error("Please fill in category information correctly");
+        return;
+      }
+
+      const categoryData = catForm.getValues();
+      let variantGroupIds: string[] = [];
+
+      // If there are variant options, create them first
+      const variantData = variantForm.getValues();
+      if (variantFormValid && variantData.variantOptions.length > 0) {
+        try {
+          // Create each variant option individually since API expects single variant
+          const variantPromises = variantData.variantOptions.map(
+            (variantOption) =>
+              createVariantsMutation.mutateAsync({
+                name: variantOption.name,
+                variantValues: variantOption.variantValues,
+              }),
+          );
+
+          // Wait for all variant creations to complete
+          const variantResponses = await Promise.all(variantPromises);
+
+          // Check if all variants were created successfully
+          const failedVariants = variantResponses.filter(
+            (response) => !response.status,
+          );
+
+          if (failedVariants.length > 0) {
+            toast.error("Failed to create some variant options");
+            return;
+          }
+
+          variantGroupIds = variantResponses
+            .filter((response) => response.status && response.data?.id)
+            .map((response) => response.data.id);
+
+          toast.success("Variant options created successfully!");
+        } catch (error) {
+          console.error("Error creating variants:", error);
+          toast.error("Failed to create variant options");
+          return;
+        }
+      }
+
+      // Create category with variant group IDs
+      const categoryPayload: CategoryFormType = {
+        ...categoryData,
+        status: isDraft ? "DRAFT" : categoryData.status || "PUBLISH",
+        variantGroupIds,
+      };
+
+      const categoryResponse =
+        await createCategoryMutation.mutateAsync(categoryPayload);
+
+      if (categoryResponse.status) {
+        toast.success(
+          `Category ${isDraft ? "saved as draft" : "created"} successfully!`,
+        );
+        // Reset forms
+        catForm.reset();
+        variantForm.reset();
+        onClose?.();
+      } else {
+        toast.error("Failed to create category");
+      }
+    } catch (error) {
+      console.error("Error creating category:", error);
+      toast.error("An error occurred while creating category");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <DialogContent className="max-w-screen min-w-screen lg:min-w-4xl xl:min-w-6xl">
+      <DialogHeader>
+        <DialogTitle>Add New Category</DialogTitle>
+      </DialogHeader>
+      <div className="max-h-[500px] space-y-4 overflow-y-auto px-4">
+        <Form {...catForm}>
+          <form onSubmit={(e) => e.preventDefault()}>
+            <FormField
+              control={catForm.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="flex w-full flex-col gap-3 md:w-1/2">
+                  <FormLabel>Category Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder="Shirts"
+                      className="h-12 rounded-[20px] p-4"
+                      onKeyDown={handleKeyDown}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+
+        <Form {...variantForm}>
+          <form onSubmit={(e) => e.preventDefault()}>
+            {variants.fields.map((opt, i) => (
+              <div key={opt.id} className="mb-4 flex flex-row gap-1.5 p-2">
+                <FormField
+                  control={variantForm.control}
+                  name={`variantOptions.${i}.name`}
+                  render={({ field }) => (
+                    <FormItem className="flex w-1/4 flex-col items-start">
+                      <FormLabel>Option Title</FormLabel>
+                      <div className="relative w-full">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="Color"
+                            className="h-12 rounded-[20px] p-4"
+                            onKeyDown={handleKeyDown}
+                          />
+                        </FormControl>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          type="button"
+                          className="absolute top-2 right-2 rounded-full"
+                          onClick={() => variants.remove(i)}
+                          disabled={isSubmitting}
+                        >
+                          <CircleXIcon className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <NestedValues nestIndex={i} control={variantForm.control} />
+              </div>
+            ))}
+
+            <FormField
+              control={variantForm.control}
+              name="variantOptions"
+              render={({ field }) => (
+                <FormItem className="w-fit">
+                  <FormControl>
+                    <Button
+                      type="button"
+                      onClick={() =>
+                        variants.append({ name: "", variantValues: [] })
+                      }
+                      disabled={isSubmitting}
+                    >
+                      + Add Variant Option
+                    </Button>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </form>
+        </Form>
+      </div>
+      <DialogFooter>
+        <Button
+          variant="secondary"
+          type="button"
+          onClick={() => onSave(true)}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Save as Draft"}
+        </Button>
+        <Button
+          variant="default"
+          type="button"
+          onClick={() => onSave(false)}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Saving..." : "Save"}
+        </Button>
+      </DialogFooter>
+    </DialogContent>
+  );
+}

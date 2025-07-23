@@ -228,7 +228,7 @@ export default function VariantSection({
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Option titles */}
-          {!existingVariants && (
+          {existingVariants.length <= 0 && (
             <div
               className={cn([
                 "flex flex-row gap-4",

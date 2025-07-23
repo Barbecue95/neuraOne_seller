@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -30,15 +30,19 @@ export const SortableHeader = ({ title, sortOptions }: SortableHeaderProps) => {
     setParam("sortBy", value);
     setOpen(false);
   };
-  const isFilterUsed = sortOptions.some(
-    (option) => option.value === (getParam("sortBy") as ProductSortOption),
+  const isFilterUsed = useMemo(
+    () =>
+      sortOptions.some(
+        (option) => option.value === (getParam("sortBy") as ProductSortOption),
+      ),
+    [sortOptions, getParam],
   );
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <Button
         asChild
         className={cn([
-          "hover:text-primary h-auto bg-gray-200 font-medium hover:!bg-gray-200 hover:dark:!bg-neutral-800 dark:!bg-neutral-800",
+          "hover:text-primary h-auto bg-gray-200 font-medium hover:!bg-gray-200 dark:!bg-neutral-800 hover:dark:!bg-neutral-800",
           {
             "text-primary": isFilterUsed,
           },

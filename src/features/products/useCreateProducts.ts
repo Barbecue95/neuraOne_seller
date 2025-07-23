@@ -26,8 +26,9 @@ export default function useCreateProducts() {
   const router = useRouter();
   const { mutate: createProduct, isLoading: isCreating } = useCreateProduct();
   // #region Get Categories Data and Transform the data
-  const { data: rawCategories, isLoading: categoryLoading } =
-    useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories(
+    {},
+  );
 
   const categories =
     rawCategories?.data?.map((category: { id: number; name: string }) => {

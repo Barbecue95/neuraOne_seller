@@ -27,7 +27,10 @@ const AppTable = <TData extends object>({
     <TableComponent>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup, index) => (
-          <TableRow key={headerGroup.id + index}>
+          <TableRow
+            key={headerGroup.id + index}
+            className="!bg-gray-200 dark:!bg-neutral-800"
+          >
             {headerGroup.headers.map((header) => {
               return (
                 <TableHead key={header.id}>
@@ -49,6 +52,7 @@ const AppTable = <TData extends object>({
             <TableRow
               key={row.id}
               data-state={row.getIsSelected() && "selected"}
+              className="h-16 border-none"
             >
               {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
