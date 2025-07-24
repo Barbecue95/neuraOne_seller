@@ -84,6 +84,7 @@ export const CustomerTableColumns = (
     {
       accessorKey: "phoneNumber",
       header: () => (
+      header: () => (
         <SortableHeader
           title="Phone Number"
           sortOptions={[
@@ -97,6 +98,7 @@ export const CustomerTableColumns = (
     {
       accessorKey: "email",
       header: () => (
+      header: () => (
         <SortableHeader
           title="Email"
           sortOptions={[
@@ -109,6 +111,7 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "totalOrderCount",
+      header: () => (
       header: () => (
         <SortableHeader
           title="Total Orders"
@@ -141,6 +144,7 @@ export const CustomerTableColumns = (
     // },
     {
       accessorKey: "status",
+      header: () => (
       header: () => (
         <SortableHeader
           title="Status"

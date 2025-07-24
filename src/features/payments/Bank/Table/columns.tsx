@@ -1,75 +1,184 @@
-"use client";
 import { z } from "zod";
-import { createColumnHelper } from "@tanstack/react-table";
+import { createColumnHelper, Row } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { DeleteIcon, EditIcon, EyeIcon } from "lucide-react";
-import { dummyBank } from "../../dummy-wallet";
+import { DeleteIcon, EditIcon, EyeIcon, Trash2 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { bankColumnsSchema } from "../../paymentSchema";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger, // Add this
+} from "@/components/ui/dialog";
+import UpdateBank from "../../AddNewWallet/UpdateBank";
+import { useState } from "react";
+import {
+  useDeletePaymentMethod,
+  useUpdatePaymentMethod,
+} from "@/queries/payment-method.queries";
 
-const columnHelper = createColumnHelper<z.infer<typeof bankColumnsSchema>>();
+const columnHelper = createColumnHelper<CreateUpdatePaymentMethodPayload>();
+
+const UpdateDialog = ({
+  isOpen,
+  onOpenChange,
+  initialData,
+  onSave,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  initialData: CreateUpdatePaymentMethodPayload;
+  onSave: (data: CreateUpdatePaymentMethodPayload) => void;
+}) => {
+  const handleSuccess = () => {
+    onOpenChange(false);
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[625px]">
+        <DialogHeader>
+          <DialogTitle>Update Bank</DialogTitle>
+        </DialogHeader>
+        <UpdateBank 
+          initialData={initialData} 
+          onSuccess={handleSuccess} 
+        />
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+// Delete Confirmation Dialog
+const DeleteDialog = ({
+  isOpen,
+  onOpenChange,
+  onConfirm,
+  isLoading,
+}: {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+  isLoading: boolean;
+}) => {
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirm Deletion</DialogTitle>
+        </DialogHeader>
+        <div className="py-4">
+          <p>Are you sure you want to delete this payment method?</p>
+          <p className="text-muted-foreground mt-2 text-sm">
+            This action cannot be undone.
+          </p>
+        </div>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </DialogClose>
+          <Button
+            variant="destructive"
+            onClick={onConfirm}
+            disabled={isLoading}
+          >
+            {isLoading ? "Deleting..." : "Delete"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+const ActionsCell = ({
+  row,
+}: {
+  row: Row<CreateUpdatePaymentMethodPayload>;
+}) => {
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  const { mutateAsync: deletePaymentMethod, isLoading: isDeleting } =
+    useDeletePaymentMethod();
+  const { mutate: updatePaymentMethod } = useUpdatePaymentMethod();
+
+  const handleUpdate = (data: CreateUpdatePaymentMethodPayload) => {
+    updatePaymentMethod({payload: data, id: row.original.id!});
+  };
+
+  const handleDelete = async () => {
+    try {
+      if (row.original.id !== undefined) {
+        await deletePaymentMethod(row.original.id);
+        setDeleteDialogOpen(false);
+      }
+    } catch (error) {
+      console.error("Delete failed:", error);
+      // Optionally show error to user
+    }
+  };
+
+  return (
+    <div className="flex flex-row gap-2">
+      {/* Update Dialog Trigger */}
+      <Button
+        variant="default"
+        className="rounded-full"
+        size="icon"
+        onClick={() => setUpdateDialogOpen(true)}
+      >
+        <EditIcon className="h-4 w-4" />
+      </Button>
+
+      {/* Delete Dialog Trigger */}
+      <Button
+        variant="destructive"
+        className="rounded-full"
+        size="icon"
+        onClick={() => setDeleteDialogOpen(true)}
+      >
+        <Trash2 className="h-4 w-4" />
+      </Button>
+
+      {/* Update Dialog */}
+      <UpdateDialog
+        isOpen={updateDialogOpen}
+        onOpenChange={setUpdateDialogOpen}
+        initialData={row.original}
+        onSave={handleUpdate}
+      />
+
+      {/* Delete Dialog */}
+      <DeleteDialog
+        isOpen={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        onConfirm={handleDelete}
+        isLoading={isDeleting}
+      />
+    </div>
+  );
+};
 
 export const bankColumns = [
   columnHelper.display({
     id: "id_select",
-    header: () => {
-      return <Checkbox />;
-    },
-    cell: ({ row }) => {
-      return <Checkbox name={row.id} id={row.id} />;
-    },
+    header: () => <Checkbox />,
+    cell: ({ row }) => (
+      <Checkbox name={`bank-${row.id}`} id={`bank-${row.id}`} />
+    ),
   }),
   columnHelper.accessor("id", {
-    header: "Wallet",
-    cell: (info) => {
-      return (
-        <span>{dummyBank[(info.getValue() as number) - 1]?.label ?? ""}</span>
-      );
-    },
+    header: "ID",
   }),
-  columnHelper.accessor("accountName", {
-    header: "Account Name",
-  }),
-  columnHelper.accessor("accountNumber", {
-    header: "Account Number",
-  }),
-  columnHelper.accessor("status", {
-    header: "Status",
+  columnHelper.accessor("name", {
+    header: "Bank Name",
   }),
   columnHelper.display({
     id: "actions",
     header: "Actions",
-    cell: ({ row }) => {
-      return (
-        <div className="flex flex-row gap-2">
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={() => {
-              window.location.href = `/payments/digital/${row.id}`;
-            }}
-          >
-            <EyeIcon className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={() => {}}
-          >
-            <EditIcon className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="default"
-            className="rounded-full"
-            size="icon"
-            onClick={() => {}}
-          >
-            <DeleteIcon className="h-4 w-4" />
-          </Button>
-        </div>
-      );
-    },
+    cell: ({ row }) => <ActionsCell row={row} />,
   }),
 ];

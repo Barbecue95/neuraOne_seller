@@ -85,7 +85,7 @@ export default function CustomerInfoCard({
           <AvatarFallback className="bg-gray-600 text-2xl text-white">
             {customer.name
               .split(" ")
-              .map((n) => n[0])
+              .map((n: string[]) => n[0])
               .join("")
               .toUpperCase()}
           </AvatarFallback>

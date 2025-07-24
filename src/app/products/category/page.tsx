@@ -1,12 +1,12 @@
 "use client";
 
 import Table from "@/features/category/Table";
-import { Dialog } from "@/components/ui/dialog";
 import CategoryHeader from "@/components/Category/Header";
 import useCategory from "@/features/category/useCategory";
 import CategoryContentDialog from "@/components/Category/DialogContent";
 import DeleteConfirmationDialog from "@/components/common/AlertDialog";
 import Loading from "@/components/common/Loading";
+import { Dialog } from "@/components/ui/dialog";
 
 export default function Home() {
   const {

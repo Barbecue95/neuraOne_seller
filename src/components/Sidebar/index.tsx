@@ -34,6 +34,10 @@ export function AppSidebar() {
   const pathname = usePathname();
   const { isMobile, state, setOpen, setOpenMobile } = useSidebar();
 
+  if (pathname === "/login") {
+    return null;
+  }
+
   return (
     <Sidebar
       collapsible="icon"

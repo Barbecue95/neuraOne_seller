@@ -11,24 +11,27 @@ import {
 } from "@/components/ui/form";
 import { digitalWalletSchema } from "../paymentSchema";
 import { z } from "zod";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
+import { ImageIcon } from "lucide-react";
 
 export default function DigitalDetail({
   form,
 }: {
-  form: UseFormReturn<z.infer<typeof digitalWalletSchema>>;
+  form: UseFormReturn<CreateUpdatePaymentMethodPayload>;
 }) {
   return (
     <div className="space-y-4">
       <FormField
         control={form.control}
-        name="id"
+        name="accountType"
         render={({ field }) => {
           return (
-            <Combobox
-              List={dummyWallet}
-              title="Select a wallet"
-              placeholder="Search wallet ....."
-              form={form}
+            <Input
+              title="account type"
+              id="accountType"
+              placeholder="Account Type"
+              type="text"
+              className="hidden"
               {...field}
             />
           );
@@ -36,44 +39,20 @@ export default function DigitalDetail({
       />
       <FormField
         control={form.control}
-        name="qrcode"
+        name="name"
         render={({ field }) => {
           return (
-            <FormItem>
-              <FormControl>
-                <label
-                  className="flex cursor-pointer flex-row items-center gap-2 text-sm font-medium"
-                  htmlFor="qrcode"
-                >
-                  <div className="bg-accent-foreground size-44" />
-                  <Input
-                    title="QR Code"
-                    id="qrcode"
-                    placeholder="Enter QR Code"
-                    type="file"
-                    accept="image/png, image/jpeg"
-                    className="hidden"
-                    {...field}
-                    // TODO: Handle file upload properly
-                    // onChange={(e) => {
-                    //   if (!!e?.target?.files) {
-                    //     field.onChange({
-                    //       target: {
-                    //         value: e.target.files[0],
-                    //         name: field.name,
-                    //       },
-                    //     });
-                    //   }
-                    // }}
-                  />
-                  <span className="text-muted-foreground">Upload QR Code</span>
-                </label>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
+            <Combobox
+              List={dummyWallet}
+              title="Digital Wallet"
+              placeholder="Search wallet ....."
+              form={form}
+              {...field}
+            />
           );
         }}
       />
+
       <FormField
         control={form.control}
         name="accountName"
@@ -83,7 +62,7 @@ export default function DigitalDetail({
               <FormControl>
                 <Input
                   title="Account Name"
-                  placeholder="Enter Account Name"
+                  placeholder="Account Name"
                   {...field}
                 />
               </FormControl>
@@ -94,12 +73,44 @@ export default function DigitalDetail({
       />
       <FormField
         control={form.control}
-        name="accountNumber"
+        name="accountNo"
         render={({ field }) => {
           return (
             <FormItem>
               <FormControl>
-                <Input placeholder="Enter Phone Number" {...field} />
+                <Input placeholder="Account Phone Number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          );
+        }}
+      />
+      <FormField
+        control={form.control}
+        name="qrCodeUrl"
+        render={({ field }) => {
+          return (
+            <FormItem>
+              <FormControl>
+                <label
+                  className="flex cursor-pointer flex-row items-center gap-2 text-sm font-medium"
+                  htmlFor="qrCodeUrl"
+                >
+                  <div className="flex size-44 items-center justify-center rounded-3xl border-2 border-dashed bg-transparent">
+                    <ImageIcon />
+                  </div>
+                  <Input
+                    title="QR Code"
+                    id="qrCodeUrl"
+                    placeholder="Enter QR Code URL"
+                    type="file"
+                    className="hidden"
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    onBlur={field.onBlur}
+                  />
+                  {/* <span className="text-muted-foreground">QR Code URL (Optional)</span> */}
+                </label>
               </FormControl>
               <FormMessage />
             </FormItem>

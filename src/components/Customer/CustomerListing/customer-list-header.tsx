@@ -14,11 +14,6 @@ const CustomerListHeader = ({
   onImport,
   onExport,
 }: CustomerListHeaderProps) => {
-  const router = useRouter();
-  const { setParam } = useQueryParams();
-  const onAddProduct = () => {
-    setParam("step", "1", "/products/create");
-  };
   return (
     <div className="flex items-center justify-end md:justify-between py-4">
       <h1 className="text-2xl font-medium hidden md:flex">Customer List</h1>

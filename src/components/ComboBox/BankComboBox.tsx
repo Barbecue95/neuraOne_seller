@@ -19,9 +19,9 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { UseFormReturn } from "react-hook-form";
-import { z } from "zod";
-import { bankWalletSchema } from "@/features/payments/paymentSchema";
+
 import { FormControl, FormField, FormItem, FormMessage } from "../ui/form";
+import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 
 interface ListItemType {
   id: number;
@@ -37,12 +37,12 @@ export function Combobox({
   List: ListItemType[];
   placeholder?: string;
   title?: string;
-  form: UseFormReturn<z.infer<typeof bankWalletSchema>>;
+  form: UseFormReturn<CreateUpdatePaymentMethodPayload>;
 }) {
   return (
     <FormField
       control={form.control}
-      name="id"
+      name="name"
       render={({ field }) => {
         return (
           <FormItem>
@@ -58,7 +58,7 @@ export function Combobox({
                     )}
                   >
                     {field.value
-                      ? List.find((item) => item.id === field.value)?.label
+                      ? List.find((item) => item.label === field.value)?.label
                       : title}
                     <ChevronsUpDown className="opacity-50" />
                   </Button>
@@ -75,7 +75,7 @@ export function Combobox({
                           key={item.id}
                           value={String(item.id)}
                           onSelect={() => {
-                            field.onChange(item.id);
+                            field.onChange(item.label);
                             field.onBlur();
                           }}
                         >
@@ -83,7 +83,7 @@ export function Combobox({
                           <Check
                             className={cn(
                               "ml-auto",
-                              field.value === item.id
+                              field.value === item.label
                                 ? "opacity-100"
                                 : "opacity-0",
                             )}

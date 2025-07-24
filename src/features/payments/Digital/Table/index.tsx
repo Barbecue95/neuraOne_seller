@@ -54,7 +54,6 @@ const Table = () => {
             placeholder="Search Order"
           />
         </div> */}
-        {/* @ts-expect-error  table type cannot be inferred for all of table */}
         <AppTable table={table} columns={digitalColumns} />
       </div>
       <div className="flex w-full flex-row items-center justify-between px-8 pb-4">

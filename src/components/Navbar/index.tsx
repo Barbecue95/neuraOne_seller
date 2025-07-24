@@ -25,6 +25,8 @@ const Index = () => {
   const displayTitle = item?.name || "Dashboard";
   const { setOpenMobile } = useSidebar();
 
+  if (pathname === "/login") return null;
+
   return (
     <nav className="bg-card text-primary sticky top-0 z-50 flex h-24 w-full flex-col-reverse justify-around px-10 py-2 md:h-16 md:flex-row md:items-center md:justify-between">
       <div className="flex w-full items-center justify-start gap-2 md:w-auto md:justify-center">

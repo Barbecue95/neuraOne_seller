@@ -5,36 +5,52 @@ interface data {
 export const dummyWallet: data[] = [
   {
     id: 1,
-    label: "Paypal",
+    label: "KBZ Pay",
   },
   {
     id: 2,
-    label: "Stripe",
+    label: "UAB Pay",
   },
   {
     id: 3,
-    label: "Credit Card",
+    label: "Wave Money",
   },
   {
     id: 4,
-    label: "KPay",
+    label: "AYA Pay",
+  },
+  {
+    id: 5,
+    label: "CB Pay",
   },
 ];
 export const dummyBank: data[] = [
   {
     id: 1,
-    label: "Bank of America",
+    label: "KBZ Bank",
   },
   {
     id: 2,
-    label: "Citi",
+    label: "UAB Bank",
   },
   {
     id: 3,
-    label: "HDFC",
+    label: "YOMA Bank",
   },
   {
     id: 4,
-    label: "ICICI",
+    label: "AYA Bank",
+  },
+  {
+    id: 5,
+    label: "Central Bank of Myanmar",
+  },
+  {
+    id: 6,
+    label: "A Bank",
+  },
+  {
+    id: 7,
+    label: "AGD Bank",
   },
 ];
