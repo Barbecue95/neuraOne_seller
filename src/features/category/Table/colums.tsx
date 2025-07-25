@@ -6,6 +6,7 @@ import { EditIcon, Trash2Icon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { SortableHeader } from "@/components/Products/ProductListing/sortable-header";
 import { categorySchema, ProductSortOption } from "@/types/product.types";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const columnHelper = createColumnHelper<z.infer<typeof categorySchema>>();
 export const createCategoryColumns = (
@@ -22,7 +23,16 @@ export const createCategoryColumns = (
         ]}
       />
     ),
-    cell: (info) => <span className="pl-2">{info.getValue()}</span>,
+    cell: (info) => (
+      <span className="flex items-center gap-2 pl-2">
+        <Avatar className="size-10 shadow">
+          <AvatarFallback>NO</AvatarFallback>
+          <AvatarImage src={"/logo.svg"} />
+        </Avatar>
+
+        {info.getValue()}
+      </span>
+    ),
   }),
 
   columnHelper.accessor("productsCount", {

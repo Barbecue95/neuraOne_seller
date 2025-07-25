@@ -99,10 +99,10 @@ export default function ProductInfoSection({
               <FormLabel>
                 Category <span className="text-red-500">*</span>
               </FormLabel>
-
               <Select
                 value={field.value?.toString() ?? ""}
                 onValueChange={(value) => {
+                  if (value === "") return;
                   const n = Number(value);
                   field.onChange(n);
                   setSelectedCategoryId(n);

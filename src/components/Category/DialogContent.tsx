@@ -26,6 +26,8 @@ import {
   VariantOptionCreateFormType,
 } from "@/types/product.types";
 import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import CameraUpIcon from "@/utils/icons/CameraUpIcon";
 
 type NestedValuesProps = {
   nestIndex: number;
@@ -72,7 +74,7 @@ export function NestedValues({ nestIndex, control }: NestedValuesProps) {
           <FormItem className="flex w-3/4 flex-col gap-2">
             <FormLabel>Option Value</FormLabel>
             {fields.length > 0 && (
-              <div className="scrollbar-hide flex h-fit max-h-32 w-full flex-wrap gap-1 overflow-y-scroll rounded-[20px] border bg-white p-2">
+              <div className="scrollbar-none flex h-fit max-h-32 w-full flex-wrap gap-1 overflow-y-scroll rounded-[20px] border bg-white p-2">
                 {fields.map((f, idx) => (
                   <Badge
                     key={f.id}
@@ -123,7 +125,6 @@ export default function CategoryContentDialog({
   variantForm: UseFormReturn<VariantOptionCreateFormType>;
   isSubmitting: boolean;
   onSave: (isDraft?: boolean) => void;
-  onClose?: () => void;
   handleKeyDown?: (e: React.KeyboardEvent) => void;
 }) {
   return (
@@ -133,13 +134,51 @@ export default function CategoryContentDialog({
       </DialogHeader>
       <div className="max-h-[500px] space-y-4 overflow-y-auto px-4">
         <Form {...catForm}>
-          <form onSubmit={(e) => e.preventDefault()}>
+          <form
+            onSubmit={(e) => e.preventDefault()}
+            className="flex justify-start gap-4"
+          >
+            <FormField
+              control={catForm.control}
+              name="imageUrl"
+              render={({ field }) => (
+                <FormItem className="flex w-fit flex-col gap-3">
+                  <FormLabel className="sr-only">Category Image</FormLabel>
+                  <FormControl>
+                    <label
+                      htmlFor="file-upload"
+                      className="w-fit cursor-pointer"
+                    >
+                      <Avatar className="size-12">
+                        <AvatarFallback className="border- border-2 border-dashed border-[#A1A1A1]">
+                          <CameraUpIcon />
+                        </AvatarFallback>
+                        <input
+                          type="file"
+                          accept="image/png, image/jpeg"
+                          hidden
+                          id="file-upload"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              field.onChange(URL.createObjectURL(file));
+                            }
+                          }}
+                        />
+                        {field.value && <AvatarImage src={field.value} />}
+                      </Avatar>
+                    </label>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={catForm.control}
               name="name"
               render={({ field }) => (
                 <FormItem className="flex w-full flex-col gap-3 md:w-1/2">
-                  <FormLabel>Category Name</FormLabel>
+                  <FormLabel className="sr-only">Category Name</FormLabel>
                   <FormControl>
                     <Input
                       {...field}

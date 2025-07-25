@@ -139,6 +139,8 @@ export const categorySchema = z.object({
     error: "Name must be less than 255 characters",
   }),
   description: z.string().optional(),
+  imageUrl: z.string().optional(),
+  parentId: z.number().nullable().optional(),
   status: z.boolean().default(false),
   productsCount: z.number().default(20),
   children: z.array(z.number()),
@@ -168,7 +170,7 @@ export interface GetProductByIdResponse {
 }
 
 export interface VariantCombination {
-  id: string;
+  id: number;
   name: string;
   sku: string;
   purchasePrice: number;
@@ -256,6 +258,7 @@ export const categoryFormSchema = z.object({
     .string()
     .min(1, { message: "Name is required" })
     .max(255, { message: "Name must be < 255 chars" }),
+  imageUrl: z.string().optional(),
   description: z.string().optional(),
   status: z.boolean(),
   variantGroupIds: z.array(z.string()).optional(),

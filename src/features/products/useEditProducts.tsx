@@ -58,7 +58,7 @@ export default function useEditProducts(id: number) {
       subCategoryId: null,
       subOneCategoryId: null,
       status: ProductStatus.PUBLISHED,
-      scheduleDate: "",
+      scheduleDate: new Date().toISOString(),
       imageUrl: [],
       purchasePrice: 0,
       sellingPrice: 0,
@@ -74,8 +74,6 @@ export default function useEditProducts(id: number) {
         discountValue: 0,
         promoteAmount: 0,
         promotePercent: 0,
-        startDate: "",
-        endDate: "",
       },
       variantValues: [],
       variants: [],
@@ -104,6 +102,8 @@ export default function useEditProducts(id: number) {
   });
 
   const handleUpdateSubmit = (data: EditProductPayload) => {
+    console.log("DATA", data);
+
     const payload = buildPayload(data);
     updateProduct(
       { id, payload },
@@ -148,6 +148,8 @@ export default function useEditProducts(id: number) {
   // Populate form with existing product data
   useEffect(() => {
     if (!existingProduct) return;
+    console.log("existing product", existingProduct);
+
     reset({
       name: existingProduct.name,
       description: existingProduct.description,
@@ -176,8 +178,8 @@ export default function useEditProducts(id: number) {
             : existingProduct.promotePercent,
         promoteAmount: existingProduct.promoteAmount ?? 0,
         promotePercent: existingProduct.promotePercent ?? 0,
-        startDate: existingProduct.promoteStartDate ?? "",
-        endDate: existingProduct.promoteEndDate ?? "",
+        startDate: existingProduct.promoteStartDate ?? new Date().toISOString(),
+        endDate: existingProduct.promoteEndDate ?? new Date().toISOString(),
       },
       variantValues: existingProduct.variantValues
         ? existingProduct.variantValues.map(
@@ -190,11 +192,8 @@ export default function useEditProducts(id: number) {
         ProductRelationType.TAG,
     });
 
-    if (existingProduct?.mainCategoryId) {
-      console.log("existing product", existingProduct, form.watch());
-
+    if (existingProduct?.mainCategoryId)
       setSelectedCategoryId(existingProduct.mainCategoryId);
-    }
     if (existingProduct?.variants)
       setExistingVariants(existingProduct?.variants);
   }, [existingProduct, reset]);
@@ -208,6 +207,9 @@ export default function useEditProducts(id: number) {
     setCategoryVariantGroups(groups);
   }, [rawCategories, selectedCategoryId]);
 
+  useEffect(() => {
+    console.log("WATCH", form.formState.errors, form.getValues("variants"));
+  }, [form.watch()]);
   return {
     form,
     categories,

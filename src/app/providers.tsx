@@ -5,7 +5,6 @@ import { Provider } from "react-redux";
 import { store } from "@/store";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 // Create a client
 const queryClient = new QueryClient();
 

@@ -48,7 +48,7 @@ export default function PricingSection({ form }: PricingSectionProps) {
                       className="h-12 rounded-[20px] p-4"
                       {...field}
                       onChange={(e) =>
-                        field.onChange(handleInputAmountChange(e))
+                        field.onChange(Number(handleInputAmountChange(e)))
                       }
                       value={field.value === 0 ? "" : (field.value ?? "")}
                     />
@@ -78,7 +78,7 @@ export default function PricingSection({ form }: PricingSectionProps) {
                       className="h-12 rounded-[20px] p-4"
                       {...field}
                       onChange={(e) =>
-                        field.onChange(handleInputAmountChange(e))
+                        field.onChange(Number(handleInputAmountChange(e)))
                       }
                       value={field.value === 0 ? "" : (field.value ?? "")}
                     />

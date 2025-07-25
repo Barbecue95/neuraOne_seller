@@ -13,7 +13,7 @@ import {
 } from "@/types/product.types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getCoreRowModel, useReactTable } from "@tanstack/react-table";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { createCategoryColumns } from "./Table/colums";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -69,11 +69,21 @@ export default function useCategory() {
     limit: pagination.size,
   });
 
+  useEffect(() => {
+    refetchCategories();
+  }, [
+    pagination.page,
+    pagination.size,
+    debouncedSearchQuery,
+    sortSearchParamValue,
+  ]);
+
   const form = useForm({
     resolver: zodResolver(categoryFormSchema),
     defaultValues: {
       name: "",
       description: "",
+      imageUrl: "",
       status: false,
       variantGroupIds: [],
     },
@@ -135,10 +145,12 @@ export default function useCategory() {
 
   // Function to close confirmation dialog without deleting
   const handleCloseDeleteDialog = () => {
-    setIsEditing(false);
     setDeleteConfirmation({ open: false, categoryId: null, categoryName: "" });
   };
-
+  const handleCloseEditDialog = () => {
+    setIsEditing(false);
+    setCategoryDialog(null);
+  };
   const {
     isSubmitting,
     form: variantForm,
@@ -146,7 +158,7 @@ export default function useCategory() {
     onSave,
   } = useCategoryVariant({
     catForm: form,
-    onClose: handleCloseDeleteDialog,
+    onClose: handleCloseEditDialog,
     isEditing,
   });
 
@@ -194,9 +206,12 @@ export default function useCategory() {
     getCoreRowModel: getCoreRowModel(),
     initialState: {
       pagination: {
-        pageSize: 8,
+        pageSize: pagination.size,
+        pageIndex: pagination.page,
       },
     },
+    manualPagination: true,
+    pageCount: pagination.totalPages,
   });
 
   // Prevent Enter key from submitting forms
@@ -206,35 +221,43 @@ export default function useCategory() {
     }
   };
 
-  const handleToggleDialog = () => {
-    setCategoryDialog(null);
-    form.reset();
-  };
-
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
   };
   const handleOnPageChange = (page: number) => {
-    setPagination({
+    setPagination((prev) => ({
+      ...prev,
       page,
-      size: pagination.size,
-      total: pagination.total,
-      totalPages: pagination.totalPages,
-      hasNextPage: pagination.hasNextPage,
-      hasPrevPage: pagination.hasPrevPage,
-    });
+    }));
   };
 
   const handleOnPageSizeChange = (size: number) => {
-    setPagination({
-      page: pagination.page,
+    setPagination((prev) => ({
+      ...prev,
       size,
-      total: pagination.total,
-      totalPages: pagination.totalPages,
-      hasNextPage: pagination.hasNextPage,
-      hasPrevPage: pagination.hasPrevPage,
-    });
+      page: 1, // Reset to page 1 when page size changes
+    }));
   };
+
+  useEffect(() => {
+    if (rawCategories && !categoryLoading) {
+      setPagination({
+        page: 1,
+        size: pagination.size,
+        total: rawCategories.meta.total,
+        totalPages: Math.ceil(rawCategories.meta.total / pagination.size),
+        hasNextPage:
+          rawCategories.meta.total / pagination.size > pagination.page,
+        hasPrevPage: pagination.page > 1,
+      });
+    }
+  }, [rawCategories, categoryLoading]);
+
+  useEffect(() => {
+    if (pagination.page !== 1) {
+      setPagination((prev) => ({ ...prev, page: 1 }));
+    }
+  }, [debouncedSearchQuery, pagination.size]);
 
   return {
     form,
@@ -254,7 +277,7 @@ export default function useCategory() {
     confirmDelete,
     handleSearchChange,
     handleEditCategory,
-    handleToggleDialog,
+    handleCloseEditDialog,
     handleAddCategory,
     handleOnPageChange,
     handleDeleteCategory,

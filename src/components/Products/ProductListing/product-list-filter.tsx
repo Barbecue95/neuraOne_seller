@@ -52,7 +52,7 @@ const ProductListFilters = ({
           <Button
             variant="destructive"
             className="rounded-[10px] bg-[#FFDCDC] text-[#FF3333] hover:bg-[#FFB4B4] hover:text-[#FF3333]"
-            onClick={() => handleDeleteProducts()}
+            onClick={handleDeleteProducts}
           >
             Delete
             <Trash2Icon className="h-4 w-4" />
@@ -60,15 +60,17 @@ const ProductListFilters = ({
         )}
       </div>
 
-      <div className="relative w-64">
-        <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
-        <Input
-          placeholder="Search product"
-          value={searchQuery}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="rounded-3xl pl-10"
-        />
-      </div>
+      {!hasSomeSelectedRows && (
+        <div className="relative w-64">
+          <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+          <Input
+            placeholder="Search product"
+            value={searchQuery}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="rounded-3xl pl-10"
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -47,7 +47,7 @@ export default function useCreateProducts() {
       subOneCategoryId: null,
       tags: "",
       status: ProductStatus.PUBLISHED,
-      scheduleDate: "",
+      scheduleDate: new Date().toISOString(),
       imageUrl: [],
       purchasePrice: 0,
       sellingPrice: 0,
@@ -63,8 +63,6 @@ export default function useCreateProducts() {
         discountValue: 0,
         promoteAmount: 0,
         promotePercent: 0,
-        startDate: "",
-        endDate: "",
       },
       variantValues: [],
       variants: [],
@@ -86,6 +84,8 @@ export default function useCreateProducts() {
     setSelectedCategoryId(CategoryId);
   };
   const handleCreateProductSubmit = async (data: CreateProductPayload) => {
+    console.log("Create Product Data", data);
+
     const payload = {
       ...data,
       promoteInfo: {
@@ -100,9 +100,8 @@ export default function useCreateProducts() {
             : 0,
       },
     };
-    console.log("create product", data, payload);
     createProduct(payload);
-    // router.push("/products")
+    router.push("/products");
   };
 
   const handleSaveAsDraft = async () => {
@@ -127,7 +126,6 @@ export default function useCreateProducts() {
     };
 
     createProduct(payload);
-    // console.log("create product", data);
     router.push("/products");
   };
 

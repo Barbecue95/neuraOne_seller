@@ -59,8 +59,8 @@ const ProductPagination = ({
   };
 
   return (
-    <div className="flex items-center justify-between pt-4">
-      <div className="text-accent-foreground flex flex-row flex-nowrap items-center gap-2 text-base">
+    <div className="flex flex-col items-center justify-between gap-4 py-2 md:flex-row md:gap-0 md:pt-4">
+      <div className="text-accent-foreground flex flex-row flex-nowrap items-center gap-2 text-xs md:text-base">
         <span>Showing</span>
         <Select
           value={size.toString()}

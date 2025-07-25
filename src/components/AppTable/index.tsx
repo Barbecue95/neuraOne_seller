@@ -17,11 +17,13 @@ import {
 type AppTableProps<TData extends object> = {
   table: TanstackTable<TData>;
   columns: ColumnDef<TData>[];
+  loading?: boolean;
 };
 
 const AppTable = <TData extends object>({
   table,
   columns,
+  loading = false,
 }: AppTableProps<TData>) => {
   return (
     <TableComponent>
@@ -47,7 +49,17 @@ const AppTable = <TData extends object>({
         ))}
       </TableHeader>
       <TableBody>
-        {table.getRowModel().rows?.length ? (
+        {loading ? (
+          Array.from({ length: 5 }).map((_, i) => (
+            <TableRow key={i} className="h-8 border-none">
+              {columns.map((_, j) => (
+                <TableCell key={j}>
+                  <div className="h-8 animate-pulse rounded bg-gray-200" />
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : table.getRowModel().rows?.length ? (
           table.getRowModel().rows.map((row) => (
             <TableRow
               key={row.id}
@@ -64,7 +76,7 @@ const AppTable = <TData extends object>({
         ) : (
           <TableRow>
             <TableCell colSpan={columns.length} className="h-24 text-center">
-              No results.
+              No results found.
             </TableCell>
           </TableRow>
         )}

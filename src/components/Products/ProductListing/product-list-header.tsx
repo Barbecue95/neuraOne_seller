@@ -7,8 +7,10 @@ import SortByButton from "@/utils/SortByButton";
 
 export default function ProductListHeader() {
   return (
-    <div className="flex items-center justify-between pb-4">
-      <h1 className="text-2xl font-semibold">Product List</h1>
+    <div className="flex items-center justify-end pb-4 md:justify-between">
+      <h1 className="hidden text-2xl font-semibold md:inline-block">
+        Product List
+      </h1>
       <div className="flex items-center gap-2">
         <SortByButton />
         <Button size="sm" asChild className="rounded-full !p-5 !py-[18px]">

@@ -24,26 +24,26 @@ export default function Home() {
     pagination,
     confirmDelete,
     handleAddCategory,
-    handleToggleDialog,
+    handleCloseEditDialog,
     handleSearchChange,
     handleCloseDeleteDialog,
     handleOnPageChange,
     handleOnPageSizeChange,
     handleKeyDown,
-
     onSave,
   } = useCategory();
 
-  if (categoryLoading) return <Loading />;
+  // if (categoryLoading) return <Loading />;
 
   return (
-    <div className="container mx-auto px-8 py-4">
+    <div className="container mx-auto px-4 py-2 md:px-8 md:py-4">
       <CategoryHeader handleAddCategory={handleAddCategory} />
 
       <Table
         table={table}
         columns={columns}
         searchQuery={searchQuery}
+        isLoading={categoryLoading}
         handleSearchChange={handleSearchChange}
         onPageChange={handleOnPageChange}
         onPageSizeChange={handleOnPageSizeChange}
@@ -51,14 +51,13 @@ export default function Home() {
       />
 
       {/* Category Add/Edit Dialog */}
-      <Dialog open={openDialog} onOpenChange={handleToggleDialog}>
+      <Dialog open={openDialog} onOpenChange={handleCloseEditDialog}>
         <CategoryContentDialog
           form={form}
           variants={variants}
           variantForm={variantForm}
           isSubmitting={isSubmitting}
           onSave={onSave}
-          onClose={handleToggleDialog}
           handleKeyDown={handleKeyDown}
         />
       </Dialog>

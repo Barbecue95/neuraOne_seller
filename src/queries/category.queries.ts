@@ -30,7 +30,7 @@ export const useGetCategories = ({
   limit?: number;
 }) => {
   return useQuery<getCategoriesResponse, Error>({
-    queryKey: ["Categories"],
+    queryKey: ["Categories", page, limit, sort, searchText],
     queryFn: () => getCategories({ sort, searchText, page, limit }),
   });
 };
