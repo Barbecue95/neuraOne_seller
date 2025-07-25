@@ -13,11 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CreateUpdatePaymentMethodPayload } from "@/types/payment-method.types";
 
 type AppTableProps<TData extends object> = {
   table: TanstackTable<TData>;
-  columns: ColumnDef<CreateUpdatePaymentMethodPayload>[];
+  columns: ColumnDef<TData>[];
 };
 
 const AppTable = <TData extends object>({

@@ -67,6 +67,21 @@ export const CustomerTableColumns = (
       ),
     },
     {
+      accessorKey: "id",
+      header: () => (
+        <SortableHeader
+          title="ID"
+          sortOptions={[
+            { label: "Newest", value: UserSortOption.NEWEST },
+            { label: "Oldest", value: UserSortOption.OLDEST },
+          ]}
+        />
+      ),
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("id")}</div>
+      ),
+    },
+    {
       accessorKey: "name",
       header: () => (
         <SortableHeader
@@ -84,7 +99,6 @@ export const CustomerTableColumns = (
     {
       accessorKey: "phoneNumber",
       header: () => (
-      header: () => (
         <SortableHeader
           title="Phone Number"
           sortOptions={[
@@ -98,7 +112,6 @@ export const CustomerTableColumns = (
     {
       accessorKey: "email",
       header: () => (
-      header: () => (
         <SortableHeader
           title="Email"
           sortOptions={[
@@ -111,7 +124,6 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "totalOrderCount",
-      header: () => (
       header: () => (
         <SortableHeader
           title="Total Orders"
@@ -144,7 +156,6 @@ export const CustomerTableColumns = (
     // },
     {
       accessorKey: "status",
-      header: () => (
       header: () => (
         <SortableHeader
           title="Status"
@@ -203,13 +214,11 @@ export const CustomerTableColumns = (
 
 // const SortableHeaderV1 = ({
 //   title,
-//   column,
 //   sortName,
 //   sortOptions,
 //   handleSortChange,
 // }: {
 //   title: string;
-//   column: any;
 //   sortName: string;
 //   handleSortChange: (value: UserSortOption) => void;
 //   sortOptions: {

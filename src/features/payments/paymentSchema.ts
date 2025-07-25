@@ -45,3 +45,4 @@ export const transactionColumnsSchema = z.array(transactionSchema);
 export const bankColumnsSchema = z.array(bankWalletSchema);
 
 export const digitalColumnsSchema = z.array(digitalWalletSchema);
+export type digitalWalletType = z.infer<typeof digitalWalletSchema>;

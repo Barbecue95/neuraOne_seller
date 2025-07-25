@@ -6,7 +6,7 @@ function createRandomOrder() {
   return {
     id: faker.number.int({ min: 1, max: 1000 }),
     name: faker.company.buzzPhrase(),
-    audience: faker.name.jobTitle(),
+    audience: faker.person.jobTitle(),
     status: faker.helpers.arrayElement(["Sent", "Delivered", "Cancelled"]),
     sentDate: faker.date.past(),
   };

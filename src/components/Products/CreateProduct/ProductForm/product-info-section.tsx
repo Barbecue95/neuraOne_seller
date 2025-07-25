@@ -23,7 +23,7 @@ import { EditProductPayload } from "@/components/Products/CreateProduct/ProductF
 
 interface ProductInfoSectionProps {
   form: UseFormReturn<EditProductPayload>;
-  categories: { value: number; label: string }[];
+  categories: { value: number | undefined; label: string }[];
   setSelectedCategoryId: (value: number) => void;
 }
 
@@ -117,7 +117,7 @@ export default function ProductInfoSection({
                     {categories.map((cat) => (
                       <SelectItem
                         key={cat.value}
-                        value={cat.value.toString()}
+                        value={cat?.value?.toString() ?? ""}
                         className="cursor-pointer"
                       >
                         {cat.label}

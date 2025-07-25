@@ -25,6 +25,11 @@ export const CreateUpdatePaymentMethodPayloadSchema = z.object({
   imageUrl: z.string().optional(),
 });
 
+export const PaymentMethodTableSchema = z.array(
+  CreateUpdatePaymentMethodPayloadSchema,
+);
+
+export type PaymentMethodTableType = z.infer<typeof PaymentMethodTableSchema>;
 export type CreateUpdatePaymentMethodPayload = z.infer<
   typeof CreateUpdatePaymentMethodPayloadSchema
 >;

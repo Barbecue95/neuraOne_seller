@@ -31,7 +31,7 @@ import AppTable from "@/components/AppTable";
 const Table = () => {
   const table = useReactTable({
     data: digitalData,
-    columns: digitalColumns as ColumnDef<(typeof digitalData)[number]>[],
+    columns: digitalColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
