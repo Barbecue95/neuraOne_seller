@@ -56,8 +56,6 @@ export default function useCategoryVariant({
       }
 
       const categoryData = catForm.getValues();
-      console.log("CATEGORY DATA", categoryData);
-
       let variantGroupIds: string[] = [];
 
       // If there are variant options, create them first
@@ -67,8 +65,6 @@ export default function useCategoryVariant({
           let variantPromises;
           // Create each variant option individually since API expects single variant
           if (isEditing) {
-            console.log("IS EDITING VARIANTS", variantData.variantOptions);
-
             variantPromises = variantData.variantOptions.map((variantOption) =>
               updateVariantsMutation.mutateAsync({
                 id: variantOption.id, // Assuming id is present for editing
@@ -77,7 +73,6 @@ export default function useCategoryVariant({
               }),
             );
           } else {
-            console.log("IS CREATING VARIANTS", variantData.variantOptions);
             variantPromises = variantData.variantOptions.map((variantOption) =>
               createVariantsMutation.mutateAsync({
                 name: variantOption.name,
@@ -123,7 +118,6 @@ export default function useCategoryVariant({
       if (isEditing) {
         // Use the isEditing flag
         // Assuming categoryData also has an 'id' for updating
-        console.log("IS UPDATING CATEGORY", categoryPayload);
         const tranformCategoryData = {
           categoryId: Number(categoryPayload?.id) || 0,
           name: categoryPayload.name,
@@ -135,8 +129,6 @@ export default function useCategoryVariant({
         categoryResponse =
           await updateCategoryMutation.mutateAsync(tranformCategoryData);
       } else {
-        console.log("IS CREATING CATEGORY", categoryPayload);
-
         categoryResponse = await createCategoryMutation.mutateAsync(
           categoryPayload as CategoryFormType,
         );

@@ -102,8 +102,6 @@ export default function useEditProducts(id: number) {
   });
 
   const handleUpdateSubmit = (data: EditProductPayload) => {
-    console.log("DATA", data);
-
     const payload = buildPayload(data);
     updateProduct(
       { id, payload },
@@ -148,8 +146,6 @@ export default function useEditProducts(id: number) {
   // Populate form with existing product data
   useEffect(() => {
     if (!existingProduct) return;
-    console.log("existing product", existingProduct);
-
     reset({
       name: existingProduct.name,
       description: existingProduct.description,
@@ -207,9 +203,6 @@ export default function useEditProducts(id: number) {
     setCategoryVariantGroups(groups);
   }, [rawCategories, selectedCategoryId]);
 
-  useEffect(() => {
-    console.log("WATCH", form.formState.errors, form.getValues("variants"));
-  }, [form.watch()]);
   return {
     form,
     categories,

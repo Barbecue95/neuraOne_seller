@@ -84,8 +84,6 @@ export default function useCreateProducts() {
     setSelectedCategoryId(CategoryId);
   };
   const handleCreateProductSubmit = async (data: CreateProductPayload) => {
-    console.log("Create Product Data", data);
-
     const payload = {
       ...data,
       promoteInfo: {
