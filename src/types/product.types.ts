@@ -189,7 +189,7 @@ export interface VariantValue {
 }
 
 export interface VariantOption {
-  id: string;
+  id: number;
   name: string;
   values: VariantValue[];
 }
