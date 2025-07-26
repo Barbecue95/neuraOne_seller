@@ -62,6 +62,9 @@ export const deleteProduct = async (id: number): Promise<void> => {
   await axiosClient.delete(`${productEndpoints.products}/${id}`);
 };
 
-export const deleteProducts = async (ids: number[]): Promise<void> => {
-  await axiosClient.delete(productEndpoints.products, { data: ids });
+export const deleteProducts = async (ids: number[]): Promise<Product> => {
+  const res = await axiosClient.delete(productEndpoints.products, {
+    data: { ids },
+  });
+  return res.data;
 };

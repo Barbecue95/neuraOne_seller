@@ -220,7 +220,7 @@ export default function AddCustomerModal({ trigger }: AddCustomerModalProps) {
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className="scrollbar-hide max-h-[95vh] overflow-y-auto rounded-[20px] bg-white dark:bg-gray-900 md:max-w-2xl">
+      <DialogContent className="scrollbar-none max-h-[95vh] overflow-y-auto rounded-[20px] bg-white md:max-w-2xl dark:bg-gray-900">
         <DialogHeader>
           <DialogTitle className="text-2xl font-medium">
             Add new customer

@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 
 import "./globals.css";
 import { Providers } from "./providers";
-import Navbar from "@/components/Navbar";
 import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
@@ -57,21 +56,17 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
-  const theme = cookieStore.get("theme")?.value === "true";
   return (
-    <html lang="en" className={`scroll-smooth ${!theme ? "light" : "dark"}`}>
+    <html lang="en" className="scroll-smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${debata.variable} antialiased`}
       >
         <Providers defaultOpen={defaultOpen}>
           <AppSidebar />
-          <main className="h-full w-full">
-            <Navbar />
-            <section className="h-full w-full overflow-x-hidden">
-              {children}
-            </section>
-            <Toaster />
+          <main className="mt-24 w-full overflow-x-hidden md:mt-16 xl:mt-20">
+            {children}
           </main>
+          <Toaster />
         </Providers>
       </body>
     </html>

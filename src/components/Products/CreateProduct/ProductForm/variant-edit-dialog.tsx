@@ -160,7 +160,7 @@ export default function VariantEditDialog({
     }
 
     // success
-    updateVariantFields(SelectedVariant.id, result.data);
+    updateVariantFields(String(SelectedVariant.id), result.data);
     handleClose();
   };
 

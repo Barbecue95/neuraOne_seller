@@ -116,7 +116,9 @@ export default function VisibilityInventorySection({
                     type="text"
                     placeholder="Stock"
                     {...field}
-                    onChange={(e) => field.onChange(handleInputAmountChange(e))}
+                    onChange={(e) =>
+                      field.onChange(Number(handleInputAmountChange(e)))
+                    }
                     value={field.value === 0 ? "" : (field.value ?? "")}
                     className="h-12 rounded-[20px] p-4"
                   />
@@ -141,7 +143,9 @@ export default function VisibilityInventorySection({
                           placeholder="Weight"
                           {...field}
                           onChange={(e) =>
-                            field.onChange(handleInputAmountChange(e, 5))
+                            field.onChange(
+                              Number(handleInputAmountChange(e, 5)),
+                            )
                           }
                           value={field.value === 0 ? "" : (field.value ?? "")}
                           className="h-12 rounded-[20px] p-4"

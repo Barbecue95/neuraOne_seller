@@ -1,7 +1,7 @@
 import { ProductRelationType, ProductStatus } from "@/types/product.types";
 import { z } from "zod";
 export const variantSchema = z.object({
-  id: z.string().optional(),
+  id: z.number().optional(),
   name: z.string().min(1, "Variant name is required."),
 
   // ⬇︎ Coerce the string → number so validation actually runs
@@ -133,9 +133,7 @@ export const CreateProductSchema = z
           .int("Variant value ID must be an integer.")
           .positive("Variant value ID must be a positive number."),
       )
-      .optional()
-      .nullable(),
-
+      .optional(),
     variants: z
       .array(variantSchema)
       .min(1, "At least one variant is required."),

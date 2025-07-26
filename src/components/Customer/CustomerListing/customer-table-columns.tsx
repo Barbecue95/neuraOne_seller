@@ -2,12 +2,10 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Edit, ArrowUpDown, BanIcon } from "lucide-react";
+import { Edit,  BanIcon } from "lucide-react";
 import { User, UserSortOption } from "@/types/users.types";
-import { useState } from "react";
-import { cn } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { useDeleteUser } from "@/queries/users.queries";
+// import { useDeleteUser } from "@/queries/users.queries";
 import { SortableHeader } from "./sortable-header";
 
 export const CustomerTableColumns = (
@@ -19,14 +17,14 @@ export const CustomerTableColumns = (
   handleBlockOpen: (user:User) => void
 ): ColumnDef<User>[] => {
   const router = useRouter();
-  const { mutate: deleteUser } = useDeleteUser();
+  // const { mutate: deleteUser } = useDeleteUser();
   const onEditProduct = (id: number) => {
     router.push(`/customers/${id}`);
   };
 
-  const onDeleteProduct = (id: number) => {
-    deleteUser(id.toString());
-  };
+  // const onDeleteProduct = (id: number) => {
+  //   deleteUser(id.toString());
+  // };
   
   return [
     {
@@ -55,7 +53,7 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "id",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="ID"
           sortOptions={[
@@ -70,7 +68,7 @@ export const CustomerTableColumns = (
     },
     {
       accessorKey: "id",
-      header: ({ column }) => (
+      header: () => (
         <SortableHeader
           title="ID"
           sortOptions={[
@@ -214,54 +212,54 @@ export const CustomerTableColumns = (
   ];
 };
 
-const SortableHeaderV1 = ({
-  title,
-  sortName,
-  sortOptions,
-  handleSortChange,
-}: {
-  title: string;
-  sortName: string;
-  handleSortChange: (value: UserSortOption) => void;
-  sortOptions: {
-    label: string;
-    value: UserSortOption;
-  }[];
-}) => {
-  const options = sortOptions.filter((sort) =>
-    sort.label.toLowerCase().includes(sortName),
-  );
-  const [show, setShow] = useState<boolean>(false);
-  const sortChange = (option: { label: string; value: UserSortOption }) => {
-    handleSortChange(option.value);
-    setShow(false);
-  };
-  return (
-    <div className="relative">
-      <Button
-        variant="ghost"
-        onClick={() => setShow(!show)}
-        className="h-auto cursor-pointer p-0 font-medium"
-      >
-        {title}
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-      {show && (
-        <div className="absolute top-5 flex translate-x-1/2 flex-col rounded-[10px] bg-gray-200 shadow">
-          {options.map((option, index) => (
-            <p
-              className={cn(
-                "cursor-pointer p-2",
-                (index + 1) % 2 !== 0 && "border-b border-amber-50",
-              )}
-              key={index}
-              onClick={() => sortChange(option)}
-            >
-              {option.label}
-            </p>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+// const SortableHeaderV1 = ({
+//   title,
+//   sortName,
+//   sortOptions,
+//   handleSortChange,
+// }: {
+//   title: string;
+//   sortName: string;
+//   handleSortChange: (value: UserSortOption) => void;
+//   sortOptions: {
+//     label: string;
+//     value: UserSortOption;
+//   }[];
+// }) => {
+//   const options = sortOptions.filter((sort) =>
+//     sort.label.toLowerCase().includes(sortName),
+//   );
+//   const [show, setShow] = useState<boolean>(false);
+//   const sortChange = (option: { label: string; value: UserSortOption }) => {
+//     handleSortChange(option.value);
+//     setShow(false);
+//   };
+//   return (
+//     <div className="relative">
+//       <Button
+//         variant="ghost"
+//         onClick={() => setShow(!show)}
+//         className="h-auto cursor-pointer p-0 font-medium"
+//       >
+//         {title}
+//         <ArrowUpDown className="ml-2 h-4 w-4" />
+//       </Button>
+//       {show && (
+//         <div className="absolute top-5 flex translate-x-1/2 flex-col rounded-[10px] bg-gray-200 shadow">
+//           {options.map((option, index) => (
+//             <p
+//               className={cn(
+//                 "cursor-pointer p-2",
+//                 (index + 1) % 2 !== 0 && "border-b border-amber-50",
+//               )}
+//               key={index}
+//               onClick={() => sortChange(option)}
+//             >
+//               {option.label}
+//             </p>
+//           ))}
+//         </div>
+//       )}
+//     </div>
+//   );
+// };

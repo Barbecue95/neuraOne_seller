@@ -72,7 +72,7 @@ export const useDeleteProduct = () =>
   });
 
 export const useDeleteProducts = () =>
-  useMutation<void, Error, number[]>({
+  useMutation<Product, Error, number[]>({
     mutationFn: (ids) => deleteProducts(ids),
     onSuccess: () => {
       // e.g. invalidate ["product-listing"]

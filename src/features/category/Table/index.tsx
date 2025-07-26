@@ -1,165 +1,58 @@
 "use client";
-import {
-  ColumnDef,
-  getCoreRowModel,
-  useReactTable,
-  getPaginationRowModel,
-} from "@tanstack/react-table";
-
+import { ColumnDef, type Table } from "@tanstack/react-table";
 import React from "react";
-import { categoryData } from "./dummy";
-import { categoryColumns } from "./colums";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "../../../components/ui/pagination";
-import { cn } from "@/lib/utils";
 import AppTable from "@/components/AppTable";
 import { Input } from "@/components/ui/input";
+import { CategoryType, PaginationInfo } from "@/types/product.types";
+import { SearchIcon } from "lucide-react";
+import ProductPagination from "@/components/Products/ProductListing/product-list-pagination";
 
-const Table = () => {
-  const table = useReactTable({
-    data: categoryData,
-    columns: categoryColumns as ColumnDef<(typeof categoryData)[number]>[],
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 8,
-      },
-    },
-  });
-  const currentRowCount =
-    (table.getState().pagination.pageIndex + 1) *
-    table.getState().pagination.pageSize;
+// Renamed to avoid conflict with TanStack Table type
+const CategoryTable = ({
+  table,
+  columns,
+  isLoading,
+  pagination,
+  searchQuery,
+  handleSearchChange,
+  onPageChange,
+  onPageSizeChange,
+}: {
+  table: Table<CategoryType>;
+  columns: ColumnDef<CategoryType, any>[];
+  searchQuery: string;
+  pagination: PaginationInfo;
+  isLoading?: boolean;
+  handleSearchChange: (value: string) => void;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
+}) => {
   return (
-    <div>
-      <div className="mx-8 my-4 rounded-md border">
+    <div className="">
+      <div className="bg-card my-4 rounded-3xl border pb-6 md:pb-0">
         <div className="flex flex-row items-center justify-between p-4">
-          <h3>All Products</h3>
-          <Input placeholder="Search Order..." className="w-64" />
+          <h2 className="scroll-m-20 text-base font-medium tracking-tight md:text-xl">
+            All Categories
+          </h2>
+          <div className="relative w-40 md:w-64">
+            <SearchIcon className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 transform text-gray-400" />
+            <Input
+              placeholder="Search product"
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="rounded-3xl pl-10 text-sm md:text-base"
+            />
+          </div>
         </div>
-        {/* @ts-expect-error  table type cannot be inferred for all of table */}
-        <AppTable table={table} columns={categoryColumns} />
+        <AppTable table={table} columns={columns} loading={isLoading} />
       </div>
-      <div className="flex w-full flex-row items-center justify-between px-8 pb-4">
-        <div className="flex flex-row items-center gap-2">
-          <span className="text-nowrap">
-            Result {table.getState().pagination.pageIndex + 1}&nbsp;-&nbsp;
-            {currentRowCount > table.getRowCount()
-              ? table.getRowCount()
-              : currentRowCount}
-            &nbsp;of&nbsp;
-            {table.getRowCount()}
-          </span>
-          <Select
-            onValueChange={(value) => {
-              table.setPageSize(Number(value));
-            }}
-          >
-            <SelectTrigger className="w-16">
-              <SelectValue placeholder={table.getState().pagination.pageSize} />
-            </SelectTrigger>
-            <SelectContent className="min-w-16">
-              {[8, 10, 20, 30, 40, 50].map((pageSize) => (
-                <SelectItem key={pageSize} value={pageSize.toString()}>
-                  {pageSize}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Pagination className="justify-end">
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => table.previousPage()}
-                className={cn([
-                  {
-                    "pointer-events-none opacity-50":
-                      !table.getCanPreviousPage(),
-                  },
-                ])}
-              />
-            </PaginationItem>
-            {Array.from(
-              {
-                length:
-                  table.getState().pagination.pageIndex + 3 <=
-                  table.getPageCount()
-                    ? 3
-                    : table.getPageCount() -
-                      table.getState().pagination.pageIndex,
-              },
-              (_, i) => table.getState().pagination.pageIndex + i + 1,
-            ).map((page) => {
-              return (
-                <PaginationItem key={page}>
-                  <PaginationLink
-                    onClick={() => table.setPageIndex(page - 1)}
-                    isActive={
-                      page === table.getState().pagination.pageIndex + 1
-                    }
-                  >
-                    {page}
-                  </PaginationLink>
-                </PaginationItem>
-              );
-            })}
-            <PaginationItem>
-              <PaginationEllipsis />
-            </PaginationItem>
-            {Array.from(
-              {
-                length:
-                  table.getState().pagination.pageIndex >=
-                  table.getPageCount() - 3
-                    ? table.getPageCount() -
-                      table.getState().pagination.pageIndex -
-                      2
-                    : 3,
-              },
-              (_, i) => {
-                return table.getPageCount() - i;
-              },
-            )
-              .reverse()
-              .map((page) => {
-                return (
-                  <PaginationItem key={page}>
-                    <PaginationLink
-                      onClick={() => table.setPageIndex(page - 1)}
-                    >
-                      {page}
-                    </PaginationLink>
-                  </PaginationItem>
-                );
-              })}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => table.nextPage()}
-                className={cn([
-                  { "pointer-events-none opacity-50": !table.getCanNextPage() },
-                ])}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+      <ProductPagination
+        onPageChange={onPageChange}
+        onPageSizeChange={onPageSizeChange}
+        pagination={pagination}
+      />
     </div>
   );
 };
 
-export default Table;
+export default CategoryTable;

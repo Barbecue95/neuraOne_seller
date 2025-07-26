@@ -18,7 +18,8 @@ import {
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function useProducts() {
   // #region Define States
@@ -37,12 +38,17 @@ export default function useProducts() {
     hasNextPage: false,
     hasPrevPage: false,
   });
+  const [deleteConfirmation, setDeleteConfirmation] = useState<{
+    open: boolean;
+    productIds: number[] | null;
+    productName: string;
+  }>({ open: false, productIds: null, productName: "" });
+
   // #endregion
 
   // #region Tanstack Query
 
-  const { mutate: deleteProducts } = useDeleteProducts();
-  const categories = getProductCategories();
+  const deleteProducts = useDeleteProducts();
 
   // #endregion
 
@@ -55,7 +61,7 @@ export default function useProducts() {
   const {
     data: rawProductList,
     isLoading: isLoadingProducts,
-    refetch: refetchProductList,
+    refetch: refetchProducts,
   } = useGetProductListing({
     sort: sortSearchParamValue ?? ProductSortOption.NEWEST,
     page: pagination.page,
@@ -76,17 +82,53 @@ export default function useProducts() {
     setParam("sortBy", value);
   };
 
-  const onDeleteProduct = (id: number) => {
-    deleteProducts([id]);
-  };
-
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);
   };
+  // This function actually performs the deletion
+  const confirmDelete = async () => {
+    if (!deleteConfirmation.productIds) return;
 
+    try {
+      const response = await deleteProducts.mutateAsync(
+        deleteConfirmation.productIds,
+      );
+
+      if (response.status) {
+        toast.success("Product deleted successfully!");
+        refetchProducts();
+      } else {
+        toast.error("Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      toast.error("An error occurred while deleting the product");
+    } finally {
+      setDeleteConfirmation({
+        open: false,
+        productIds: null,
+        productName: "",
+      });
+    }
+  };
+
+  const handleDeleteProduct = useCallback(
+    (id: number) => {
+      const category = rawProductList?.data?.find((cat) => cat.id === id);
+      setDeleteConfirmation({
+        open: true,
+        productIds: [id],
+        productName: category?.name || "Unknown",
+      });
+    },
+    [rawProductList],
+  );
+  const handleCloseDeleteDialog = () => {
+    setDeleteConfirmation({ open: false, productIds: null, productName: "" });
+  };
   // #endregion
 
-  const columns = ProductTableColumns(onDeleteProduct);
+  const columns = ProductTableColumns(handleDeleteProduct);
 
   const table = useReactTable({
     data: products,
@@ -105,9 +147,17 @@ export default function useProducts() {
     pageCount: pagination.totalPages,
   });
 
-  const handleDeleteProducts = () => {
+  const handleDeleteProducts = async () => {
     const ids = Object.keys(rowSelection).map((key) => Number(key));
-    deleteProducts(ids);
+    const productIds = rawProductList?.data
+      .filter((p, idx) => ids[idx] === idx)
+      .map((p) => p.id);
+
+    setDeleteConfirmation({
+      open: true,
+      productIds: productIds === undefined ? [] : productIds,
+      productName: rawProductList?.data?.map((p) => p.name).join(", ") || "",
+    });
   };
 
   useEffect(() => {
@@ -144,13 +194,18 @@ export default function useProducts() {
     columns,
     products,
     searchQuery,
+    deleteConfirmation,
     // Loading State
     isLoadingProducts,
     // functions
+    deleteProducts,
+    confirmDelete,
     handleSortChange,
     handlePageChange,
     handlePageSizeChange,
     handleSearchChange,
     handleDeleteProducts,
+    handleDeleteProduct,
+    handleCloseDeleteDialog,
   };
 }

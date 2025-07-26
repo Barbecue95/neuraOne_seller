@@ -8,29 +8,30 @@ const encoder = new TextEncoder();
 const publicRoutes = ["/login"];
 
 export async function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  // const { pathname } = request.nextUrl;
 
-  if (publicRoutes.includes(pathname) && pathname.startsWith("/login")) {
-    return NextResponse.next();
-  }
+  // if (publicRoutes.includes(pathname) && pathname.startsWith("/login")) {
+  //   return NextResponse.next();
+  // }
 
-  const token = request.cookies.get("accessToken")?.value;
-  // console.log("token", token);
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  // const token = request.cookies.get("accessToken")?.value;
+  // // console.log("token", token);
+  // if (!token) {
+  //   return NextResponse.redirect(new URL("/login", request.url));
+  // }
 
-  try {
-    const secret = encoder.encode(JWT_SECRET);
-    // console.log("secret", secret);
-    const { payload } = await jwtVerify(token, secret);
-    // console.log("payload", payload);
+  // try {
+  //   const secret = encoder.encode(JWT_SECRET);
+  //   // console.log("secret", secret);
+  //   const { payload } = await jwtVerify(token, secret);
+  //   // console.log("payload", payload);
 
-    return NextResponse.next();
-  } catch (err) {
-    console.error("JWT error:", err);
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
+  //   return NextResponse.next();
+  // } catch (err) {
+  //   console.error("JWT error:", err);
+  //   return NextResponse.redirect(new URL("/login", request.url));
+  // }
+  return NextResponse.next();
 }
 
 export const config = {

@@ -173,7 +173,7 @@
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
   --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(87% 0 0);
   --sidebar-primary: oklch(0.603 0.1986 274.3);
   --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
   --sidebar-accent: oklch(0.274 0.006 286.033);
@@ -193,14 +193,11 @@
 }
 
 /* Hide scrollbar globally */
-.scrollbar-hide {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none;    /* Firefox */
-}
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
+@plugin 'tailwind-scrollbar' {
+  nocompatible: true;
+
+};
 
 .ql-toolbar {
   @apply rounded-tl-xl rounded-tr-xl border border-[#979797] bg-[#F6F1F4]; /* or customize as needed */
@@ -209,6 +206,15 @@
   @apply rounded-b-3xl h-52;
 }
 .ql-editor.ql-blank::before {
+  color: #303030; /* Dark mode placeholder color */
+  @apply italic text-[#303030];
+}
+.dark.ql-editor.ql-blank::before: {
   color: #F6F1F4; /* Tailwind utility via @apply */
   @apply italic text-[F6F1F4];
+}
+
+@utility sidebarBackground {
+  @apply bg-gradient-to-r bg-sidebar-primary from-sidebar-primary to-[#E4E6FF];
+  /* linear-gradient(90deg,oklch(0.603 0.1986 274.3) 0%,#E4E6FF 100%) */
 }

@@ -77,6 +77,15 @@ export default function VariantSection({
       !variantOptions.length ||
       variantOptions.some((o) => o.values.length === 0)
     ) {
+      setValue(
+        "variants",
+        existing.map((v) => ({
+          ...v,
+          sellingPrice: watch("sellingPrice"),
+          purchasePrice: watch("purchasePrice"),
+        })),
+        { shouldValidate: true },
+      );
       return;
     }
     const combos: Record<string, string>[] = [];
@@ -103,6 +112,7 @@ export default function VariantSection({
       quantity: 0,
       combination: comb,
     }));
+    
     setValue("variants", newVars, { shouldValidate: true });
   }, [
     variantOptions,
@@ -228,7 +238,7 @@ export default function VariantSection({
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Option titles */}
-          {!existingVariants && (
+          {existingVariants.length <= 0 && (
             <div
               className={cn([
                 "flex flex-row gap-4",

@@ -130,12 +130,12 @@ const AddProductForm = () => {
   const handleNext = (data: ProductFormData) => {
     // TODO: API Logic
     console.log("Next step:", data);
-    setParam("step", "2")
+    setParam("step", "2");
   };
 
-  const handleCancel = () => {
-    router.push("/products");
-  };
+  // const handleCancel = () => {
+  //   router.push("/products");
+  // };
 
   const renderImageSlots = () => {
     const slots = [];

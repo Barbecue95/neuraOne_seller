@@ -29,7 +29,7 @@ export default function CreateProductForm() {
   if (categoryLoading) return <Loading />;
 
   return (
-    <div className="max-w-full space-y-6 px-8 py-5">
+    <div className="max-w-full space-y-6 px-4 py-3.5 md:px-8 md:py-5">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleCreateProductSubmit)}
@@ -88,7 +88,7 @@ export default function CreateProductForm() {
                   Creating...
                 </>
               ) : (
-                "Create Product"
+                "Save"
               )}
             </Button>
           </div>

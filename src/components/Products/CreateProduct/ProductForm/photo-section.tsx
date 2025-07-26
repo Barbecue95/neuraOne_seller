@@ -3,17 +3,25 @@
 import type React from "react";
 
 import type { UseFormReturn } from "react-hook-form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Upload, X, MoreVertical, Star, Icon } from "lucide-react";
+import { X, MoreVertical, Star } from "lucide-react";
 import { useState } from "react";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
 import IconImagePlus from "@/utils/icons/IconImagePlus";
+import { cn } from "@/lib/utils";
+import { FormMessage } from "@/components/ui/form";
 
 interface PhotoSectionProps {
   form: UseFormReturn<EditProductPayload>;
@@ -28,6 +36,7 @@ interface ImageData {
 
 export default function PhotoSection({ form }: PhotoSectionProps) {
   const [images, setImages] = useState<ImageData[]>([]);
+  const error = form.getFieldState("imageUrl")?.error;
   const maxImages = 5;
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +66,7 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
       isMain: img.isMain,
     }));
     form.setValue("imageUrl", imageUrls);
-
+    form.clearErrors("imageUrl");
     // Reset input
     event.target.value = "";
   };
@@ -114,9 +123,10 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
   const renderImageSlot = (image: ImageData, isShowcase = false) => (
     <div
       key={image.id}
-      className={`relative ${
-        isShowcase ? "h-48 w-40" : "size-32"
-      } group overflow-hidden rounded-lg border-2 border-dashed border-gray-300`}
+      className={cn([
+        "group relative size-36 overflow-hidden rounded-lg border-2 border-dashed border-gray-300 md:size-32",
+        { "h-48 w-full md:w-40": isShowcase },
+      ])}
     >
       <img
         src={image.url || "/placeholder.svg"}
@@ -168,7 +178,7 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
       <>
         {new Array(remainingSlots).fill(0).map((_, index) => (
           <div
-            className="size-32 overflow-hidden rounded-lg border-2 border-dashed border-gray-300"
+            className="size-36 overflow-hidden rounded-lg border-2 border-dashed border-gray-300 md:size-32"
             key={index}
           >
             <label className="flex h-full w-full cursor-pointer items-center justify-center hover:bg-gray-50 hover:dark:bg-neutral-800">
@@ -187,13 +197,13 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
     );
   };
 
-  const renderEmptySlot = () => (
-    <div className="h-20 w-20 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"></div>
-  );
+  // const renderEmptySlot = () => (
+  //   <div className="h-20 w-20 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50"></div>
+  // );
 
   const showcaseImage = getShowcaseImage();
   const otherImages = getNonShowcaseImages();
-  const remainingSlots = maxImages - images.length;
+  // const remainingSlots = maxImages - images.length;
 
   return (
     <Card>
@@ -201,7 +211,7 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
         <CardTitle>Photo</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-6">
+        <div className="flex flex-col gap-6 md:flex-row">
           {/* Showcase Photo */}
           <div className="space-y-2">
             <div className="text-sm font-medium">
@@ -210,7 +220,7 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
             {showcaseImage ? (
               renderImageSlot(showcaseImage, true)
             ) : (
-              <label className="flex h-48 w-40 cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:bg-transparent hover:dark:bg-neutral-800">
+              <label className="flex h-48 w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 md:w-40 dark:bg-transparent hover:dark:bg-neutral-800">
                 <div className="text-center text-gray-400">
                   <IconImagePlus className="mx-auto mb-1 h-8 w-8" />
                   <div className="text-xs">Upload photos</div>
@@ -233,7 +243,7 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
               <span className="text-gray-500">(max {maxImages} photos)</span>
               <span className="text-red-500">*</span>
             </div>
-            <div className="grid max-w-[600px] grid-cols-4 justify-items-start gap-2">
+            <div className="grid max-w-[600px] grid-cols-2 justify-center gap-2 md:grid-cols-4 md:justify-items-start">
               {/* Render other uploaded images */}
               {otherImages.map((image) => renderImageSlot(image))}
 
@@ -256,6 +266,9 @@ export default function PhotoSection({ form }: PhotoSectionProps) {
             ` • ${maxImages - images.length} slots remaining`}
         </div> */}
       </CardContent>
+      <CardFooter>
+        {error && <FormMessage>{error.message}</FormMessage>}
+      </CardFooter>
     </Card>
   );
 }

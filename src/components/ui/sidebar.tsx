@@ -27,9 +27,9 @@ import {
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
-const SIDEBAR_WIDTH = "18rem";
+const SIDEBAR_WIDTH = "22.25rem";
 const SIDEBAR_WIDTH_MOBILE = "18rem";
-const SIDEBAR_WIDTH_ICON = "4rem";
+const SIDEBAR_WIDTH_ICON = "6.75rem";
 const SIDEBAR_KEYBOARD_SHORTCUT = "b";
 
 type SidebarContextProps = {
@@ -108,6 +108,11 @@ function SidebarProvider({
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleSidebar]);
+
+  React.useEffect(() => {
+    if (isMobile) setOpenMobile(open);
+    else setOpen(open);
+  }, [open]);
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
@@ -388,7 +393,7 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-group"
       data-sidebar="group"
       className={cn(
-        "relative flex w-full min-w-0 flex-col px-4 py-1",
+        "relative flex w-full min-w-0 flex-col py-1 group-data-[state=collapsed]:px-4 group-data-[state=expanded]:pl-10",
         className,
       )}
       {...props}
@@ -478,12 +483,13 @@ function SidebarMenuItem({ className, ...props }: React.ComponentProps<"li">) {
 }
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 h-auto text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-1! [&>span:last-child]:truncate [&>svg]:size-6 [&>svg]:text-primary [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-full group-data-[state=expanded]:rounded-none p-2 h-auto text-left text-sm outline-hidden ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent disabled:pointer-events-none disabled:opacity-50 group-has-data-[sidebar=menu-action]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-bg-sidebar-accent group-data-[collapsible=icon]:size-10! group-data-[collapsible=icon]:p-2! [&>span:last-child]:truncate [&>svg]:size-6 active:text-sidebar-accent text-sidebar-foreground hover:[&>svg]:text-sidebar-accent [&>svg]:shrink-0",
   {
     variants: {
       variant: {
         default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-        primary: " text-sidebar-foreground [&>svg]:text-sidebar-foreground hover:bg-sidebar-primary hover:text-sidebar-accent hover:[&>svg]:text-sidebar-accent data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-accent data-[active=true]:[&>svg]:text-sidebar-accent active:bg-sidebar-primary active:text-sidebar-accent active:[>svg]:text-sidebar-accent",
+        primary:
+          "group-data-[state=expanded]:text-sidebar-foreground group-data-[state=expanded]:[&>svg]:text-sidebar-foreground group-data-[state=expanded]:hover:sidebarBackground group-data-[state=expanded]:hover:text-sidebar-accent group-data-[state=expanded]:hover:[&>svg]:text-sidebar-accent group-data-[state=expanded]:active:sidebarBackground group-data-[state=expanded]:active:text-sidebar-accent group-data-[state=expanded]:active:[&>svg]:text-sidebar-accent group-data-[state=expanded]:data-[active=true]:sidebarBackground group-data-[state=expanded]:data-[active=true]:text-sidebar-accent group-data-[state=expanded]:data-[active=true]:[&>svg]:text-sidebar-accent group-data-[state=collapsed]:text-sidebar-foreground group-data-[state=collapsed]:[&>svg]:text-sidebar-foreground group-data-[state=collapsed]:hover:bg-sidebar-primary group-data-[state=collapsed]:hover:text-sidebar-accent group-data-[state=collapsed]:hover:[&>svg]:text-sidebar-accent group-data-[state=collapsed]:active:bg-sidebar-primary group-data-[state=collapsed]:active:text-sidebar-accent group-data-[state=collapsed]:active:[&>svg]:text-sidebar-accent group-data-[state=collapsed]:data-[active=true]:bg-sidebar-primary group-data-[state=collapsed]:data-[active=true]:text-sidebar-accent group-data-[state=collapsed]:data-[active=true]:[&>svg]:text-sidebar-accent",
         outline:
           "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
       },
@@ -567,7 +573,6 @@ function SidebarMenuAction({
       data-sidebar="menu-action"
       className={cn(
         "text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
-        // Increases the hit area of the button on mobile.
         "after:absolute after:-inset-2 md:after:hidden",
         "peer-data-[size=sm]/menu-button:top-1",
         "peer-data-[size=default]/menu-button:top-1.5",
@@ -648,7 +653,8 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<"ul">) {
       data-slot="sidebar-menu-sub"
       data-sidebar="menu-sub"
       className={cn(
-        "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5",
+        // "border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5",
+        "ml-3.5 flex min-w-0 translate-x-px flex-col pl-2.5",
         "group-data-[collapsible=icon]:hidden",
         className,
       )}
@@ -691,8 +697,9 @@ function SidebarMenuSubButton({
       data-size={size}
       data-active={isActive}
       className={cn(
-        "ring-sidebar-ring active:bg-sidebar-primary active:text-sidebar-accent active:[&>svg]:text-sidebar-accent flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 outline-hidden focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-        "text-sidebar-foreground [&>svg]:text-sidebar-foreground hover:bg-sidebar-primary hover:text-sidebar-accent hover:[&>svg]:text-sidebar-accent data-[active=true]:bg-sidebar-primary data-[active=true]:text-sidebar-accent data-[active=true]:[&>svg]:text-sidebar-accent",
+        "ring-sidebar-ring active:sidebarBackground active:text-sidebar-accent active:[&>svg]:text-sidebar-accent flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-full px-2 outline-hidden group-data-[state=expanded]:rounded-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+        "text-sidebar-foreground [&>svg]:text-sidebar-foreground hover:sidebarBackground hover:text-sidebar-accent hover:[&>svg]:text-sidebar-accent data-[active=true]:sidebarBackground data-[active=true]:text-sidebar-accent data-[active=true]:[&>svg]:text-sidebar-accent",
+        sidebarMenuButtonVariants({ variant: "primary", size: "default" }),
         size === "sm" && "text-xs",
         size === "md" && "text-sm",
         "group-data-[collapsible=icon]:hidden",

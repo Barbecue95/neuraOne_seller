@@ -17,15 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import dynamic from "next/dynamic";
 import { Editor } from "./rich-editor";
 import { SelectGroup } from "@radix-ui/react-select";
 import { EditProductPayload } from "@/components/Products/CreateProduct/ProductForm/product-form-schema";
-import { usePathname } from "next/navigation";
 
 interface ProductInfoSectionProps {
   form: UseFormReturn<EditProductPayload>;
-  categories: { value: number; label: string }[];
+  categories: { value: number | undefined; label: string }[];
   setSelectedCategoryId: (value: number) => void;
 }
 
@@ -68,9 +66,7 @@ export default function ProductInfoSection({
         <FormField
           control={form.control}
           name="description"
-          render={({ field }) => {
-            const { ref, onChange, ...rest } = field;
-
+          render={() => {
             return (
               <FormItem>
                 <FormLabel>
@@ -103,10 +99,10 @@ export default function ProductInfoSection({
               <FormLabel>
                 Category <span className="text-red-500">*</span>
               </FormLabel>
-
               <Select
                 value={field.value?.toString() ?? ""}
                 onValueChange={(value) => {
+                  if (value === "") return;
                   const n = Number(value);
                   field.onChange(n);
                   setSelectedCategoryId(n);
@@ -121,7 +117,7 @@ export default function ProductInfoSection({
                     {categories.map((cat) => (
                       <SelectItem
                         key={cat.value}
-                        value={cat.value.toString()}
+                        value={cat?.value?.toString() ?? ""}
                         className="cursor-pointer"
                       >
                         {cat.label}

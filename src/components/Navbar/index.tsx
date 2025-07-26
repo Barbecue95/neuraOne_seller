@@ -8,9 +8,14 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { siteMap } from "@/utils/siteMap";
 import Image from "next/image";
-import { useSidebar } from "../ui/sidebar";
 
-const Index = () => {
+const Index = ({
+  setOpen,
+  open,
+}: {
+  setOpen: React.Dispatch<boolean>;
+  open: boolean;
+}) => {
   const pathname = usePathname();
   const path = "/" + pathname.split("/")[1];
   const item = siteMap.reduce<SiteMapItem | undefined>((foundTitle, group) => {
@@ -23,31 +28,17 @@ const Index = () => {
     return itemWithTitle;
   }, undefined);
   const displayTitle = item?.name || "Dashboard";
-  const { state, setOpenMobile } = useSidebar();
 
   if (pathname === "/login") return null;
 
   return (
-    <nav className="bg-card text-primary sticky top-0 z-50 flex h-24 w-full flex-col-reverse justify-around py-2 px-10 md:h-16 md:flex-row md:items-center md:justify-between">
-      <div className="flex w-full items-center justify-start gap-2 md:w-auto md:justify-center">
-        <Image
-          src="logo.svg"
-          alt="logo"
-          width={30}
-          height={40}
-          className="hidden md:block"
-        />
-        <Link
-          href={item?.path || "/"}
-          className="text-accent-foreground text-lg font-semibold capitalize"
-        >
-          {displayTitle}
-        </Link>
-      </div>
-      <div className="flex items-center justify-between gap-2 md:justify-center">
-        <div
-          onClick={() => setOpenMobile(true)}
-          className="flex md:hidden items-center justify-center rounded-full bg-[#E4E6FF] p-2"
+    <nav className="bg-card text-primary fixed top-0 z-50 flex h-24 w-full justify-between px-4 py-2 md:h-16 md:items-center md:px-8 xl:h-20">
+      <div className="flex w-fit flex-col justify-start md:w-auto md:flex-row md:items-center md:justify-center md:gap-8">
+        <Button
+          variant="secondary"
+          onClick={() => setOpen(!open)}
+          size="icon"
+          className="dark:bg-accent-foreground dark:hover:bg-accent-foreground/90 flex size-12 cursor-pointer items-center justify-center rounded-full bg-[#E4E6FF] hover:bg-[#e4e6ffc9]"
         >
           <svg
             width="24"
@@ -61,8 +52,25 @@ const Index = () => {
               fill="#3C3C3C"
             />
           </svg>
+        </Button>
+        <div className="flex flex-row items-center gap-2">
+          <Image
+            src="/logo.svg"
+            alt="logo"
+            width={30}
+            height={40}
+            className="hidden md:block"
+          />
+          <Link
+            href={item?.path || "/"}
+            className="text-accent-foreground text-lg font-semibold capitalize md:text-2xl"
+          >
+            {displayTitle}
+          </Link>
         </div>
-        <div className="flex items-center justify-center gap-1 ">
+      </div>
+      <div className="flex items-center justify-between gap-2 md:justify-center">
+        <div className="flex items-center justify-center gap-1">
           {/* <Search /> */}
           <Button
             variant="ghost"

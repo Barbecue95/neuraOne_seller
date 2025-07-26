@@ -37,7 +37,7 @@ export const ProductTableColumns = (
   },
   {
     accessorKey: "name",
-    header: ({ column }) => (
+    header: () => (
       <SortableHeader
         title="Product"
         sortOptions={[
@@ -53,7 +53,7 @@ export const ProductTableColumns = (
   {
     accessorKey: "category",
     accessorFn: (row) => row.mainCategory?.name ?? "-",
-    header: ({ column }) => (
+    header: () => (
       <SortableHeader
         title="Category"
         sortOptions={[
@@ -66,7 +66,7 @@ export const ProductTableColumns = (
   },
   {
     accessorKey: "sellingPrice",
-    header: ({ column }) => (
+    header: () => (
       <SortableHeader
         title="Selling price"
         sortOptions={[
@@ -87,7 +87,7 @@ export const ProductTableColumns = (
   },
   {
     accessorKey: "quantity",
-    header: ({ column }) => (
+    header: () => (
       <SortableHeader
         title="Stock"
         sortOptions={[
@@ -106,7 +106,7 @@ export const ProductTableColumns = (
   },
   {
     accessorKey: "status",
-    header: ({ column }) => (
+    header: () => (
       <SortableHeader
         title="Status"
         sortOptions={[
@@ -162,7 +162,6 @@ export const ProductTableColumns = (
             className="!bg-muted-foreground/10 hover:!bg-muted-forground size-7 cursor-pointer rounded-full p-1.5 text-[#FF3333] hover:text-[#FF3333]"
             onClick={() => {
               toast.info("Product deleted successfully !!");
-              return;
               onDeleteProduct?.(product.id);
             }}
           >
@@ -174,19 +173,19 @@ export const ProductTableColumns = (
   },
 ];
 
-const SortableHeaderV1 = ({
-  title,
-  column,
-}: {
-  title: string;
-  column: any;
-}) => (
-  <Button
-    variant="ghost"
-    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-    className="h-auto p-0 font-medium"
-  >
-    {title}
-    <ArrowUpDown className="ml-2 h-4 w-4" />
-  </Button>
-);
+// const SortableHeaderV1 = ({
+//   title,
+//   column,
+// }: {
+//   title: string;
+//   column: any;
+// }) => (
+//   <Button
+//     variant="ghost"
+//     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+//     className="h-auto p-0 font-medium"
+//   >
+//     {title}
+//     <ArrowUpDown className="ml-2 h-4 w-4" />
+//   </Button>
+// );

@@ -1,8 +1,6 @@
 
 "use client";
 import CustomerList from "@/components/Customer/CustomerListing";
-import SubNavbar from "@/components/SubNavbar";
-import Table from "@/features/customers/Table";
 
 export default function CustomerPage() {
   return (

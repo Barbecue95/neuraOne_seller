@@ -23,13 +23,13 @@ import {
 export default function useEditProducts(id: number) {
   const router = useRouter();
   const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
-  const { mutate: createProduct } = useCreateProduct();
   const { data: rawProductData, isLoading: productLoading } =
     useGetProductById(id);
   const existingProduct = rawProductData?.data;
 
-  const { data: rawCategories, isLoading: categoryLoading } =
-    useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories(
+    {},
+  );
 
   const [selectedCategoryId, setSelectedCategoryId] = useState<number | null>(
     null,
@@ -58,7 +58,7 @@ export default function useEditProducts(id: number) {
       subCategoryId: null,
       subOneCategoryId: null,
       status: ProductStatus.PUBLISHED,
-      scheduleDate: "",
+      scheduleDate: new Date().toISOString(),
       imageUrl: [],
       purchasePrice: 0,
       sellingPrice: 0,
@@ -74,8 +74,6 @@ export default function useEditProducts(id: number) {
         discountValue: 0,
         promoteAmount: 0,
         promotePercent: 0,
-        startDate: "",
-        endDate: "",
       },
       variantValues: [],
       variants: [],
@@ -143,7 +141,7 @@ export default function useEditProducts(id: number) {
       form.setValue("variants", resetVars);
       setExistingVariants((prev) => prev.map((v) => ({ ...v, sku: "" })));
     }
-  }, [isDuplicate]);
+  }, [isDuplicate, form]);
 
   // Populate form with existing product data
   useEffect(() => {
@@ -176,8 +174,8 @@ export default function useEditProducts(id: number) {
             : existingProduct.promotePercent,
         promoteAmount: existingProduct.promoteAmount ?? 0,
         promotePercent: existingProduct.promotePercent ?? 0,
-        startDate: existingProduct.promoteStartDate ?? "",
-        endDate: existingProduct.promoteEndDate ?? "",
+        startDate: existingProduct.promoteStartDate ?? new Date().toISOString(),
+        endDate: existingProduct.promoteEndDate ?? new Date().toISOString(),
       },
       variantValues: existingProduct.variantValues
         ? existingProduct.variantValues.map(
@@ -190,11 +188,8 @@ export default function useEditProducts(id: number) {
         ProductRelationType.TAG,
     });
 
-    if (existingProduct?.mainCategoryId) {
-      console.log("existing product", existingProduct, form.watch());
-
+    if (existingProduct?.mainCategoryId)
       setSelectedCategoryId(existingProduct.mainCategoryId);
-    }
     if (existingProduct?.variants)
       setExistingVariants(existingProduct?.variants);
   }, [existingProduct, reset]);

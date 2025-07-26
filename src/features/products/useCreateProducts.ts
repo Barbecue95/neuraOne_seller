@@ -26,12 +26,13 @@ export default function useCreateProducts() {
   const router = useRouter();
   const { mutate: createProduct, isLoading: isCreating } = useCreateProduct();
   // #region Get Categories Data and Transform the data
-  const { data: rawCategories, isLoading: categoryLoading } =
-    useGetCategories();
+  const { data: rawCategories, isLoading: categoryLoading } = useGetCategories(
+    {},
+  );
 
   const categories =
-    rawCategories?.data?.map((category: { id: number; name: string }) => {
-      return { value: category.id, label: category.name };
+    rawCategories?.data?.map((category: { id?: number; name: string }) => {
+      return { value: category.id ?? 0, label: category.name };
     }) ?? [];
   // #endregion
 
@@ -46,7 +47,7 @@ export default function useCreateProducts() {
       subOneCategoryId: null,
       tags: "",
       status: ProductStatus.PUBLISHED,
-      scheduleDate: "",
+      scheduleDate: new Date().toISOString(),
       imageUrl: [],
       purchasePrice: 0,
       sellingPrice: 0,
@@ -62,8 +63,6 @@ export default function useCreateProducts() {
         discountValue: 0,
         promoteAmount: 0,
         promotePercent: 0,
-        startDate: "",
-        endDate: "",
       },
       variantValues: [],
       variants: [],
@@ -99,9 +98,8 @@ export default function useCreateProducts() {
             : 0,
       },
     };
-    console.log("create product", data, payload);
     createProduct(payload);
-    // router.push("/products")
+    router.push("/products");
   };
 
   const handleSaveAsDraft = async () => {
@@ -126,7 +124,6 @@ export default function useCreateProducts() {
     };
 
     createProduct(payload);
-    // console.log("create product", data);
     router.push("/products");
   };
 

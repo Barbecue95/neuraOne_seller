@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ChevronLeft, CopyIcon } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
 export default function ProductHeader({
@@ -25,12 +26,13 @@ export default function ProductHeader({
           </Button>
         )}
       </div>
-      <div className="flex gap-2">
+      <div className="hidden gap-2 md:flex">
         <Button
           variant="secondary"
           className="rounded-full bg-[#A1A1A1] px-7 py-2 text-white hover:bg-[#A1A1A1b5]"
+          asChild
         >
-          Discard
+          <Link href="/products">Discard</Link>
         </Button>
         <Button
           variant="default"

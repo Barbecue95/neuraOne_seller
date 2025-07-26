@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Popover,
   PopoverTrigger,
@@ -24,21 +24,29 @@ interface SortableHeaderProps {
 
 export const SortableHeader = ({ title, sortOptions }: SortableHeaderProps) => {
   const [open, setOpen] = useState(false);
-  const { setParam, getParam } = useQueryParams();
+  const { setParam, getParam, deleteParam } = useQueryParams();
 
   const handleSortChange = (value: ProductSortOption) => {
-    setParam("sortBy", value);
+    if (getParam("sortBy") === value) {
+      deleteParam("sortBy");
+    } else {
+      setParam("sortBy", value);
+    }
     setOpen(false);
   };
-  const isFilterUsed = sortOptions.some(
-    (option) => option.value === (getParam("sortBy") as ProductSortOption),
+  const isFilterUsed = useMemo(
+    () =>
+      sortOptions.some(
+        (option) => option.value === (getParam("sortBy") as ProductSortOption),
+      ),
+    [sortOptions, getParam],
   );
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <Button
         asChild
         className={cn([
-          "hover:text-primary h-auto bg-gray-200 font-medium hover:!bg-gray-200 hover:dark:!bg-neutral-800 dark:!bg-neutral-800",
+          "hover:text-primary h-auto bg-gray-200 font-medium hover:!bg-gray-200 dark:!bg-neutral-800 hover:dark:!bg-neutral-800",
           {
             "text-primary": isFilterUsed,
           },
@@ -61,7 +69,7 @@ export const SortableHeader = ({ title, sortOptions }: SortableHeaderProps) => {
         </PopoverTrigger>
       </Button>
       <PopoverContent align="start" className="w-56 rounded-lg p-1 shadow">
-        {sortOptions.map((option, index) => (
+        {sortOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => handleSortChange(option.value)}
