@@ -87,7 +87,7 @@ export default function VariantEditDialog({
   variants: VariantCombination[];
   SelectedVariant: VariantCombination;
   updateVariantFields: (
-    variantId: string,
+    variantId: number,
     fieldsToUpdate: Partial<VariantCombination>,
   ) => void;
   handleClose: () => void;
@@ -160,7 +160,7 @@ export default function VariantEditDialog({
     }
 
     // success
-    updateVariantFields(String(SelectedVariant.id), result.data);
+    updateVariantFields(SelectedVariant.id, result.data);
     handleClose();
   };
 

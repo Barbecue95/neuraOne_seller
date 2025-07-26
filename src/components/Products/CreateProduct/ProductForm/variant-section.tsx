@@ -104,7 +104,7 @@ export default function VariantSection({
 
     const baseSku = getValues("sku") || "SKU";
     const newVars: VariantCombination[] = combos.map((comb, i) => ({
-      id: `variant-${i + 1}`,
+      id: i + 1,
       name: Object.values(comb).join("-"),
       sku: `${baseSku}-${Object.values(comb).join("-")}`,
       purchasePrice: getValues("purchasePrice") || 0,
@@ -112,7 +112,7 @@ export default function VariantSection({
       quantity: 0,
       combination: comb,
     }));
-    
+
     setValue("variants", newVars, { shouldValidate: true });
   }, [
     variantOptions,
@@ -136,8 +136,8 @@ export default function VariantSection({
     (useWatch({ control, name: "variants" }) as VariantCombination[]) || [];
 
   // 6) Selection & batch delete
-  const [selectedVariants, setSelectedVariants] = useState<string[]>([]);
-  const toggleVariantSelection = (id: string) =>
+  const [selectedVariants, setSelectedVariants] = useState<number[]>([]);
+  const toggleVariantSelection = (id: number) =>
     setSelectedVariants((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
@@ -179,7 +179,7 @@ export default function VariantSection({
     useState<VariantCombination | null>(null);
 
   // 9) Remove a single option-value
-  const removeValueFromOption = (optionId: string, valueId: string) => {
+  const removeValueFromOption = (optionId: number, valueId: string) => {
     const opt = variantOptions.find((o) => o.id === optionId);
     if (!opt) return;
     const val = opt.values.find((v) => v.id === valueId);
@@ -471,7 +471,7 @@ export default function VariantSection({
           variants={variants}
           SelectedVariant={dialogSelectedVariant}
           updateVariantFields={(vid, data) => {
-            const i = variants.findIndex((v) => v.id === vid);
+            const i = variants.findIndex((v) => v.id === Number(vid));
             if (i > -1) updateFields(i, data);
           }}
           handleClose={() => setDialogSelectedVariant(null)}
