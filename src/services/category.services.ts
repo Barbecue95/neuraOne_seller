@@ -12,18 +12,18 @@ import axiosClient from "./axiosClient";
 import { categoryEndpoints } from "./constants/apiEndpoints";
 
 export const getCategories = async ({
-  sort,
+  sortBy,
   searchText,
   page,
   limit,
 }: {
-  sort?: ProductSortOption;
+  sortBy?: ProductSortOption;
   searchText?: string;
   page?: number;
   limit?: number;
 }): Promise<getCategoriesResponse> => {
   const params = Object.fromEntries(
-    Object.entries({ sort, searchText, page, limit }).filter(
+    Object.entries({ sortBy, searchText, page, limit }).filter(
       ([_, value]) => value !== undefined,
     ),
   );

@@ -11,6 +11,12 @@ import {
   TicketPercent,
   Wallet,
   ArrowRightLeft,
+  Settings,
+  Bell,
+  CreditCard,
+  PcCase,
+  AlignLeft,
+  Shapes,
 } from "lucide-react";
 
 // exported for Navbar component
@@ -29,27 +35,27 @@ export const siteMap: SiteMapGroup[] = [
           {
             id: 1,
             name: "Products List",
-            icon: <Package />,
+            icon: <AlignLeft />,
             path: "/products",
           },
           {
             id: 2,
             name: "Product Category List",
-            icon: <Package />,
+            icon: <Shapes />,
             path: "/products/category",
           },
-          {
-            id: 3,
-            name: "brand List",
-            icon: <Package />,
-            path: "/products/brand",
-          },
+          // {
+          //   id: 3,
+          //   name: "brand List",
+          //   icon: <Package />,
+          //   path: "/products/brand",
+          // },
         ],
       },
       {
         id: 3,
         name: "Order Management",
-        icon: <ReceiptText />,
+        icon: <PcCase />,
         path: "/orders",
       },
       {
@@ -64,26 +70,26 @@ export const siteMap: SiteMapGroup[] = [
       //   icon: <ChartNoAxesColumn />,
       //   path: "/reports",
       // },
-      {
-        id: 6,
-        name: "Campaign & Flash Sales",
-        icon: <BadgePercent />,
-        path: "/campaign",
-        subPath: [
-          {
-            id: 1,
-            name: "Campaigns",
-            icon: <BadgePercent />,
-            path: "/campaign",
-          },
-          {
-            id: 2,
-            name: "Coupons",
-            icon: <TicketPercent />,
-            path: "/campaign/coupon",
-          },
-        ],
-      },
+      // {
+      //   id: 6,
+      //   name: "Campaign & Flash Sales",
+      //   icon: <BadgePercent />,
+      //   path: "/campaign",
+      //   subPath: [
+      //     {
+      //       id: 1,
+      //       name: "Campaigns",
+      //       icon: <BadgePercent />,
+      //       path: "/campaign",
+      //     },
+      //     {
+      //       id: 2,
+      //       name: "Coupons",
+      //       icon: <TicketPercent />,
+      //       path: "/campaign/coupon",
+      //     },
+      //   ],
+      // },
     ],
   },
   {
@@ -92,51 +98,70 @@ export const siteMap: SiteMapGroup[] = [
     items: [
       {
         id: 1,
-        name: "Payment & Transaction",
-        path: "/payments",
-        icon: <Package />,
-        subPath: [
-          {
-            id: 1,
-            name: "All Transaction",
-            icon: <ArrowRightLeft className="size-6" />,
-            path: "/payments",
-          },
-          {
-            id: 2,
-            name: "Wallet",
-            icon: <Wallet />,
-            path: "/payments/wallet",
-          },
-        ],
+        name: "Wallet Setup",
+        path: "/payments/wallet",
+        icon: <CreditCard />,
+        // path: "/payments",
+        // subPath: [
+        //   {
+        //     id: 1,
+        //     name: "All Transaction",
+        //     icon: <ArrowRightLeft className="size-6" />,
+        //     path: "/payments",
+        //   },
+        //   {
+        //     id: 2,
+        //     name: "Wallet",
+        //     icon: <Wallet />,
+        //     path: "/payments/wallet",
+        //   },
+        // ],
       },
 
-      {
-        id: 2,
-        name: "Shipping & Delivery",
-        path: "/delivery",
-        icon: <Package />,
-      },
+      // {
+      //   id: 2,
+      //   name: "Shipping & Delivery",
+      //   path: "/delivery",
+      //   icon: <Package />,
+      // },
     ],
   },
   {
     id: 3,
     name: "System",
     items: [
-      {
-        id: 1,
-        name: "User role & Authentication",
-        icon: <Store />,
-        path: "/roles",
-      },
-
+      // {
+      //   id: 1,
+      //   name: "User role & Authentication",
+      //   icon: <Store />,
+      //   path: "/roles",
+      // },
       {
         id: 2,
         name: "Notification",
-        icon: <ReceiptText />,
+        icon: <Bell />,
         path: "/notification",
       },
-      { id: 3, name: "settings", icon: <UsersRound />, path: "/settings" },
+      {
+        id: 3,
+        name: "settings",
+        icon: <Settings />,
+        path: "/settings",
+        subPath: [
+          {
+            id: 1,
+            name: "Accont Settings",
+            icon: <ArrowRightLeft className="size-6" />,
+            path: "/settings",
+          },
+          {
+            id: 2,
+            name: "Storefront Settings",
+            icon: <Wallet />,
+            path: "/settings/storefront",
+          },
+        ],
+      },
     ],
   },
 ];

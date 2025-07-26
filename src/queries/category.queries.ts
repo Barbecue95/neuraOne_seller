@@ -31,7 +31,7 @@ export const useGetCategories = ({
 }) => {
   return useQuery<getCategoriesResponse, Error>({
     queryKey: ["Categories", page, limit, sort, searchText],
-    queryFn: () => getCategories({ sort, searchText, page, limit }),
+    queryFn: () => getCategories({ sortBy: sort, searchText, page, limit }),
   });
 };
 

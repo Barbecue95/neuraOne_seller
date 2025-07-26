@@ -74,25 +74,25 @@ export default function SortByButton() {
       <SelectContent className="[&>div:nth-child(2)]:p-0">
         <SelectItem
           value={ProductSortOption.NAME_ASC}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF]"
+          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
         >
           A to Z
         </SelectItem>
         <SelectItem
           value={ProductSortOption.NAME_DESC}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF]"
+          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
         >
           Z to A
         </SelectItem>
         <SelectItem
           value={ProductSortOption.NEWEST}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF]"
+          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
         >
           Newest
         </SelectItem>
         <SelectItem
           value={ProductSortOption.OLDEST}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF]"
+          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
         >
           Oldest
         </SelectItem>
