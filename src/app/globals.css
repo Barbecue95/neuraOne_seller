@@ -5,6 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @layer base {
+
   /* Custom CSS Reset End */
   /* Prevent font size inflation */
   html {
@@ -71,6 +72,8 @@
 }
 
 @theme inline {
+  --color-custom-dark-gray: var(--custom-dark-gray);
+  --color-custom-gray-100: var(--custom-gray-100);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -107,15 +110,20 @@
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
   --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-md: 1.25rem;
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
 }
+
 :root {
+  --custom-dark-gray: #303030;
+  --custom-gray-100: #3C3C3C;
   --radius: 0.65rem;
-  --background: oklch(0.98 0.004 286.32); /* subtle light gray */
+  --background: oklch(0.98 0.004 286.32);
+  /* subtle light gray */
   --foreground: oklch(0.141 0.005 285.823);
-  --card: oklch(1 0 0); /* pure white */
+  --card: oklch(1 0 0);
+  /* pure white */
   --card-foreground: oklch(0.141 0.005 285.823);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.141 0.005 285.823);
@@ -127,7 +135,7 @@
   --muted-foreground: oklch(0.552 0.016 285.938);
   --accent: oklch(0.967 0.001 286.375);
   --accent-foreground: oklch(0.21 0.006 285.885);
-  --destructive:oklch(0.6489 0.237 26.97) ;
+  --destructive: oklch(0.6489 0.237 26.97);
   --destructive-foreground: oklch(0.9236 0.038958 17.879);
   --border: oklch(0.92 0.004 286.32);
   --input: oklch(0.92 0.004 286.32);
@@ -148,6 +156,8 @@
 }
 
 .dark {
+  --custom-dark-gray: #f7f7f7;
+  --custom-gray-100: #f9f9f9;
   --background: oklch(0.141 0.005 285.823);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.21 0.006 285.885);
@@ -187,6 +197,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -197,20 +208,28 @@
 @plugin 'tailwind-scrollbar' {
   nocompatible: true;
 
-};
+}
+
+;
 
 .ql-toolbar {
-  @apply rounded-tl-xl rounded-tr-xl border border-[#979797] bg-[#F6F1F4]; /* or customize as needed */
+  @apply rounded-tl-xl rounded-tr-xl border border-[#979797] bg-[#F6F1F4];
+  /* or customize as needed */
 }
+
 .ql-container {
   @apply rounded-b-3xl h-52;
 }
+
 .ql-editor.ql-blank::before {
-  color: #303030; /* Dark mode placeholder color */
+  color: #303030;
+  /* Dark mode placeholder color */
   @apply italic text-[#303030];
 }
+
 .dark.ql-editor.ql-blank::before: {
-  color: #F6F1F4; /* Tailwind utility via @apply */
+  color: #F6F1F4;
+  /* Tailwind utility via @apply */
   @apply italic text-[F6F1F4];
 }
 
