@@ -66,7 +66,6 @@ export default function SortByButton({
       orderByOptions.find((o) => o.value === sortByParms);
     return option?.label;
   }, [sortByParms, customFilterOptions]);
-  console.log(selectedLabel);
 
   return (
     <Select
