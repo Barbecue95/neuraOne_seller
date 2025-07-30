@@ -2,21 +2,17 @@
 import { SiteMapGroup } from "@/types/sidebar.types";
 
 import {
-  BadgePercent,
-  ReceiptText,
-  Store,
   UsersRound,
   Package,
   LayoutDashboard,
-  TicketPercent,
   Wallet,
   ArrowRightLeft,
   Settings,
   Bell,
   CreditCard,
-  PcCase,
   AlignLeft,
   Shapes,
+  NotepadText,
 } from "lucide-react";
 
 // exported for Navbar component
@@ -55,7 +51,7 @@ export const siteMap: SiteMapGroup[] = [
       {
         id: 3,
         name: "Order Management",
-        icon: <PcCase />,
+        icon: <NotepadText />,
         path: "/orders",
       },
       {

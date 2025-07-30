@@ -110,6 +110,11 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+   --color-gradient-primary: linear-gradient(
+    90deg,
+    oklch(0.603 0.1986 274.3) 0%,
+    #e4e6ff 100%
+  );
 }
 :root {
   --radius: 0.65rem;
