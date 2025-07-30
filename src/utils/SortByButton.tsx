@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useCallback, useMemo } from "react";
 import { ArrowDownWideNarrowIcon } from "lucide-react";
 import {
   Select,
@@ -38,7 +39,18 @@ const orderByOptions = [
   },
 ];
 
-export default function SortByButton() {
+const defaultFilterOptions = [
+  { label: "A to Z", value: ProductSortOption.NAME_ASC },
+  { label: "Z to A", value: ProductSortOption.NAME_DESC },
+  { label: "Newest", value: ProductSortOption.NEWEST },
+  { label: "Oldest", value: ProductSortOption.OLDEST },
+];
+
+export default function SortByButton({
+  customFilterOptions = defaultFilterOptions,
+}: {
+  customFilterOptions?: { label: string; value: string }[];
+} = {}) {
   const { setParam, getParam } = useQueryParams();
 
   const sortByParms = getParam("sortBy") as ProductSortOption | undefined;
@@ -48,9 +60,13 @@ export default function SortByButton() {
   };
 
   // find the title for the current sortBy
-  const selectedLabel = orderByOptions.find(
-    (o) => o.value === sortByParms,
-  )?.label;
+  const selectedLabel = useMemo(() => {
+    const option =
+      customFilterOptions.find((o) => o.value === sortByParms) ||
+      orderByOptions.find((o) => o.value === sortByParms);
+    return option?.label;
+  }, [sortByParms, customFilterOptions]);
+  console.log(selectedLabel);
 
   return (
     <Select
@@ -72,30 +88,17 @@ export default function SortByButton() {
       </SelectTrigger>
 
       <SelectContent className="[&>div:nth-child(2)]:p-0">
-        <SelectItem
-          value={ProductSortOption.NAME_ASC}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
-        >
-          A to Z
-        </SelectItem>
-        <SelectItem
-          value={ProductSortOption.NAME_DESC}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
-        >
-          Z to A
-        </SelectItem>
-        <SelectItem
-          value={ProductSortOption.NEWEST}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
-        >
-          Newest
-        </SelectItem>
-        <SelectItem
-          value={ProductSortOption.OLDEST}
-          className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
-        >
-          Oldest
-        </SelectItem>
+        {customFilterOptions.map((option) => {
+          return (
+            <SelectItem
+              key={option.value}
+              value={option.value}
+              className="rounded-none hover:!bg-[#E4E6FF] data-[state=checked]:!bg-[#E4E6FF] dark:hover:!bg-neutral-400 dark:hover:!text-neutral-100 dark:data-[state=checked]:!bg-neutral-400"
+            >
+              {option.label}
+            </SelectItem>
+          );
+        })}
       </SelectContent>
     </Select>
   );

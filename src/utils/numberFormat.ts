@@ -19,3 +19,46 @@ export const handleInputAmountChange = (
   // 3. write back and return as string
   return (event.target.value = clamped.toString());
 };
+/**
+ * Formats numbers to display with K (thousands) and M (millions) suffixes
+ * @param value - The number to format
+ * @param decimals - Number of decimal places (default: auto)
+ * @returns Formatted string (e.g., "1.5K", "2M", "0")
+ */
+export const formatNumber = (value: number, decimals?: number): string => {
+  if (value === 0) return "0";
+  
+  if (value >= 1000000) {
+    const millions = value / 1000000;
+    // If decimals is specified, use it; otherwise auto-detect
+    if (decimals !== undefined) {
+      return `${millions.toFixed(decimals)}M`;
+    }
+    return millions % 1 === 0 ? `${millions}M` : `${millions.toFixed(1)}M`;
+  }
+  
+  if (value >= 1000) {
+    const thousands = value / 1000;
+    // If decimals is specified, use it; otherwise auto-detect
+    if (decimals !== undefined) {
+      return `${thousands.toFixed(decimals)}K`; // This was the bug - it said M instead of K
+    }
+    return thousands % 1 === 0 ? `${thousands}K` : `${thousands.toFixed(1)}K`;
+  }
+  
+  return value.toString();
+};
+
+/**
+ * Formats currency with K/M suffixes
+ * @param value - The number to format
+ * @param currency - Currency symbol (default: "$")
+ * @param decimals - Number of decimal places
+ */
+export const formatCurrency = (
+  value: number,
+  currency: string = "$",
+  decimals?: number
+): string => {
+  return `${currency}${formatNumber(value, decimals)}`;
+};

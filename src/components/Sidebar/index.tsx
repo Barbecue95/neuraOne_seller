@@ -48,7 +48,7 @@ export function AppSidebar() {
       <SidebarContent>
         {siteMap.map((group) => (
           <SidebarGroup key={group.id} className="py-0">
-            <SidebarGroupContent>
+            <SidebarGroupContent className="flex flex-col group-data-[state=collapsed]:gap-2">
               {group.items.map((item) => (
                 <SidebarMenu
                   className="group-data-[state=collapsed]:items-center"

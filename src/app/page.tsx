@@ -1,64 +1,86 @@
+import DashboardChart from "@/components/Dashboard/Chart/DashboardChart";
+import DashboardCard from "@/components/Dashboard/DashboardCard";
+import RecentOrderTable from "@/components/Dashboard/RecetOrderTable";
+import TopSellingCard from "@/components/Dashboard/TopSellingCard";
+import SortByButton from "@/utils/SortByButton";
+import {
+  ChartLineIcon,
+  NotepadTextIcon,
+  Package,
+  UsersRound,
+} from "lucide-react";
+
+const data = [
+  {
+    label: "Total Orders",
+    value: "2,935",
+    Icon: NotepadTextIcon,
+  },
+  {
+    label: "Total pending orders",
+    value: "500",
+    Icon: NotepadTextIcon,
+  },
+  {
+    label: "Total revenue",
+    value: "400,234",
+    Icon: ChartLineIcon,
+  },
+  {
+    label: "Total customers",
+    value: "1,834",
+    Icon: UsersRound,
+  },
+  {
+    label: "Total products",
+    value: "451",
+    Icon: Package,
+  },
+];
+
 export default function Home() {
   return (
-    <div className="h-fit w-full space-y-8 p-8">
+    <div className="bg-background h-fit w-full space-y-8 px-6 py-5">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-5">
+          <div className="flex justify-end">
+            <SortByButton
+              customFilterOptions={[
+                { label: "Today", value: "time" },
+                { label: "yesterday", value: "yesterday" },
+                { label: "Weekly", value: "day" },
+                { label: "Monthly", value: "month" },
+              ]}
+            />
+          </div>
           <div className="space-x-auto flex flex-row gap-5">
-            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
-              <span className="text-2xl font-semibold">2,345</span>
-              <span>Total Orders</span>
-            </div>
-            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
-              <span className="text-2xl font-semibold">10,3400 KS</span>
-              <span>Total Sales</span>
-            </div>
-            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
-              <span className="text-2xl font-semibold">5491</span>
-              <span>Total Customers</span>
-            </div>
-            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
-              <span className="text-2xl font-semibold">5491</span>
-              <span>Total Customers</span>
-            </div>
-            <div className="bg-accent flex h-32 w-1/5 flex-col p-2">
-              <span className="text-2xl font-semibold">5491</span>
-              <span>Total Customers</span>
-            </div>
+            {data.map((item, index) => (
+              <DashboardCard
+                key={index}
+                label={item.label}
+                value={item.value}
+                Icon={item.Icon}
+              />
+            ))}
           </div>
         </div>
-        <div className="flex w-full gap-5">
-          <div className="bg-accent h-52 w-2/3 p-2">
-            <h2 className="text-2xl font-semibold">Sale Performance</h2>
+        <div className="flex h-full w-full gap-5">
+          <div className="bg-card h-fit w-fit rounded-[20px] p-5 shadow">
+            <DashboardChart />
           </div>
-          <div className="bg-accent h-52 w-1/3 p-2">
-            <h2 className="text-2xl font-semibold">Top Selling Products</h2>
-            <ul>
-              <li className="px-2 py-1">Pending</li>
-              <li className="px-2 py-1">Approved</li>
-              <li className="px-2 py-1">Shipping</li>
-              <li className="px-2 py-1">Shipped</li>
+          <div className="bg-card h-full w-full rounded-[20px] p-5">
+            <h2 className="text-xl font-medium">Top selling products</h2>
+            <ul className="mt-5 flex w-full flex-col gap-3">
+              <TopSellingCard />
+              <TopSellingCard />
+              <TopSellingCard />
+              <TopSellingCard />
+              <TopSellingCard />
             </ul>
           </div>
         </div>
-        {/* <div className="bg-accent flex h-full w-full flex-col items-center justify-center">
-          <h2 className="text-2xl font-semibold">Order Overview</h2>
-          <ul>
-            <li className="px-2 py-1">Pending</li>
-            <li className="px-2 py-1">Approved</li>
-            <li className="px-2 py-1">Shipping</li>
-            <li className="px-2 py-1">Shipped</li>
-            <li className="px-2 py-1">Fullfilled</li>
-            <li className="px-2 py-1">Pending</li>
-            <li className="px-2 py-1">Approved</li>
-            <li className="px-2 py-1">Shipping</li>
-            <li className="px-2 py-1">Shipped</li>
-            <li className="px-2 py-1">Fullfilled</li>
-          </ul>
-        </div> */}
       </div>
-      <div className="bg-accent h-56 w-full p-2">
-        <h2 className="text-2xl font-semibold">Top Selling Products</h2>
-      </div>
+      <RecentOrderTable />
     </div>
   );
 }
