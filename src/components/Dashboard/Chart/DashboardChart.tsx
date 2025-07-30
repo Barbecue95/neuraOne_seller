@@ -111,7 +111,10 @@ export default function DashboardChart() {
   return (
     <div>
       <h2 className="px-8 pb-2 text-xl font-medium">Sales</h2>
-      <ChartContainer config={chartConfig} className="min-h-[450px] w-fit">
+      <ChartContainer
+        config={chartConfig}
+        className=" min-h-48 md:min-h-80 w-fit lg:min-h-[450px]"
+      >
         <BarChart accessibilityLayer data={data} barCategoryGap="10%">
           <defs>
             <linearGradient id="customGradient" x1="0" y1="0" x2="0" y2="1">

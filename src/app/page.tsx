@@ -40,9 +40,9 @@ const data = [
 
 export default function Home() {
   return (
-    <div className="bg-background h-fit w-full space-y-8 px-6 py-5">
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col gap-5">
+    <div className="bg-background h-fit w-full space-y-8 px-4 py-3 md:px-6 md:py-5">
+      <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex flex-col gap-4 md:gap-5">
           <div className="flex justify-end">
             <SortByButton
               customFilterOptions={[
@@ -53,7 +53,7 @@ export default function Home() {
               ]}
             />
           </div>
-          <div className="space-x-auto flex flex-row gap-5">
+          <div className="space-x-auto flex w-full flex-row flex-wrap justify-between gap-4 md:gap-5">
             {data.map((item, index) => (
               <DashboardCard
                 key={index}
@@ -64,13 +64,13 @@ export default function Home() {
             ))}
           </div>
         </div>
-        <div className="flex h-full w-full gap-5">
-          <div className="bg-card h-fit w-fit rounded-[20px] p-5 shadow">
+        <div className="flex h-full w-full flex-col gap-4 md:gap-5 lg:flex-row lg:flex-wrap xl:flex-nowrap">
+          <div className="bg-card h-fit w-fit rounded-[20px] p-4 shadow md:p-5">
             <DashboardChart />
           </div>
-          <div className="bg-card h-full w-full rounded-[20px] p-5">
+          <div className="bg-card h-full w-full rounded-[20px] p-4 md:p-5">
             <h2 className="text-xl font-medium">Top selling products</h2>
-            <ul className="mt-5 flex w-full flex-col gap-3">
+            <ul className="flex w-full flex-col gap-3 pt-4 md:mt-5">
               <TopSellingCard />
               <TopSellingCard />
               <TopSellingCard />
