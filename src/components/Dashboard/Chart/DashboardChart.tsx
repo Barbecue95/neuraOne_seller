@@ -1,5 +1,6 @@
 "use client";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { formatNumber } from "@/utils/numberFormat";
 import React from "react";
@@ -75,6 +76,7 @@ const RoundedBar = (props: any) => {
 
 export default function DashboardChart() {
   const { getParam } = useQueryParams();
+  const isMobile = useIsMobile();
   const chartType = getParam("sortBy") || "month";
 
   // Dynamic chart data and configuration
@@ -113,7 +115,7 @@ export default function DashboardChart() {
       <h2 className="px-8 pb-2 text-xl font-medium">Sales</h2>
       <ChartContainer
         config={chartConfig}
-        className=" min-h-48 md:min-h-80 w-fit lg:min-h-[450px]"
+        className=" min-h-48 sm:min-h-52 md:min-h-80 w-fit lg:min-h-[450px]"
       >
         <BarChart accessibilityLayer data={data} barCategoryGap="10%">
           <defs>
@@ -143,7 +145,7 @@ export default function DashboardChart() {
             dataKey="sales"
             fill="url(#customGradient)"
             shape={<RoundedBar />}
-            maxBarSize={20}
+            maxBarSize={isMobile ? 8 : 20}
           />
         </BarChart>
       </ChartContainer>
