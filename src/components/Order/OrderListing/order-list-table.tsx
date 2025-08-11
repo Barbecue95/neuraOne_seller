@@ -60,12 +60,7 @@ const OrderTable = ({
 
   return (
     <div className="space-y-4">
-      <TableWrapper
-        table={table}
-        columns={columns}
-        loading={loading}
-        goToDetail={goToDetail}
-      />
+      <TableWrapper table={table} loading={loading} goToDetail={goToDetail} />
       <Pagination
         pagination={pagination}
         onPageChange={onPageChange}

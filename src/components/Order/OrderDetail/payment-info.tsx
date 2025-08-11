@@ -1,12 +1,13 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import KPaySlip from "@/assets/order/kpay-slip.jpg";
+import { Order } from "@/types/order.types";
 
-const PaymentInfo = () => {
+const PaymentInfo = ({ transaction }: { transaction: Order["transaction"] }) => {
   const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
   return (
     <div className="bg-card space-y-5 rounded-md p-5">
@@ -15,17 +16,21 @@ const PaymentInfo = () => {
       <div className="space-y-2.5 text-lg">
         <div className="flex justify-between">
           <span className="text-custom-dark-gray">Name</span>
-          <span className="font-medium">John Doe</span>
+          <span className="font-medium">
+            {transaction.payment.accountName}
+          </span>
         </div>
 
         <div className="flex justify-between">
           <span className="text-custom-dark-gray">Payment method</span>
-          <span className="font-medium">KBZPay</span>
+          <span className="font-medium">{transaction.payment.name}</span>
         </div>
 
         <div className="flex justify-between">
           <span className="text-custom-dark-gray">Phone number</span>
-          <span className="font-medium">09123456789</span>
+          <span className="font-medium">
+            {transaction.payment.accountNumber}
+          </span>
         </div>
 
         <div className="flex items-start justify-between">
@@ -47,6 +52,9 @@ const PaymentInfo = () => {
         open={openPaymentDialog}
         onOpenChange={() => setOpenPaymentDialog(false)}
       >
+        <DialogTitle className="sr-only">
+          {transaction.payment.name} payment
+        </DialogTitle>
         <DialogContent
           showCloseButton={false}
           className="gap-0 rounded-2xl border-0 bg-white p-0 shadow-xl dark:bg-gray-800 sm:max-w-md"

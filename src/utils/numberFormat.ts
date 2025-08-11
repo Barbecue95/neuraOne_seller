@@ -27,7 +27,7 @@ export const handleInputAmountChange = (
  */
 export const formatNumber = (value: number, decimals?: number): string => {
   if (value === 0) return "0";
-  
+
   if (value >= 1000000) {
     const millions = value / 1000000;
     // If decimals is specified, use it; otherwise auto-detect
@@ -36,29 +36,30 @@ export const formatNumber = (value: number, decimals?: number): string => {
     }
     return millions % 1 === 0 ? `${millions}M` : `${millions.toFixed(1)}M`;
   }
-  
-  if (value >= 1000) {
+
+  if (value >= 10000) {
     const thousands = value / 1000;
-    // If decimals is specified, use it; otherwise auto-detect
     if (decimals !== undefined) {
-      return `${thousands.toFixed(decimals)}K`; // This was the bug - it said M instead of K
+      return `${thousands.toFixed(decimals)}K`;
     }
     return thousands % 1 === 0 ? `${thousands}K` : `${thousands.toFixed(1)}K`;
   }
-  
+
   return value.toString();
 };
 
 /**
- * Formats currency with K/M suffixes
+ * Formats currency
  * @param value - The number to format
  * @param currency - Currency symbol (default: "$")
- * @param decimals - Number of decimal places
  */
 export const formatCurrency = (
   value: number,
-  currency: string = "$",
-  decimals?: number
+  currency: string = "Ks"
 ): string => {
-  return `${currency}${formatNumber(value, decimals)}`;
+  if (isNaN(value)) return "0";
+  return `${value.toLocaleString("en-US", {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })} ${currency}`;
 };

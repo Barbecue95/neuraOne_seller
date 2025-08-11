@@ -40,7 +40,7 @@ const data = [
 
 export default function Home() {
   return (
-    <div className="bg-background h-fit w-full space-y-8 px-4 py-3 md:px-6 md:py-5">
+    <div className="h-fit w-full space-y-8  px-4 py-3 md:px-6 md:py-5">
       <div className="flex flex-col gap-4 md:gap-5">
         <div className="flex flex-col gap-4 md:gap-5">
           <div className="flex justify-end">

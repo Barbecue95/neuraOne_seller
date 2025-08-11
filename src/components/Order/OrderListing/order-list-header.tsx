@@ -1,6 +1,6 @@
 "use client";
 
-import { SortDropdown } from "./sort-dropdown";
+import SortByButton from "@/utils/SortByButton";
 
 interface OrderListHeaderProps {
   onImport?: () => void;
@@ -12,7 +12,7 @@ const OrderListHeader = ({ onImport, onExport }: OrderListHeaderProps) => {
     <div className="flex items-center justify-end py-4 md:justify-between">
       <h1 className="hidden text-2xl font-medium md:flex">Order List</h1>
       <div className="flex items-center gap-2">
-        <SortDropdown />
+        <SortByButton />
       </div>
     </div>
   );

@@ -32,13 +32,13 @@ const Index = ({
   if (pathname === "/login") return null;
 
   return (
-    <nav className="bg-card text-primary fixed top-0 z-50 flex h-24 w-full justify-between px-4 py-2 md:h-16 md:items-center md:px-8 xl:h-20">
+    <nav className="bg-sidebar text-primary fixed top-0 z-50 flex h-24 w-full justify-between px-4 py-2 md:h-16 md:items-center md:px-8 xl:h-20">
       <div className="flex w-fit flex-col justify-start md:w-auto md:flex-row md:items-center md:justify-center md:gap-8">
         <Button
           variant="secondary"
           onClick={() => setOpen(!open)}
           size="icon"
-          className="dark:bg-accent-foreground dark:hover:bg-accent-foreground/90 flex size-12 cursor-pointer items-center justify-center rounded-full bg-[#E4E6FF] hover:bg-[#e4e6ffc9]"
+          className="dark:bg-accent-foreground dark:hover:bg-accent-foreground/90 size-12 flex cursor-pointer items-center justify-center rounded-full bg-[#E4E6FF] hover:bg-[#e4e6ffc9]"
         >
           <svg
             width="24"

@@ -40,7 +40,7 @@ export const SortableHeader = ({ title, sortOptions }: SortableHeaderProps) => {
     return (
       <Button
         variant="ghost"
-        className="flex h-auto w-full cursor-pointer justify-start p-0 py-4 text-lg font-medium hover:bg-inherit hover:opacity-90"
+        className="flex h-auto w-full cursor-pointer justify-start text-lg font-medium hover:bg-inherit hover:opacity-90"
       >
         {title}
         <div className="w-4"></div>
@@ -53,7 +53,7 @@ export const SortableHeader = ({ title, sortOptions }: SortableHeaderProps) => {
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
-          className="flex h-auto w-full cursor-pointer justify-start p-0 py-4 text-lg font-medium hover:bg-inherit hover:opacity-90"
+          className="flex h-auto w-full cursor-pointer justify-start !pl-0 text-lg font-medium hover:bg-inherit hover:opacity-90"
         >
           {title}
           <ArrowUpDown className="ml-2 h-4 w-4" />

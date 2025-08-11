@@ -32,14 +32,20 @@ import { cn } from "@/lib/utils";
 
 export function AppSidebar() {
   const pathname = usePathname();
-  const { state, isMobile, openMobile } = useSidebar();
+  const { state, isMobile, openMobile, setOpen } = useSidebar();
 
   if (pathname === "/login") {
     return null;
   }
 
   return (
-    <Sidebar collapsible="icon" side="left">
+    <Sidebar
+      collapsible="icon"
+      side="left"
+      className="fixed inset-y-0 left-0 z-40 transition-all duration-300 ease-in-out data-[state=collapsed]:-translate-x-full"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
       <SidebarHeader className="md:h-20 xl:h-24">
         <SidebarGroupLabel className="sr-only text-base font-semibold lg:text-lg">
           NeuraOne
@@ -48,10 +54,10 @@ export function AppSidebar() {
       <SidebarContent>
         {siteMap.map((group) => (
           <SidebarGroup key={group.id} className="py-0">
-            <SidebarGroupContent className="flex flex-col group-data-[state=collapsed]:gap-2">
+            <SidebarGroupContent>
               {group.items.map((item) => (
                 <SidebarMenu
-                  className="group-data-[state=collapsed]:items-center"
+                  className="group-data-[state=collapsed]:pl-8"
                   key={item.id}
                 >
                   <SidebarItemRender

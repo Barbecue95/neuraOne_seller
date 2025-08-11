@@ -2,11 +2,13 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
 export enum OrderStatus {
-  PENDING = "Pending",
-  PROCESSING = "Processing",
-  PACKAGING = "Packaging",
-  DELIVERING = "Delivering",
-  DELIVERED = "Delivered",
+  PENDING = "PENDING",
+  PROCESSING = "PROCESSING",
+  PACKAGING = "PACKAGING",
+  DELIVERING = "DELIVERING",
+  DELIVERED = "DELIVERED",
+  REJECTED = "REJECTED",
+  RESTOCKED = "RESTOCKED",
 }
 
 const statusMap: Record<OrderStatus, { label: string; className: string }> = {
@@ -29,6 +31,14 @@ const statusMap: Record<OrderStatus, { label: string; className: string }> = {
   [OrderStatus.DELIVERED]: {
     label: "Delivered",
     className: "bg-green-100 text-green-700 hover:bg-green-100",
+  },
+  [OrderStatus.REJECTED]: {
+    label: "Rejected",
+    className: "bg-red-100 text-red-700 hover:bg-red-100",
+  },
+  [OrderStatus.RESTOCKED]: {
+    label: "Restocked",
+    className: "bg-yellow-100 text-yellow-700 hover:bg-yellow-100",
   },
 };
 
