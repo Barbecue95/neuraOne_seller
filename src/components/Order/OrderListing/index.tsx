@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
 import { PaginationInfo } from "@/types/product.types";
 import OrderListHeader from "./order-list-header";
@@ -8,7 +8,6 @@ import OrderListFilters from "./order-list-filter";
 import OrderTable from "./order-list-table";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { OrderSortOption } from "@/types/order.types";
-import { getDummyOrderList } from "./dummy-data";
 import { useGetOrderListing } from "@/queries/order.queries";
 
 export interface OrderListProps {
@@ -32,7 +31,6 @@ export default function OrderList({ onImport, onExport }: OrderListProps) {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // TODO 1: The Real API Query METHOD
   const { data: rawOrderLists, isLoading: isLoadingOrderList } =
     useGetOrderListing({
       sort: sortBy,
@@ -41,17 +39,6 @@ export default function OrderList({ onImport, onExport }: OrderListProps) {
       searchText: debouncedSearchQuery,
     });
   const orderLists = rawOrderLists?.data ?? [];
-  // END of TODO 1
-
-  // TODO 2: This is dummmy data. Delete or comment if real data binding complete
-  // const isLoadingOrderList = false;
-  // const rawOrderLists = getDummyOrderList({
-  //   page: pagination.page,
-  //   size: pagination.size,
-  //   // searchText: debouncedSearchQuery,
-  // });
-  // const orderLists = rawOrderLists?.data ?? [];
-  // End of TODO 2
 
   // Reset to page 1 when filters change
   useEffect(() => {
