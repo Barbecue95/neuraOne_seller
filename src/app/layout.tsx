@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 
 import "./globals.css";
 import { Providers } from "./providers";
-import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,16 +56,15 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const defaultOpen = cookieStore.get("sidebar_state")?.value === "true";
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="overflow-x-hidden scroll-smooth">
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${debata.variable} antialiased`}
       >
         <Providers defaultOpen={defaultOpen}>
           <AppSidebar />
-          <main className="mt-24 w-full overflow-x-hidden md:mt-16 xl:mt-20">
+          <main className="bg-background ml-0 mt-24 overflow-x-hidden md:ml-28 md:mt-16 xl:mt-20">
             {children}
           </main>
-          <Toaster />
         </Providers>
       </body>
     </html>

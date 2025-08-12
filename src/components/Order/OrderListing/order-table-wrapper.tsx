@@ -1,3 +1,4 @@
+// src/components/OrderTable/TableWrapper.tsx
 import {
   Table,
   TableBody,
@@ -6,33 +7,35 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  flexRender,
-  Table as ReactTable,
-  ColumnDef,
-} from "@tanstack/react-table";
 import { cn } from "@/lib/utils";
+import { flexRender } from "@tanstack/react-table";
+import type { Table as TanstackTable, ColumnDef } from "@tanstack/react-table";
 import { Order } from "@/types/order.types";
 
 interface Props {
-  table: ReactTable<Order>;
-  columns: ColumnDef<Order>[];
+  table: TanstackTable<Order>;
   loading: boolean;
   goToDetail: (orderId: number) => void;
 }
 
-const TableWrapper = ({ table, columns, loading, goToDetail }: Props) => {
+const TableWrapper = ({ table, loading, goToDetail }: Props) => {
+  const visibleCols = table.getVisibleLeafColumns();
+  const colCount = visibleCols.length;
+
   return (
     <div className="rounded-lg border">
       <Table>
         <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
+          {table.getHeaderGroups().map((hg) => (
             <TableRow
-              key={headerGroup.id}
-              className="h-auto bg-[#EEEEEE] py-4 text-lg text-[#3C3C3C] hover:bg-[#EEEEEE] dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800"
+              key={hg.id}
+              className={cn(
+                "h-auto bg-[#EEEEEE] py-4 text-lg text-[#3C3C3C] hover:bg-[#EEEEEE]",
+                "dark:bg-gray-700 dark:text-white dark:hover:bg-gray-800"
+              )}
             >
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+              {hg.headers.map((header) => (
+                <TableHead key={header.id} className="px-4 py-2 text-left">
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -44,29 +47,33 @@ const TableWrapper = ({ table, columns, loading, goToDetail }: Props) => {
             </TableRow>
           ))}
         </TableHeader>
+
         <TableBody className="overflow-hidden rounded-b-[20px]">
           {loading ? (
-            Array.from({ length: 5 }).map((_, i) => (
-              <TableRow key={i}>
-                {columns.map((_, j) => (
-                  <TableCell key={j}>
-                    <div className="h-4 animate-pulse rounded bg-gray-200 dark:bg-gray-800" />
+            // skeleton rows
+            Array.from({ length: 5 }).map((_, rowI) => (
+              <TableRow key={rowI}>
+                {Array.from({ length: colCount }).map((_, colI) => (
+                  <TableCell key={colI} className="px-4 py-4">
+                    <div
+                      className="\ h-4 w-full animate-pulse rounded
+bg-gray-200 dark:bg-gray-800"
+                    />
                   </TableCell>
                 ))}
               </TableRow>
             ))
-          ) : table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row, index) => (
+          ) : table.getRowModel().rows.length > 0 ? (
+            // actual data rows
+            table.getRowModel().rows.map((row, rowI) => (
               <TableRow
                 key={row.id}
                 data-state={row.getIsSelected() && "selected"}
-                onClick={() => {
-                  const orderId = row.original.orderId;
-                  goToDetail(Number(orderId));
-                }}
+                onClick={() => goToDetail(row.original.id)}
                 className={cn(
-                  "cursor-pointer bg-white text-lg font-normal text-[#303030] dark:bg-gray-800 dark:text-white",
-                  table.getRowModel().rows.length - 1 === index &&
+                  "cursor-pointer bg-white text-lg font-normal text-[#303030]",
+                  "dark:bg-gray-800 dark:text-white",
+                  rowI === table.getRowModel().rows.length - 1 &&
                     "rounded-b-[20px]"
                 )}
               >
@@ -78,8 +85,9 @@ const TableWrapper = ({ table, columns, loading, goToDetail }: Props) => {
               </TableRow>
             ))
           ) : (
+            // no-results row
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell colSpan={colCount} className="h-24 text-center">
                 No results found.
               </TableCell>
             </TableRow>

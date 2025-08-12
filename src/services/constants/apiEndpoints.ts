@@ -1,3 +1,8 @@
+// Dashboard End Points
+export const dashboardEndpoints = {
+  dashboard: "/dashboard",
+};
+
 // Product End Points
 const PRODUCT_BASE_PATCH = "/products";
 export const productEndpoints = {

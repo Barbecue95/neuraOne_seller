@@ -8,7 +8,7 @@ import OrderListFilters from "./order-list-filter";
 import OrderTable from "./order-list-table";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { OrderSortOption } from "@/types/order.types";
-import { getDummyOrderList } from "./dummy-data";
+import { useGetOrderListing } from "@/queries/order.queries";
 
 export interface OrderListProps {
   onImport?: () => void;
@@ -31,32 +31,36 @@ export default function OrderList({ onImport, onExport }: OrderListProps) {
 
   const debouncedSearchQuery = useDebounce(searchQuery, 300);
 
-  // TODO 1: The Real API Query METHOD
-  // const { data: rawOrderLists, isLoading: isLoadingOrderList } = useOrders({
-  //   sort: sortBy,
-  //   page: pagination.page,
-  //   limit: pagination.size,
-  //   searchText: debouncedSearchQuery,
-  // });
-  // const orderLists = rawOrderLists?.data ?? [];
-  // END of TODO 1
-
-  // TODO 2: This is dummmy data. Delete or comment if real data binding complete
-  const isLoadingOrderList = false;
-  const rawOrderLists = getDummyOrderList({
-    page: pagination.page,
-    size: pagination.size,
-    // searchText: debouncedSearchQuery,
-  });
+  const { data: rawOrderLists, isLoading: isLoadingOrderList } =
+    useGetOrderListing({
+      sort: sortBy,
+      page: pagination.page,
+      limit: pagination.size,
+      searchText: debouncedSearchQuery,
+    });
   const orderLists = rawOrderLists?.data ?? [];
-  // End of TODO 2
 
   // Reset to page 1 when filters change
   useEffect(() => {
     if (pagination.page !== 1) {
       setPagination((prev) => ({ ...prev, page: 1 }));
     }
-  }, [debouncedSearchQuery]);
+  }, [debouncedSearchQuery, sortBy]);
+
+  useEffect(() => {
+    if (!isLoadingOrderList && !!rawOrderLists) {
+      setPagination((prev) => ({
+        ...prev,
+        total: rawOrderLists.meta.total ?? 0,
+        totalPages: rawOrderLists.meta.total / rawOrderLists.meta.limit,
+        hasNextPage:
+          rawOrderLists.meta.page <
+          rawOrderLists.meta.total / rawOrderLists.meta.limit,
+        hasPrevPage: rawOrderLists.meta.page > 1,
+        page: rawOrderLists.meta.page,
+      }));
+    }
+  }, [isLoadingOrderList, rawOrderLists]);
 
   const handlePageChange = (page: number) => {
     setPagination((prev) => ({ ...prev, page }));

@@ -1,6 +1,6 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import Image from "next/image";
@@ -23,6 +23,7 @@ const AcceptRejectModal = ({
 }: ModalProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogTitle className="sr-only">Accept or Reject Dialog</DialogTitle>
       <DialogContent
         showCloseButton={false}
         className="gap-0 rounded-2xl border-0 bg-white p-0 shadow-xl dark:bg-gray-800 sm:max-w-md"

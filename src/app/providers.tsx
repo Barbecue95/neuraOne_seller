@@ -7,6 +7,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
 import Navbar from "@/components/Navbar";
+import { Toaster } from "@/components/ui/sonner";
 // Create a client
 const queryClient = new QueryClient();
 
@@ -28,8 +29,10 @@ export function Providers({
             defaultOpen={defaultOpen}
             open={open}
             onOpenChange={setOpen}
+            overlay={true}
           >
             {children}
+            <Toaster richColors />
           </SidebarProvider>
         </ThemeProvider>
       </Provider>
