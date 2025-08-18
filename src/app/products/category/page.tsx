@@ -34,6 +34,7 @@ export default function Home() {
   } = useCategory();
 
   // if (categoryLoading) return <Loading />;
+  console.log("variants", variants)
 
   return (
     <div className="container mx-auto px-4 py-2 md:px-8 md:py-4">

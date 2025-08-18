@@ -136,7 +136,7 @@ export const CreateProductSchema = z
       .optional(),
     variants: z
       .array(variantSchema)
-      .min(1, "At least one variant is required."),
+      .min(0, "At least one variant is required."),
 
     productRelationType: z.nativeEnum(ProductRelationType, {
       errorMap: () => ({

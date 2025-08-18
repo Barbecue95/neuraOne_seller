@@ -56,22 +56,25 @@ export default function useCategoryVariant({
       }
 
       const categoryData = catForm.getValues();
-      let variantGroupIds: string[] = [];
+      let variantGroupIds: (string | undefined)[] = [];
 
       // If there are variant options, create them first
       const variantData = form.getValues();
       if (variantFormValid && variantData.variantOptions.length > 0) {
         try {
           let variantPromises;
+          
           // Create each variant option individually since API expects single variant
           if (isEditing) {
-            variantPromises = variantData.variantOptions.map((variantOption) =>
+            variantPromises = variantData.variantOptions.map((variantOption) => {
+              console.log("variantOption.id", variantData)
               updateVariantsMutation.mutateAsync({
                 id: variantOption.id, // Assuming id is present for editing
                 name: variantOption.name,
                 variantValues: variantOption.variantValues,
-              }),
-            );
+              })
+            });
+
           } else {
             variantPromises = variantData.variantOptions.map((variantOption) =>
               createVariantsMutation.mutateAsync({
@@ -86,7 +89,7 @@ export default function useCategoryVariant({
 
           // Check if all variants were created successfully
           const failedVariants = variantResponses.filter(
-            (response) => !response.status,
+            (response) => !response?.status,
           );
 
           if (failedVariants.length > 0) {
@@ -95,8 +98,8 @@ export default function useCategoryVariant({
           }
 
           variantGroupIds = variantResponses
-            .filter((response) => response.status && response.data?.id)
-            .map((response) => response.data.id);
+            .filter((response) => response?.status && response.data?.id)
+            .map((response) => response?.data.id);
 
           toast.success("Variant options created successfully!");
         } catch (error) {
@@ -110,7 +113,7 @@ export default function useCategoryVariant({
       const categoryPayload: CategoryFormType = {
         ...categoryData,
         status: isDraft ? false : true,
-        variantGroupIds,
+        variantGroupIds: variantGroupIds.filter((id): id is string => typeof id === "string"),
       };
 
       let categoryResponse;

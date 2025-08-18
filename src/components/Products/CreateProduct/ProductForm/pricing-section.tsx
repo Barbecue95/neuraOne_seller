@@ -50,9 +50,9 @@ export default function PricingSection({ form }: PricingSectionProps) {
                       onChange={(e) =>
                         field.onChange(Number(handleInputAmountChange(e)))
                       }
-                      value={field.value === 0 ? "" : (field.value ?? "")}
+                      value={field.value === 0 ? "" : field.value ?? ""}
                     />
-                    <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500">
                       Ks
                     </span>
                   </div>
@@ -80,9 +80,9 @@ export default function PricingSection({ form }: PricingSectionProps) {
                       onChange={(e) =>
                         field.onChange(Number(handleInputAmountChange(e)))
                       }
-                      value={field.value === 0 ? "" : (field.value ?? "")}
+                      value={field.value === 0 ? "" : field.value ?? ""}
                     />
-                    <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
+                    <span className="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500">
                       Ks
                     </span>
                   </div>
@@ -178,23 +178,23 @@ export default function PricingSection({ form }: PricingSectionProps) {
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type="text"
+                          type="number"
                           placeholder={
                             discountType === "AMOUNT" ? "Amount" : "Percentage"
                           }
                           {...field}
-                          onChange={(e) =>
-                            field.onChange(
-                              handleInputAmountChange(
-                                e,
-                                discountType === "AMOUNT" ? 10 : 2,
-                              ),
-                            )
-                          }
-                          value={field.value === 0 ? "" : (field.value ?? "")}
+                          onChange={(e) => {
+                            const value = handleInputAmountChange(
+                              e,
+                              discountType === "AMOUNT" ? 10 : 2
+                            );
+                            console.log("value", Number(value));
+                            field.onChange( Number(value));
+                          }}
+                          value={field.value === 0 ? "" : field.value ?? ""}
                           className="h-12 rounded-[20px] p-4"
                         />
-                        <span className="absolute top-1/2 right-3 -translate-y-1/2 transform text-gray-500">
+                        <span className="absolute right-3 top-1/2 -translate-y-1/2 transform text-gray-500">
                           {discountType === "AMOUNT" ? "Ks" : "%"}
                         </span>
                       </div>

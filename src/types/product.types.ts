@@ -211,7 +211,7 @@ export const VariantOptionCreateFormSchema = z.object({
           .min(1, "At least one value is required"),
       }),
     )
-    .min(1, "At least one variant option is required"),
+    .min(0, "At least one variant option is required"),
 });
 export const VariantOptionPayloadSchema = z.object({
   name: z.string().min(1, "Name is required"),

@@ -78,16 +78,16 @@ export function NestedValues({ nestIndex, control }: NestedValuesProps) {
                 {fields.map((f, idx) => (
                   <Badge
                     key={f.id}
-                    className="bg-primary flex gap-2 rounded-full px-2.5 py-1 text-xl font-medium text-white"
+                    className="bg-primary rounded-full px-2.5 py-1 text-sm font-medium text-white"
                     asChild
                   >
-                    <span>
+                    <span className="flex gap-2 items-center ">
                       {f.value}
                       <button
                         onClick={() => remove(idx)}
                         className="no-row-click rounded-full hover:bg-black/20"
                       >
-                        <XCircleIcon className="size-[18px] translate-y-0.5" />
+                        <XCircleIcon className="size-[18px]" />
                       </button>
                     </span>
                   </Badge>
@@ -217,7 +217,7 @@ export default function CategoryContentDialog({
                           variant="ghost"
                           size="icon"
                           type="button"
-                          className="absolute top-2 right-2 rounded-full"
+                          className="absolute right-2 top-2 rounded-full"
                           onClick={() => variants.remove(i)}
                           disabled={isSubmitting}
                         >
