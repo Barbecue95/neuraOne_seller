@@ -204,7 +204,7 @@ export const VariantOptionCreateFormSchema = z.object({
         variantValues: z
           .array(
             z.object({
-              id: z.string().optional(),
+              id: z.number().optional(),
               value: z.string().min(1, "Value is required"),
             }),
           )
@@ -219,7 +219,7 @@ export const VariantOptionPayloadSchema = z.object({
   variantValues: z
     .array(
       z.object({
-        id: z.string().optional(),
+        id: z.number().optional(),
         value: z.string().min(1, "Value is required"),
       }),
     )
@@ -230,7 +230,7 @@ export const VariantOptionSchema = z.object({
   name: z.string(),
   variantValues: z.array(
     z.object({
-      id: z.string().optional(),
+      id: z.number().optional(),
       value: z.string(),
     }),
   ),
@@ -261,7 +261,7 @@ export const categoryFormSchema = z.object({
   imageUrl: z.string().optional(),
   description: z.string().optional(),
   status: z.boolean(),
-  variantGroupIds: z.array(z.string()).optional(),
+  variantGroupIds: z.array(z.number()).optional(),
 });
 export const updateCategorySchema = z.object({
   categoryId: z.number(),
@@ -271,7 +271,7 @@ export const updateCategorySchema = z.object({
   description: z.string().optional(),
   status: z.boolean(),
   parentId: z.null(),
-  variantGroupIds: z.array(z.string()).optional(),
+  variantGroupIds: z.array(z.number()).optional(),
 });
 
 export const createCategoryResponseSchema = z.object({

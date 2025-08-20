@@ -20,6 +20,7 @@ export default function EditProductForm({ id }: { id: number }) {
     form,
     categories,
     isUpdating,
+    isCreating,
     isDuplicate,
     productLoading,
     categoryLoading,
@@ -28,6 +29,7 @@ export default function EditProductForm({ id }: { id: number }) {
     handleCategoryChange,
     handleUpdateSubmit,
     handleSaveAsDraft,
+    handleCreateAsDraft,
     handleDuplicate,
   } = useEditProducts(id);
 
@@ -44,7 +46,7 @@ export default function EditProductForm({ id }: { id: number }) {
         >
           <ProductHeader
             isEdit
-            title="Edit Product"
+            title={isDuplicate ? "Add Product" : "Edit Product"}
             handleDuplicate={handleDuplicate}
           />
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -80,20 +82,27 @@ export default function EditProductForm({ id }: { id: number }) {
           <div className="flex justify-end space-x-4 border-t pt-6">
             <Button
               variant="secondary"
-              onClick={handleSaveAsDraft}
-              className="rounded-full bg-[#A1A1A1] text-white transition-colors duration-300 hover:bg-[#A1A1A1b5] active:scale-90"
+              type="button"
+              onClick={isDuplicate ? handleCreateAsDraft : handleSaveAsDraft}
+              className="w-40 rounded-full bg-[#A1A1A1] text-white transition-colors duration-300 hover:bg-[#A1A1A1b5] active:scale-90"
             >
               Save as draft
             </Button>
             <Button
               type="submit"
-              disabled={isUpdating}
-              className={"rounded-full active:scale-90"}
+              disabled={isUpdating || isCreating}
+              onClick={(e) => {
+                if (isDuplicate) {
+                  handleDuplicate();
+                  e.preventDefault();
+                }
+              }}
+              className={"w-40 rounded-full active:scale-90"}
             >
               {isUpdating ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Updating...
+                  {isCreating ? "creating..." : "Updating..." }
                 </>
               ) : (
                 "Save"

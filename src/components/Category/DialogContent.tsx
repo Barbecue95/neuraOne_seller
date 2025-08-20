@@ -47,7 +47,7 @@ export function NestedValues({ nestIndex, control }: NestedValuesProps) {
 
   const addTag = (val: string) => {
     const t = val.trim();
-    if (t) append({ value: t });
+    if (t) append({ id: 0, value: t });
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -128,7 +128,7 @@ export default function CategoryContentDialog({
   handleKeyDown?: (e: React.KeyboardEvent) => void;
 }) {
   return (
-    <DialogContent className="max-w-screen min-w-screen lg:min-w-4xl xl:min-w-6xl">
+    <DialogContent className="max-w-screen min-w-2xl">
       <DialogHeader>
         <DialogTitle>Add New Category</DialogTitle>
       </DialogHeader>

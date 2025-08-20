@@ -176,7 +176,7 @@ export default function useCategory() {
           status: category.status,
           variantGroupIds:
             category.categoryVariantGroups?.map((vg) =>
-              vg.variantGroup.id.toString(),
+              vg.variantGroup.id,
             ) || [],
         });
         variantForm.reset({
@@ -185,7 +185,7 @@ export default function useCategory() {
               id: vg.variantGroup.id.toString(),
               name: vg.variantGroup.name,
               variantValues: vg.variantGroup.values.map((v) => ({
-                id: v.id.toString(),
+                id: v.id,
                 value: v.value,
               })),
             })) || [],

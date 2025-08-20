@@ -22,6 +22,7 @@ import {
 
 export default function useEditProducts(id: number) {
   const router = useRouter();
+  const { mutate: createProduct, isLoading: isCreating } = useCreateProduct();
   const { mutate: updateProduct, isLoading: isUpdating } = useUpdateProduct();
   const { data: rawProductData, isLoading: productLoading } =
     useGetProductById(id);
@@ -122,14 +123,42 @@ export default function useEditProducts(id: number) {
     );
   };
 
-  const handleDuplicate = () => {
-    setIsDuplicate(true);
-    // const data = form.getValues();
-    // const payload = buildPayload(data);
-    // console.log("Duplicate product", data, payload);
-    // const id = createProduct(payload);
+  const handleCreateAsDraft = async () => {
+      const data = {
+        ...form.getValues(),
+        status: ProductStatus.DRAFT,
+      };
+  
+      const payload = {
+        ...data,
+        promoteInfo: {
+          ...data.promoteInfo,
+          promoteAmount:
+            data.promoteInfo?.discountType === "AMOUNT"
+              ? data.promoteInfo.discountValue
+              : 0,
+          promotePercent:
+            data.promoteInfo?.discountType != "AMOUNT"
+              ? data.promoteInfo.discountValue
+              : 0,
+        },
+      };
+  
+      createProduct(payload);
+      router.push("/products");
+    };
 
-    // router.push("/products")
+  const handleDuplicate = () => {
+    if (!isDuplicate) {
+      setIsDuplicate(true);
+      return
+    }
+    const data = form.getValues();
+    const payload = buildPayload(data);
+    // console.log("Duplicate product", data, payload);
+    const id = createProduct(payload);
+
+    router.push("/products")
   };
 
   useEffect(() => {
@@ -209,12 +238,14 @@ export default function useEditProducts(id: number) {
     categoryVariantGroups,
     existingVariants,
     isUpdating,
+    isCreating,
     productLoading,
     categoryLoading,
     selectedCategoryId,
     handleCategoryChange,
     handleUpdateSubmit,
     handleSaveAsDraft,
+    handleCreateAsDraft,
     isDuplicate,
     handleDuplicate,
   };

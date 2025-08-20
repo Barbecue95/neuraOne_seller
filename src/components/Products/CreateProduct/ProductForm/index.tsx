@@ -67,6 +67,7 @@ export default function CreateProductForm() {
               variant="outline"
               onClick={handleSaveAsDraft}
               disabled={isDraftLoading}
+              className="w-40 rounded-full bg-[#A1A1A1] text-white transition-colors duration-300 hover:bg-[#A1A1A1b5] active:scale-90"
             >
               {isDraftLoading ? (
                 <>
@@ -80,7 +81,7 @@ export default function CreateProductForm() {
             <Button
               type="submit"
               disabled={isCreating}
-              className="active:scale-90"
+              className="w-40 active:scale-90"
             >
               {isCreating ? (
                 <>

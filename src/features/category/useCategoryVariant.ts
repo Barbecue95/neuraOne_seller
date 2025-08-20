@@ -56,25 +56,30 @@ export default function useCategoryVariant({
       }
 
       const categoryData = catForm.getValues();
-      let variantGroupIds: (string | undefined)[] = [];
+      let variantGroupIds: (number | undefined)[] = [];
 
       // If there are variant options, create them first
       const variantData = form.getValues();
       if (variantFormValid && variantData.variantOptions.length > 0) {
         try {
           let variantPromises;
-          
+
           // Create each variant option individually since API expects single variant
           if (isEditing) {
             variantPromises = variantData.variantOptions.map((variantOption) => {
-              console.log("variantOption.id", variantData)
-              updateVariantsMutation.mutateAsync({
-                id: variantOption.id, // Assuming id is present for editing
-                name: variantOption.name,
-                variantValues: variantOption.variantValues,
-              })
+              if (variantOption.id) {
+                return updateVariantsMutation.mutateAsync({
+                  id: variantOption.id, // Assuming id is present for editing
+                  name: variantOption.name,
+                  variantValues: variantOption.variantValues,
+                })
+              } else {
+                 return createVariantsMutation.mutateAsync({
+                  name: variantOption.name,
+                  variantValues: variantOption.variantValues,
+                })
+              }
             });
-
           } else {
             variantPromises = variantData.variantOptions.map((variantOption) =>
               createVariantsMutation.mutateAsync({
@@ -98,8 +103,8 @@ export default function useCategoryVariant({
           }
 
           variantGroupIds = variantResponses
-            .filter((response) => response?.status && response.data?.id)
-            .map((response) => response?.data.id);
+            .filter((response) => response.status && response.data.id)
+            .map((response) => Number(response?.data.id));
 
           toast.success("Variant options created successfully!");
         } catch (error) {
@@ -113,7 +118,7 @@ export default function useCategoryVariant({
       const categoryPayload: CategoryFormType = {
         ...categoryData,
         status: isDraft ? false : true,
-        variantGroupIds: variantGroupIds.filter((id): id is string => typeof id === "string"),
+        variantGroupIds: variantGroupIds.filter((id): id is number => typeof id === "number"),
       };
 
       let categoryResponse;

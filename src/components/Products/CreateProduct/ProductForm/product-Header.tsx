@@ -21,12 +21,12 @@ export default function ProductHeader({
           </a>
         </Button>
         {isEdit && (
-          <Button variant="ghost" onClick={handleDuplicate}>
+          <Button type="button" variant="ghost" onClick={handleDuplicate}>
             <CopyIcon /> Duplicate
           </Button>
         )}
       </div>
-      <div className="hidden gap-2 md:flex">
+      {/* <div className="hidden gap-2 md:flex">
         <Button
           variant="secondary"
           className="rounded-full bg-[#A1A1A1] px-7 py-2 text-white hover:bg-[#A1A1A1b5]"
@@ -41,7 +41,7 @@ export default function ProductHeader({
         >
           Save
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 }
