@@ -97,8 +97,8 @@ export function BannersForm() {
         <h2 className="text-foreground text-lg font-medium">Hero Banner</h2>
         {isMobile ? (
           <div className="scrollbar-hide flex flex-row gap-5 overflow-x-scroll ">
-            {heroBanners.map((banner) => (
-              <div className="aspect-video min-w-[70vw]">
+            {heroBanners.map((banner, index) => (
+              <div className="aspect-video min-w-[70vw]" key={index}>
                 {renderUploadArea(banner, "hero")}
               </div>
             ))}
@@ -120,8 +120,8 @@ export function BannersForm() {
         <h2 className="text-foreground text-lg font-medium">Ads Banner</h2>
         {isMobile ? (
           <div className="scrollbar-hide flex flex-row gap-5 overflow-x-scroll ">
-            {adsBanners.map((banner) => (
-              <div className="aspect-video min-w-[70vw]">
+            {adsBanners.map((banner, index) => (
+              <div className="aspect-video min-w-[70vw]" key={index}>
                 {renderUploadArea(banner, "ads")}
               </div>
             ))}

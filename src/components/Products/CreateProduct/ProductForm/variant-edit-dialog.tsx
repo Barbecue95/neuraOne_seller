@@ -88,14 +88,14 @@ export default function VariantEditDialog({
   SelectedVariant: VariantCombination;
   updateVariantFields: (
     variantId: number,
-    fieldsToUpdate: Partial<VariantCombination>,
+    fieldsToUpdate: Partial<VariantCombination>
   ) => void;
   handleClose: () => void;
 }) {
   // Step#1: grab the fresh data out of the list
   const fresh = useMemo(
     () => variants.find((v) => v.id === SelectedVariant.id) ?? SelectedVariant,
-    [variants, SelectedVariant.id],
+    [variants, SelectedVariant.id]
   );
 
   // refs
@@ -108,7 +108,7 @@ export default function VariantEditDialog({
 
   // discriminated‐union control
   const [mode, setMode] = useState<"Weight" | "Size">(
-    fresh.weightValue != null ? "Weight" : "Size",
+    fresh.weightValue != null ? "Weight" : "Size"
   );
   const [weightUnit, setWeightUnit] = useState(fresh.weightUnit ?? "kg");
   const [sizeUnit, setSizeUnit] = useState(fresh.sizeUnit ?? "cm");
@@ -196,7 +196,7 @@ export default function VariantEditDialog({
                   if (bpRef.current) bpRef.current.value = v;
                 }}
               />
-              <span className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
                 Ks
               </span>
             </div>
@@ -220,7 +220,7 @@ export default function VariantEditDialog({
                   if (spRef.current) spRef.current.value = v;
                 }}
               />
-              <span className="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500">
+              <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
                 Ks
               </span>
             </div>
@@ -283,7 +283,7 @@ export default function VariantEditDialog({
                     />
                   </FormItem>
                   <Select value={weightUnit} onValueChange={setWeightUnit}>
-                    <SelectTrigger className="absolute right-0 bottom-0 w-18 min-w-fit rounded-[20px] border-none px-4 py-6">
+                    <SelectTrigger className="w-18 absolute bottom-0 right-0 min-w-fit rounded-[20px] border-none px-4 py-6">
                       <SelectValue placeholder="Kg" />
                     </SelectTrigger>
                     <SelectContent>
@@ -306,7 +306,7 @@ export default function VariantEditDialog({
                     />
                   </FormItem>
                   <Select value={sizeUnit} onValueChange={setSizeUnit}>
-                    <SelectTrigger className="absolute right-0 bottom-0 w-18 min-w-fit rounded-[20px] border-none px-4 py-6">
+                    <SelectTrigger className="w-18 absolute bottom-0 right-0 min-w-fit rounded-[20px] border-none px-4 py-6">
                       <SelectValue placeholder="cm" />
                     </SelectTrigger>
                     <SelectContent>
